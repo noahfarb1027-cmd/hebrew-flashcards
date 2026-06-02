@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Hebrew" />
+  <title>Hebrew Flashcards</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon.png" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #fbbf24;
+      --card-border: rgba(255,255,255,0.1);
+      --text: #f0f0f0;
+      --text-muted: #aaaaaa;
+      --text-dim: #555555;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(160deg, #111111 0%, #1c1c1c 60%, #0d0d0d 100%);
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: env(safe-area-inset-top, 20px) 16px env(safe-area-inset-bottom, 20px);
+    }
+
+    header {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0 12px;
+    }
+
+    header h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 0.02em;
+    }
+
+    .lesson-badge {
+      background: rgba(251,191,36,0.15);
+      border: 1px solid rgba(251,191,36,0.4);
+      color: var(--gold);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 999px;
+      box-shadow: 0 2px 10px rgba(251,191,36,0.2);
+    }
+
+    .progress-bar-wrap {
+      width: 100%;
+      max-width: 480px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 999px;
+      height: 6px;
+      margin-bottom: 8px;
+    }
+
+    .progress-bar {
+      height: 6px;
+      background: linear-gradient(90deg, #888888, var(--gold));
+      border-radius: 999px;
+      transition: width 0.3s ease;
+      box-shadow: 0 0 8px rgba(251,191,36,0.4);
+    }
+
+    .progress-text {
+      width: 100%;
+      max-width: 480px;
+      text-align: right;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    /* Card */
+    .card-scene {
+      width: 100%;
+      max-width: 480px;
+      height: 300px;
+      perspective: 1000px;
+      cursor: pointer;
+      margin-bottom: 24px;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .card-inner {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform;
+    }
+
+    .card-scene.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      background: rgba(255,255,255,0.07);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 28px 24px;
+      gap: 10px;
+    }
+
+    .card-back {
+      transform: rotateY(180deg);
+      background: rgba(251,191,36,0.05);
+      border-color: rgba(251,191,36,0.2);
+    }
+
+    .card-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .card-main {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text);
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .card-hebrew {
+      font-size: 1.5rem;
+      color: var(--gold);
+      text-align: center;
+      direction: rtl;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    .card-translit {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      text-align: center;
+      font-style: italic;
+    }
+
+    .card-meta {
+      font-size: 0.75rem;
+      color: var(--gold);
+      font-weight: 600;
+      background: rgba(251,191,36,0.15);
+      border: 1px solid rgba(251,191,36,0.3);
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    .audio-btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: var(--text);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.15s, transform 0.1s;
+      margin-top: 4px;
+    }
+
+    .audio-btn:active {
+      background: rgba(251,191,36,0.2);
+      transform: scale(0.92);
+    }
+
+    .audio-btn.speaking {
+      background: rgba(251,191,36,0.2);
+      border-color: rgba(251,191,36,0.5);
+    }
+
+    .tap-hint {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    /* Action buttons */
+    .actions {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 16px;
+      border: none;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn:active { transform: scale(0.97); opacity: 0.85; }
+
+    .btn-again {
+      background: rgba(220,38,38,0.18);
+      color: #f87171;
+      border: 1px solid rgba(220,38,38,0.35);
+    }
+
+    .btn-good {
+      background: rgba(22,163,74,0.18);
+      color: #4ade80;
+      border: 1px solid rgba(22,163,74,0.35);
+    }
+
+    /* Nav */
+    .nav {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-nav {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.15s;
+    }
+
+    .btn-nav:active { background: rgba(255,255,255,0.12); }
+    .btn-nav:disabled { opacity: 0.25; cursor: default; }
+
+    .btn-shuffle {
+      background: rgba(251,191,36,0.15);
+      border: 1px solid rgba(251,191,36,0.35);
+      color: var(--gold);
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .stats {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-top: 20px;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+
+    .stat-item span {
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .done-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 16px;
+      width: 100%;
+      max-width: 480px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 48px 24px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    .done-screen h2 { font-size: 1.5rem; color: var(--text); }
+    .done-screen p { color: var(--text-muted); font-size: 0.95rem; }
+
+    .btn-restart {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #0d0d0d;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 8px;
+      box-shadow: 0 4px 16px rgba(251,191,36,0.35);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Hebrew Flashcards</h1>
+  <span class="lesson-badge" id="lessonBadge">Lesson 1</span>
+</header>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar" id="progressBar" style="width:0%"></div>
+</div>
+<div class="progress-text" id="progressText">1 / 30</div>
+
+<div class="card-scene" id="cardScene">
+  <div class="card-inner" id="cardInner">
+    <div class="card-face card-front">
+      <div class="card-label">English</div>
+      <div class="card-main" id="frontMain"></div>
+      <div class="card-sub" id="frontSub"></div>
+    </div>
+    <div class="card-face card-back">
+      <div class="card-label">Hebrew</div>
+      <div class="card-hebrew" id="backHebrew"></div>
+      <div class="card-translit" id="backTranslit"></div>
+      <div class="card-meta" id="backMeta"></div>
+      <button class="audio-btn" id="audioBtn" aria-label="Play pronunciation">🔊</button>
+    </div>
+  </div>
+</div>
+
+<p class="tap-hint" id="tapHint">Tap card to reveal</p>
+
+<div class="actions">
+  <button class="btn btn-again" onclick="markAgain()">Again</button>
+  <button class="btn btn-good" onclick="markGood()">Got it</button>
+</div>
+
+<div class="nav">
+  <button class="btn-nav" id="btnPrev" onclick="prevCard()">← Prev</button>
+  <button class="btn-shuffle" onclick="shuffleDeck()" title="Shuffle">⇄</button>
+  <button class="btn-nav" id="btnNext" onclick="nextCard()">Next →</button>
+</div>
+
+<div class="stats">
+  <div class="stat-item">Again: <span id="statAgain">0</span></div>
+  <div class="stat-item">Got it: <span id="statGood">0</span></div>
+</div>
+
+<div class="done-screen" id="doneScreen">
+  <div style="font-size:3rem">🎉</div>
+  <h2>Deck complete!</h2>
+  <p id="doneStats"></p>
+  <button class="btn-restart" onclick="restartDeck()">Start over</button>
+</div>
+
+<script>
+// Note: Hebrew script verified by transliteration — confirm any corrections with your tutor.
+const vocab = [
+  { id:1,  english:"read",                transliteration:"ko're",      hebrew:"קורא",       pos:"verb",           gender:"m, s",  lesson:1 },
+  { id:2,  english:"write",               transliteration:"cotev",      hebrew:"כותב",       pos:"verb",           gender:"m, s",  lesson:1 },
+  { id:3,  english:"near / next to",      transliteration:"leyad",      hebrew:"ליד",        pos:"preposition",    gender:"",      lesson:1 },
+  { id:4,  english:"like always",         transliteration:"c'mo tamid", hebrew:"כמו תמיד",   pos:"adverb",         gender:"",      lesson:1 },
+  { id:5,  english:"store",               transliteration:"chanut",     hebrew:"חנות",       pos:"noun",           gender:"m, s",  lesson:1 },
+  { id:6,  english:"learn",               transliteration:"lomed",      hebrew:"לומד",       pos:"verb",           gender:"m, s",  lesson:1 },
+  { id:7,  english:"bye",                 transliteration:"lehitraot",  hebrew:"להתראות",    pos:"interjection",   gender:"",      lesson:1 },
+  { id:8,  english:"car",                 transliteration:"me'ko'nit",  hebrew:"מכונית",     pos:"noun",           gender:"f, s",  lesson:1 },
+  { id:9,  english:"center (of a place)", transliteration:"mer'kaz",    hebrew:"מרכז",       pos:"noun",           gender:"m, s",  lesson:1 },
+  { id:10, english:"coffee shop",         transliteration:"beit cafe",  hebrew:"בית קפה",    pos:"noun",           gender:"m, s",  lesson:1 },
+  { id:11, english:"friends",             transliteration:"chaverim",   hebrew:"חברים",      pos:"noun",           gender:"m, pl", lesson:1 },
+  { id:12, english:"restaurant",          transliteration:"mis'a'da",   hebrew:"מסעדה",      pos:"noun",           gender:"f, s",  lesson:1 },
+  { id:13, english:"because",             transliteration:"kee",        hebrew:"כי",         pos:"conjunction",    gender:"",      lesson:1 },
+  { id:14, english:"man",                 transliteration:"eesh",       hebrew:"איש",        pos:"noun",           gender:"m, s",  lesson:1 },
+  { id:15, english:"noise",               transliteration:"ra'ash",     hebrew:"רעש",        pos:"noun",           gender:"m, s",  lesson:1 },
+  { id:16, english:"quiet",               transliteration:"sheket",     hebrew:"שקט",        pos:"noun/adjective", gender:"m, s",  lesson:1 },
+  { id:17, english:"now",                 transliteration:"achshav",    hebrew:"עכשיו",      pos:"adverb",         gender:"",      lesson:1 },
+  { id:18, english:"we",                  transliteration:"anachnu",    hebrew:"אנחנו",      pos:"pronoun",        gender:"pl",    lesson:1 },
+  { id:19, english:"city",                transliteration:"eer",        hebrew:"עיר",        pos:"noun",           gender:"f, s",  lesson:1 },
+  { id:20, english:"people",              transliteration:"anashim",    hebrew:"אנשים",      pos:"noun",           gender:"m, pl", lesson:1 },
+  { id:21, english:"to...",               transliteration:"la-",        hebrew:"ל־",         pos:"preposition",    gender:"",      lesson:1 },
+  { id:22, english:"today",               transliteration:"hayom",      hebrew:"היום",       pos:"adverb",         gender:"",      lesson:1 },
+  { id:23, english:"beach / ocean",       transliteration:"yam",        hebrew:"ים",         pos:"noun",           gender:"m, s",  lesson:1 },
+  { id:24, english:"only",                transliteration:"rak",        hebrew:"רק",         pos:"adverb",         gender:"",      lesson:1 },
+  { id:25, english:"those",               transliteration:"ele",        hebrew:"אלה",        pos:"pronoun",        gender:"pl",    lesson:1 },
+  { id:26, english:"computer",            transliteration:"machshev",   hebrew:"מחשב",       pos:"noun",           gender:"m, s",  lesson:1 },
+  { id:27, english:"everyone",            transliteration:"kulam",      hebrew:"כולם",       pos:"pronoun",        gender:"m, s",  lesson:1 },
+  { id:28, english:"garden",              transliteration:"gina",       hebrew:"גינה",       pos:"noun",           gender:"f, s",  lesson:1 },
+  { id:29, english:"from",                transliteration:"me-",        hebrew:"מ־",         pos:"preposition",    gender:"",      lesson:1 },
+  { id:30, english:"classroom",           transliteration:"kita",       hebrew:"כיתה",       pos:"noun",           gender:"f, s",  lesson:1 },
+];
+
+let deck = [...vocab];
+let index = 0;
+let isFlipped = false;
+let isAnimating = false;
+let counts = { again: 0, good: 0 };
+
+function renderCard() {
+  const card = deck[index];
+  const scene = document.getElementById('cardScene');
+  scene.classList.remove('flipped');
+  isFlipped = false;
+
+  document.getElementById('frontMain').textContent = card.english;
+  document.getElementById('frontSub').textContent = card.pos;
+  document.getElementById('backHebrew').textContent = card.hebrew;
+  document.getElementById('backTranslit').textContent = card.transliteration;
+
+  const meta = card.gender || '';
+  document.getElementById('backMeta').textContent = meta;
+  document.getElementById('backMeta').style.display = meta ? 'inline-block' : 'none';
+
+  document.getElementById('tapHint').textContent = 'Tap card to reveal';
+  document.getElementById('audioBtn').classList.remove('speaking');
+
+  const total = deck.length;
+  document.getElementById('progressText').textContent = `${index + 1} / ${total}`;
+  document.getElementById('progressBar').style.width = `${((index + 1) / total) * 100}%`;
+  document.getElementById('btnPrev').disabled = index === 0;
+  document.getElementById('btnNext').disabled = index === total - 1;
+}
+
+function flipCard() {
+  if (isAnimating) return;
+  isAnimating = true;
+  setTimeout(() => { isAnimating = false; }, 460);
+
+  const scene = document.getElementById('cardScene');
+  isFlipped = !isFlipped;
+  scene.classList.toggle('flipped', isFlipped);
+  document.getElementById('tapHint').textContent = isFlipped ? 'Tap card to flip back' : 'Tap card to reveal';
+}
+
+function nextCard() {
+  speechSynthesis.cancel();
+  if (index < deck.length - 1) { index++; renderCard(); }
+  else showDone();
+}
+
+function prevCard() {
+  speechSynthesis.cancel();
+  if (index > 0) { index--; renderCard(); }
+}
+
+function markAgain() {
+  counts.again++;
+  document.getElementById('statAgain').textContent = counts.again;
+  nextCard();
+}
+
+function markGood() {
+  counts.good++;
+  document.getElementById('statGood').textContent = counts.good;
+  nextCard();
+}
+
+function shuffleDeck() {
+  speechSynthesis.cancel();
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  index = 0;
+  counts = { again: 0, good: 0 };
+  document.getElementById('statAgain').textContent = 0;
+  document.getElementById('statGood').textContent = 0;
+  renderCard();
+}
+
+function showDone() {
+  document.getElementById('cardScene').style.display = 'none';
+  document.getElementById('tapHint').style.display = 'none';
+  document.querySelector('.actions').style.display = 'none';
+  document.querySelector('.nav').style.display = 'none';
+  document.querySelector('.stats').style.display = 'none';
+  const done = document.getElementById('doneScreen');
+  done.style.display = 'flex';
+  document.getElementById('doneStats').textContent =
+    `Got it: ${counts.good} · Again: ${counts.again}`;
+}
+
+function restartDeck() {
+  index = 0;
+  counts = { again: 0, good: 0 };
+  document.getElementById('statAgain').textContent = 0;
+  document.getElementById('statGood').textContent = 0;
+  document.getElementById('cardScene').style.display = 'block';
+  document.getElementById('tapHint').style.display = 'block';
+  document.querySelector('.actions').style.display = 'flex';
+  document.querySelector('.nav').style.display = 'flex';
+  document.querySelector('.stats').style.display = 'flex';
+  document.getElementById('doneScreen').style.display = 'none';
+  renderCard();
+}
+
+// Audio — uses Web Speech API with he-IL, compatible with iOS Safari
+function playAudio(e) {
+  e.stopPropagation();
+  const card = deck[index];
+  if (!card.hebrew || !window.speechSynthesis) return;
+
+  const btn = document.getElementById('audioBtn');
+  speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(card.hebrew);
+  utterance.lang = 'he-IL';
+  utterance.rate = 0.85;
+  utterance.pitch = 1;
+
+  utterance.onstart = () => btn.classList.add('speaking');
+  utterance.onend = () => btn.classList.remove('speaking');
+  utterance.onerror = () => btn.classList.remove('speaking');
+
+  speechSynthesis.speak(utterance);
+}
+
+document.getElementById('audioBtn').addEventListener('click', playAudio);
+document.getElementById('audioBtn').addEventListener('touchend', e => {
+  e.preventDefault();
+  playAudio(e);
+});
+
+// Card flip — single unified touch/click handler that prevents double-fire on iOS
+let touchStartX = 0;
+let touchStartY = 0;
+let didTouch = false;
+
+const scene = document.getElementById('cardScene');
+
+scene.addEventListener('touchstart', e => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+  didTouch = true;
+}, { passive: true });
+
+scene.addEventListener('touchend', e => {
+  if (e.target.closest('#audioBtn')) return;
+  e.preventDefault(); // blocks the synthetic click that would double-flip
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  const dy = e.changedTouches[0].clientY - touchStartY;
+  if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+    dx < 0 ? markAgain() : markGood();
+  } else if (Math.abs(dx) < 10 && Math.abs(dy) < 10) {
+    flipCard();
+  }
+});
+
+scene.addEventListener('click', e => {
+  if (e.target.closest('#audioBtn')) return;
+  if (didTouch) { didTouch = false; return; } // already handled by touchend
+  flipCard();
+});
+
+renderCard();
+</script>
+</body>
+</html>
