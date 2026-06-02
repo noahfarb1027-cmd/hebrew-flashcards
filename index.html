@@ -47,6 +47,12 @@
       letter-spacing: 0.02em;
     }
 
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     .lesson-badge {
       background: rgba(251,191,36,0.15);
       border: 1px solid rgba(251,191,36,0.4);
@@ -57,6 +63,21 @@
       border-radius: 999px;
       box-shadow: 0 2px 10px rgba(251,191,36,0.2);
     }
+
+    .btn-reset {
+      background: rgba(220,38,38,0.12);
+      border: 1px solid rgba(220,38,38,0.3);
+      color: #f87171;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.15s;
+    }
+
+    .btn-reset:active { background: rgba(220,38,38,0.25); }
 
     .progress-bar-wrap {
       width: 100%;
@@ -401,7 +422,10 @@
 
 <header>
   <h1>Hebrew Flashcards</h1>
-  <span class="lesson-badge" id="lessonBadge">Lesson 1</span>
+  <div class="header-right">
+    <button class="btn-reset" onclick="resetProgress()">Reset</button>
+    <span class="lesson-badge" id="lessonBadge">Lesson 1</span>
+  </div>
 </header>
 
 <div class="progress-bar-wrap">
@@ -782,6 +806,30 @@ scene.addEventListener('click', e => {
   if (didTouch) { didTouch = false; return; }
   flipCard();
 });
+
+// ── Reset ─────────────────────────────────────────────────────────────────────
+
+function resetProgress() {
+  if (!confirm('Reset all progress? This clears your Got it / Again history.')) return;
+  speechSynthesis.cancel();
+  progress = freshProgress();
+  progress.smartReview = document.getElementById('smartToggle').checked;
+  sessionCounts = { gotIt: 0, again: 0 };
+  document.getElementById('statGood').textContent = 0;
+  document.getElementById('statAgain').textContent = 0;
+  save();
+  deck = progress.smartReview ? buildSmartDeck() : buildNormalDeck();
+  index = 0;
+  // make sure main UI is visible if done screen was showing
+  document.getElementById('cardScene').style.display = 'block';
+  document.getElementById('tapHint').style.display = 'block';
+  document.querySelector('.actions').style.display = 'flex';
+  document.querySelector('.nav').style.display = 'flex';
+  document.querySelector('.stats').style.display = 'flex';
+  document.querySelector('.smart-row').style.display = 'flex';
+  document.getElementById('doneScreen').style.display = 'none';
+  renderCard();
+}
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
 
