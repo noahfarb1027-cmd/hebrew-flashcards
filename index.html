@@ -152,6 +152,16 @@
       line-height: 1.2;
     }
 
+    .card-history {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      display: flex;
+      gap: 8px;
+    }
+
+    .card-history .h-good { color: #4ade80; }
+    .card-history .h-again { color: #f87171; }
+
     .card-hebrew {
       font-size: 1.5rem;
       color: var(--gold);
@@ -195,15 +205,8 @@
       margin-top: 4px;
     }
 
-    .audio-btn:active {
-      background: rgba(251,191,36,0.2);
-      transform: scale(0.92);
-    }
-
-    .audio-btn.speaking {
-      background: rgba(251,191,36,0.2);
-      border-color: rgba(251,191,36,0.5);
-    }
+    .audio-btn:active { background: rgba(251,191,36,0.2); transform: scale(0.92); }
+    .audio-btn.speaking { background: rgba(251,191,36,0.2); border-color: rgba(251,191,36,0.5); }
 
     .tap-hint {
       font-size: 0.75rem;
@@ -235,17 +238,8 @@
 
     .btn:active { transform: scale(0.97); opacity: 0.85; }
 
-    .btn-again {
-      background: rgba(220,38,38,0.18);
-      color: #f87171;
-      border: 1px solid rgba(220,38,38,0.35);
-    }
-
-    .btn-good {
-      background: rgba(22,163,74,0.18);
-      color: #4ade80;
-      border: 1px solid rgba(22,163,74,0.35);
-    }
+    .btn-again { background: rgba(220,38,38,0.18); color: #f87171; border: 1px solid rgba(220,38,38,0.35); }
+    .btn-good  { background: rgba(22,163,74,0.18);  color: #4ade80; border: 1px solid rgba(22,163,74,0.35); }
 
     /* Nav */
     .nav {
@@ -284,6 +278,7 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    /* Stats */
     .stats {
       width: 100%;
       max-width: 480px;
@@ -295,29 +290,98 @@
       color: var(--text-dim);
     }
 
-    .stat-item span {
-      font-weight: 700;
-      color: var(--text);
+    .stat-item span { font-weight: 700; color: var(--text); }
+
+    /* Smart review toggle */
+    .smart-row {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 14px;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
     }
 
+    .smart-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .smart-desc {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    .toggle {
+      position: relative;
+      display: inline-block;
+      width: 46px;
+      height: 27px;
+      flex-shrink: 0;
+    }
+
+    .toggle input { opacity: 0; width: 0; height: 0; }
+
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.15);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 21px;
+      height: 21px;
+      left: 3px;
+      top: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+
+    .toggle input:checked + .toggle-slider { background: var(--gold); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(19px); }
+
+    /* Done screen */
     .done-screen {
       display: none;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      gap: 16px;
+      gap: 14px;
       width: 100%;
       max-width: 480px;
       background: rgba(255,255,255,0.07);
       border: 1px solid var(--card-border);
       border-radius: 24px;
-      padding: 48px 24px;
+      padding: 40px 24px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.4);
     }
 
     .done-screen h2 { font-size: 1.5rem; color: var(--text); }
-    .done-screen p { color: var(--text-muted); font-size: 0.95rem; }
+    .done-stats-grid {
+      display: flex;
+      gap: 20px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .done-stat { display: flex; flex-direction: column; gap: 2px; }
+    .done-stat-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); }
+    .done-stat-val { font-size: 1.2rem; font-weight: 700; color: var(--text); }
+    .done-stat-val.green { color: #4ade80; }
+    .done-stat-val.red { color: #f87171; }
 
     .btn-restart {
       background: linear-gradient(135deg, #fbbf24, #f59e0b);
@@ -328,7 +392,7 @@
       font-size: 1rem;
       font-weight: 700;
       cursor: pointer;
-      margin-top: 8px;
+      margin-top: 4px;
       box-shadow: 0 4px 16px rgba(251,191,36,0.35);
     }
   </style>
@@ -350,7 +414,7 @@
     <div class="card-face card-front">
       <div class="card-label">English</div>
       <div class="card-main" id="frontMain"></div>
-      <div class="card-sub" id="frontSub"></div>
+      <div class="card-history" id="cardHistory"></div>
     </div>
     <div class="card-face card-back">
       <div class="card-label">Hebrew</div>
@@ -376,19 +440,50 @@
 </div>
 
 <div class="stats">
-  <div class="stat-item">Again: <span id="statAgain">0</span></div>
-  <div class="stat-item">Got it: <span id="statGood">0</span></div>
+  <div class="stat-item">Session — Got it: <span id="statGood">0</span> · Again: <span id="statAgain">0</span></div>
+</div>
+
+<div class="smart-row">
+  <div>
+    <div class="smart-label">Smart Review</div>
+    <div class="smart-desc">Shows harder cards more often</div>
+  </div>
+  <label class="toggle">
+    <input type="checkbox" id="smartToggle" onchange="onSmartToggle()">
+    <span class="toggle-slider"></span>
+  </label>
 </div>
 
 <div class="done-screen" id="doneScreen">
-  <div style="font-size:3rem">🎉</div>
+  <div style="font-size:2.5rem">🎉</div>
   <h2>Deck complete!</h2>
-  <p id="doneStats"></p>
-  <button class="btn-restart" onclick="restartDeck()">Start over</button>
+  <div class="done-stats-grid">
+    <div class="done-stat">
+      <div class="done-stat-label">This session</div>
+      <div class="done-stat-val green" id="doneSessionGood">0</div>
+      <div class="done-stat-label">got it</div>
+    </div>
+    <div class="done-stat">
+      <div class="done-stat-label">&nbsp;</div>
+      <div class="done-stat-val red" id="doneSessionAgain">0</div>
+      <div class="done-stat-label">again</div>
+    </div>
+    <div style="width:1px;background:rgba(255,255,255,0.1);margin:0 4px"></div>
+    <div class="done-stat">
+      <div class="done-stat-label">All time</div>
+      <div class="done-stat-val green" id="doneTotalGood">0</div>
+      <div class="done-stat-label">got it</div>
+    </div>
+    <div class="done-stat">
+      <div class="done-stat-label">&nbsp;</div>
+      <div class="done-stat-val red" id="doneTotalAgain">0</div>
+      <div class="done-stat-label">again</div>
+    </div>
+  </div>
+  <button class="btn-restart" onclick="restartDeck()">Go again</button>
 </div>
 
 <script>
-// Note: Hebrew script verified by transliteration — confirm any corrections with your tutor.
 const vocab = [
   { id:1,  english:"read",                transliteration:"ko're",      hebrew:"קורא",       pos:"verb",           gender:"m, s",  lesson:1 },
   { id:2,  english:"write",               transliteration:"cotev",      hebrew:"כותב",       pos:"verb",           gender:"m, s",  lesson:1 },
@@ -422,11 +517,83 @@ const vocab = [
   { id:30, english:"classroom",           transliteration:"kita",       hebrew:"כיתה",       pos:"noun",           gender:"f, s",  lesson:1 },
 ];
 
-let deck = [...vocab];
+// ── Storage ──────────────────────────────────────────────────────────────────
+
+const STORAGE_KEY = 'hebrew_fc_v1';
+
+function loadProgress() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || freshProgress(); }
+  catch { return freshProgress(); }
+}
+
+function freshProgress() {
+  return {
+    cards: {},            // { [id]: { gotIt: N, again: N } }
+    totals: { gotIt: 0, again: 0 },
+    deckIds: vocab.map(v => v.id),
+    position: 0,
+    smartReview: false,
+  };
+}
+
+function save() {
+  progress.deckIds = deck.map(v => v.id);
+  progress.position = index;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+}
+
+// ── Deck building ─────────────────────────────────────────────────────────────
+
+function buildSmartDeck() {
+  const weighted = [];
+  for (const card of vocab) {
+    const h = progress.cards[card.id] || { gotIt: 0, again: 0 };
+    // unseen or struggling cards appear twice
+    const reps = (h.again > h.gotIt || (h.gotIt === 0 && h.again === 0)) ? 2 : 1;
+    for (let i = 0; i < reps; i++) weighted.push(card);
+  }
+  return shuffle(weighted);
+}
+
+function buildNormalDeck() {
+  // restore saved order if available, otherwise original order
+  if (progress.deckIds && progress.deckIds.length === vocab.length) {
+    const map = Object.fromEntries(vocab.map(v => [v.id, v]));
+    return progress.deckIds.map(id => map[id]).filter(Boolean);
+  }
+  return [...vocab];
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ── State ─────────────────────────────────────────────────────────────────────
+
+let progress = loadProgress();
+let deck = [];
 let index = 0;
 let isFlipped = false;
 let isAnimating = false;
-let counts = { again: 0, good: 0 };
+let sessionCounts = { gotIt: 0, again: 0 };
+
+function initDeck() {
+  if (progress.smartReview) {
+    deck = buildSmartDeck();
+    index = 0;
+  } else {
+    deck = buildNormalDeck();
+    index = Math.min(progress.position, deck.length - 1);
+  }
+  document.getElementById('smartToggle').checked = progress.smartReview;
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
 
 function renderCard() {
   const card = deck[index];
@@ -435,13 +602,23 @@ function renderCard() {
   isFlipped = false;
 
   document.getElementById('frontMain').textContent = card.english;
-  document.getElementById('frontSub').textContent = card.pos;
   document.getElementById('backHebrew').textContent = card.hebrew;
   document.getElementById('backTranslit').textContent = card.transliteration;
 
   const meta = card.gender || '';
-  document.getElementById('backMeta').textContent = meta;
-  document.getElementById('backMeta').style.display = meta ? 'inline-block' : 'none';
+  const metaEl = document.getElementById('backMeta');
+  metaEl.textContent = meta;
+  metaEl.style.display = meta ? 'inline-block' : 'none';
+
+  // per-card history indicator on front
+  const h = progress.cards[card.id];
+  const histEl = document.getElementById('cardHistory');
+  if (h && (h.gotIt > 0 || h.again > 0)) {
+    histEl.innerHTML =
+      `<span class="h-good">✓ ${h.gotIt}</span><span class="h-again">✗ ${h.again}</span>`;
+  } else {
+    histEl.innerHTML = '';
+  }
 
   document.getElementById('tapHint').textContent = 'Tap card to reveal';
   document.getElementById('audioBtn').classList.remove('speaking');
@@ -451,17 +628,45 @@ function renderCard() {
   document.getElementById('progressBar').style.width = `${((index + 1) / total) * 100}%`;
   document.getElementById('btnPrev').disabled = index === 0;
   document.getElementById('btnNext').disabled = index === total - 1;
+
+  save();
 }
+
+// ── Actions ───────────────────────────────────────────────────────────────────
 
 function flipCard() {
   if (isAnimating) return;
   isAnimating = true;
   setTimeout(() => { isAnimating = false; }, 460);
-
-  const scene = document.getElementById('cardScene');
   isFlipped = !isFlipped;
-  scene.classList.toggle('flipped', isFlipped);
+  document.getElementById('cardScene').classList.toggle('flipped', isFlipped);
   document.getElementById('tapHint').textContent = isFlipped ? 'Tap card to flip back' : 'Tap card to reveal';
+}
+
+function recordCardResult(gotIt) {
+  const card = deck[index];
+  if (!progress.cards[card.id]) progress.cards[card.id] = { gotIt: 0, again: 0 };
+  if (gotIt) {
+    progress.cards[card.id].gotIt++;
+    progress.totals.gotIt++;
+    sessionCounts.gotIt++;
+    document.getElementById('statGood').textContent = sessionCounts.gotIt;
+  } else {
+    progress.cards[card.id].again++;
+    progress.totals.again++;
+    sessionCounts.again++;
+    document.getElementById('statAgain').textContent = sessionCounts.again;
+  }
+}
+
+function markAgain() {
+  recordCardResult(false);
+  nextCard();
+}
+
+function markGood() {
+  recordCardResult(true);
+  nextCard();
 }
 
 function nextCard() {
@@ -475,89 +680,83 @@ function prevCard() {
   if (index > 0) { index--; renderCard(); }
 }
 
-function markAgain() {
-  counts.again++;
-  document.getElementById('statAgain').textContent = counts.again;
-  nextCard();
-}
-
-function markGood() {
-  counts.good++;
-  document.getElementById('statGood').textContent = counts.good;
-  nextCard();
-}
-
 function shuffleDeck() {
   speechSynthesis.cancel();
-  for (let i = deck.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [deck[i], deck[j]] = [deck[j], deck[i]];
-  }
+  deck = shuffle(deck);
   index = 0;
-  counts = { again: 0, good: 0 };
-  document.getElementById('statAgain').textContent = 0;
+  sessionCounts = { gotIt: 0, again: 0 };
   document.getElementById('statGood').textContent = 0;
+  document.getElementById('statAgain').textContent = 0;
+  renderCard();
+}
+
+function onSmartToggle() {
+  progress.smartReview = document.getElementById('smartToggle').checked;
+  speechSynthesis.cancel();
+  sessionCounts = { gotIt: 0, again: 0 };
+  document.getElementById('statGood').textContent = 0;
+  document.getElementById('statAgain').textContent = 0;
+  deck = progress.smartReview ? buildSmartDeck() : buildNormalDeck();
+  index = 0;
+  save();
   renderCard();
 }
 
 function showDone() {
+  save();
   document.getElementById('cardScene').style.display = 'none';
   document.getElementById('tapHint').style.display = 'none';
   document.querySelector('.actions').style.display = 'none';
   document.querySelector('.nav').style.display = 'none';
   document.querySelector('.stats').style.display = 'none';
-  const done = document.getElementById('doneScreen');
-  done.style.display = 'flex';
-  document.getElementById('doneStats').textContent =
-    `Got it: ${counts.good} · Again: ${counts.again}`;
+  document.querySelector('.smart-row').style.display = 'none';
+  document.getElementById('doneSessionGood').textContent = sessionCounts.gotIt;
+  document.getElementById('doneSessionAgain').textContent = sessionCounts.again;
+  document.getElementById('doneTotalGood').textContent = progress.totals.gotIt;
+  document.getElementById('doneTotalAgain').textContent = progress.totals.again;
+  document.getElementById('doneScreen').style.display = 'flex';
 }
 
 function restartDeck() {
-  index = 0;
-  counts = { again: 0, good: 0 };
-  document.getElementById('statAgain').textContent = 0;
+  speechSynthesis.cancel();
+  sessionCounts = { gotIt: 0, again: 0 };
   document.getElementById('statGood').textContent = 0;
+  document.getElementById('statAgain').textContent = 0;
+  deck = progress.smartReview ? buildSmartDeck() : shuffle([...vocab]);
+  index = 0;
   document.getElementById('cardScene').style.display = 'block';
   document.getElementById('tapHint').style.display = 'block';
   document.querySelector('.actions').style.display = 'flex';
   document.querySelector('.nav').style.display = 'flex';
   document.querySelector('.stats').style.display = 'flex';
+  document.querySelector('.smart-row').style.display = 'flex';
   document.getElementById('doneScreen').style.display = 'none';
   renderCard();
 }
 
-// Audio — uses Web Speech API with he-IL, compatible with iOS Safari
+// ── Audio ─────────────────────────────────────────────────────────────────────
+
 function playAudio(e) {
   e.stopPropagation();
   const card = deck[index];
   if (!card.hebrew || !window.speechSynthesis) return;
-
   const btn = document.getElementById('audioBtn');
   speechSynthesis.cancel();
-
   const utterance = new SpeechSynthesisUtterance(card.hebrew);
   utterance.lang = 'he-IL';
   utterance.rate = 0.85;
-  utterance.pitch = 1;
-
   utterance.onstart = () => btn.classList.add('speaking');
   utterance.onend = () => btn.classList.remove('speaking');
   utterance.onerror = () => btn.classList.remove('speaking');
-
   speechSynthesis.speak(utterance);
 }
 
 document.getElementById('audioBtn').addEventListener('click', playAudio);
-document.getElementById('audioBtn').addEventListener('touchend', e => {
-  e.preventDefault();
-  playAudio(e);
-});
+document.getElementById('audioBtn').addEventListener('touchend', e => { e.preventDefault(); playAudio(e); });
 
-// Card flip — single unified touch/click handler that prevents double-fire on iOS
-let touchStartX = 0;
-let touchStartY = 0;
-let didTouch = false;
+// ── Touch / click handling ────────────────────────────────────────────────────
 
+let touchStartX = 0, touchStartY = 0, didTouch = false;
 const scene = document.getElementById('cardScene');
 
 scene.addEventListener('touchstart', e => {
@@ -568,7 +767,7 @@ scene.addEventListener('touchstart', e => {
 
 scene.addEventListener('touchend', e => {
   if (e.target.closest('#audioBtn')) return;
-  e.preventDefault(); // blocks the synthetic click that would double-flip
+  e.preventDefault();
   const dx = e.changedTouches[0].clientX - touchStartX;
   const dy = e.changedTouches[0].clientY - touchStartY;
   if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
@@ -580,10 +779,13 @@ scene.addEventListener('touchend', e => {
 
 scene.addEventListener('click', e => {
   if (e.target.closest('#audioBtn')) return;
-  if (didTouch) { didTouch = false; return; } // already handled by touchend
+  if (didTouch) { didTouch = false; return; }
   flipCard();
 });
 
+// ── Boot ──────────────────────────────────────────────────────────────────────
+
+initDeck();
 renderCard();
 </script>
 </body>
