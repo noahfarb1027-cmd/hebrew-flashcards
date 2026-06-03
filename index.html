@@ -292,6 +292,117 @@
     .btn-export { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); color: var(--text-muted); padding: 6px 12px; border-radius: 999px; font-size: 0.74rem; font-weight: 600; cursor: pointer; white-space: nowrap; -webkit-tap-highlight-color: transparent; }
     .editor-hint { width: 100%; max-width: 480px; font-size: 0.8rem; color: var(--text-dim); text-align: center; margin-top: 4px; padding-bottom: 40px; }
     .editor-hint a { color: var(--gold); cursor: pointer; text-decoration: underline; }
+
+    /* ── Quiz ─────────────────────────────────────────────────── */
+    #quizSetupView   { display:none; flex-direction:column; align-items:center; width:100%; padding-bottom:50px; }
+    #quizView        { display:none; flex-direction:column; align-items:center; width:100%; }
+    #quizResultsView { display:none; flex-direction:column; align-items:center; width:100%; padding-bottom:50px; }
+    .setup-section { width:100%; max-width:480px; margin-bottom:22px; }
+    .setup-label { font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim); margin-bottom:8px; }
+    .setup-pills { display:flex; flex-wrap:wrap; gap:8px; }
+    .pill {
+      padding:8px 16px; border-radius:999px; font-size:0.84rem; font-weight:600; cursor:pointer;
+      background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:var(--text-muted);
+      -webkit-tap-highlight-color:transparent; transition:all 0.15s;
+    }
+    .pill.active { background:rgba(251,191,36,0.15); border-color:rgba(251,191,36,0.4); color:var(--gold); }
+    .pill:active { transform:scale(0.95); }
+    .quiz-avail-note { font-size:0.78rem; color:var(--text-dim); width:100%; max-width:480px; margin-bottom:16px; }
+    .btn-start-quiz {
+      width:100%; max-width:480px; padding:16px; border-radius:14px; border:none; cursor:pointer;
+      background:linear-gradient(135deg,#fbbf24,#f59e0b); color:#0d0d0d; font-size:1rem; font-weight:700;
+      -webkit-tap-highlight-color:transparent; box-shadow:0 4px 16px rgba(251,191,36,0.3);
+    }
+    .quiz-q-header { width:100%; max-width:480px; display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+    .quiz-q-counter { font-size:0.82rem; color:var(--text-muted); }
+    .quiz-score-live { font-size:0.82rem; color:var(--gold); font-weight:700; }
+    .quiz-prog-wrap { width:100%; max-width:480px; background:rgba(255,255,255,0.1); border-radius:999px; height:5px; margin-bottom:18px; }
+    .quiz-prog-bar { height:5px; background:linear-gradient(90deg,#888,var(--gold)); border-radius:999px; transition:width 0.3s; }
+    .quiz-question-card {
+      width:100%; max-width:480px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1);
+      border-radius:20px; padding:26px 22px; text-align:center; margin-bottom:16px;
+    }
+    .quiz-dir-label { font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim); margin-bottom:10px; }
+    .quiz-prompt { font-size:1.8rem; font-weight:700; color:var(--text); line-height:1.25; }
+    .quiz-prompt.hebrew { direction:rtl; font-size:2rem; color:var(--gold); }
+    .quiz-prompt-hint { font-size:0.88rem; color:var(--text-muted); margin-top:8px; font-style:italic; }
+    .quiz-options { width:100%; max-width:480px; display:flex; flex-direction:column; gap:9px; margin-bottom:14px; }
+    .quiz-option {
+      width:100%; padding:13px 16px; border-radius:13px; text-align:left; cursor:pointer;
+      background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:var(--text);
+      font-size:0.93rem; -webkit-tap-highlight-color:transparent; transition:all 0.15s;
+      display:flex; align-items:center; gap:12px;
+    }
+    .quiz-option:active:not(:disabled) { transform:scale(0.99); background:rgba(255,255,255,0.1); }
+    .quiz-option.correct { background:rgba(22,163,74,0.2); border-color:rgba(22,163,74,0.5); color:#4ade80; }
+    .quiz-option.wrong   { background:rgba(220,38,38,0.2);  border-color:rgba(220,38,38,0.5);  color:#f87171; }
+    .quiz-option:disabled { cursor:default; }
+    .quiz-opt-letter { font-size:0.72rem; font-weight:700; color:var(--text-dim); width:16px; flex-shrink:0; }
+    .quiz-opt-hebrew { direction:rtl; font-size:1.05rem; }
+    .quiz-opt-translit { font-size:0.76rem; color:var(--text-muted); margin-left:auto; padding-left:8px; white-space:nowrap; }
+    .quiz-type-area { width:100%; max-width:480px; display:flex; flex-direction:column; gap:10px; margin-bottom:12px; }
+    .quiz-answer-box {
+      width:100%; min-height:52px; padding:12px 14px; border-radius:12px; font-size:1.2rem;
+      background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); color:var(--text);
+      display:flex; align-items:center; direction:rtl;
+    }
+    .quiz-cursor { display:inline-block; width:2px; height:1.1em; background:var(--gold); margin:0 1px; vertical-align:middle; animation:blink 1s step-end infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    .heb-keyboard { width:100%; max-width:480px; display:flex; flex-direction:column; gap:6px; }
+    .heb-row { display:flex; justify-content:center; gap:5px; }
+    .heb-key {
+      flex:1; max-width:46px; height:44px; border-radius:8px; border:none; cursor:pointer;
+      background:rgba(255,255,255,0.1); color:var(--text); font-size:1.1rem; font-family:inherit;
+      -webkit-tap-highlight-color:transparent; transition:background 0.1s;
+      display:flex; align-items:center; justify-content:center; user-select:none; -webkit-user-select:none;
+    }
+    .heb-key:active { background:rgba(251,191,36,0.3); }
+    .heb-key.wide { max-width:70px; font-size:0.72rem; letter-spacing:0; color:var(--text-muted); }
+    .heb-key.del { background:rgba(220,38,38,0.15); color:#f87171; max-width:60px; }
+    .quiz-en-input {
+      width:100%; padding:13px 14px; border-radius:12px; font-size:1rem;
+      background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15);
+      color:var(--text); outline:none;
+    }
+    .quiz-en-input:focus { border-color:rgba(251,191,36,0.4); }
+    .quiz-check-btn {
+      width:100%; padding:14px; border:none; border-radius:12px; cursor:pointer;
+      background:linear-gradient(135deg,#fbbf24,#f59e0b); color:#0d0d0d; font-size:0.95rem; font-weight:700;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .quiz-feedback {
+      width:100%; max-width:480px; border-radius:16px; padding:18px 20px;
+      display:flex; flex-direction:column; align-items:center; gap:6px; margin-bottom:12px;
+    }
+    .quiz-feedback.correct-fb { background:rgba(22,163,74,0.12); border:1px solid rgba(22,163,74,0.3); }
+    .quiz-feedback.wrong-fb   { background:rgba(220,38,38,0.12);  border:1px solid rgba(220,38,38,0.3); }
+    .quiz-fb-icon { font-size:1.6rem; }
+    .quiz-fb-label { font-size:0.75rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; }
+    .quiz-fb-label.correct-fb { color:#4ade80; }
+    .quiz-fb-label.wrong-fb   { color:#f87171; }
+    .quiz-fb-answer { font-size:0.9rem; color:var(--text-muted); text-align:center; margin-top:2px; }
+    .quiz-fb-hebrew { font-size:1.2rem; color:var(--gold); direction:rtl; }
+    .btn-next-q {
+      width:100%; max-width:480px; padding:14px; border-radius:12px; cursor:pointer;
+      background:rgba(255,255,255,0.09); border:1px solid rgba(255,255,255,0.15); color:var(--text);
+      font-size:0.95rem; font-weight:600; -webkit-tap-highlight-color:transparent; margin-bottom:20px;
+    }
+    .quiz-results-card {
+      width:100%; max-width:480px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1);
+      border-radius:20px; padding:28px 24px; text-align:center; margin-bottom:20px;
+    }
+    .quiz-results-score { font-size:3.2rem; font-weight:800; color:var(--gold); line-height:1; }
+    .quiz-results-pct { font-size:0.9rem; color:var(--text-muted); margin-top:6px; }
+    .quiz-results-grade { font-size:1.15rem; font-weight:700; color:var(--text); margin-top:14px; }
+    .quiz-wrong-section-label { width:100%; max-width:480px; font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim); margin-bottom:10px; }
+    .quiz-wrong-list { width:100%; max-width:480px; display:flex; flex-direction:column; gap:8px; margin-bottom:24px; }
+    .quiz-wrong-item { padding:12px 14px; border-radius:12px; background:rgba(220,38,38,0.08); border:1px solid rgba(220,38,38,0.2); }
+    .quiz-wrong-en { font-size:0.88rem; color:var(--text); margin-bottom:2px; }
+    .quiz-wrong-he { font-size:1rem; color:var(--gold); direction:rtl; }
+    .quiz-wrong-tr { font-size:0.75rem; color:var(--text-muted); font-style:italic; }
+    .quiz-results-btns { width:100%; max-width:480px; display:flex; gap:10px; }
+    .btn-quiz-retry { flex:1; padding:14px; border:none; border-radius:12px; cursor:pointer; background:linear-gradient(135deg,#fbbf24,#f59e0b); color:#0d0d0d; font-size:0.95rem; font-weight:700; -webkit-tap-highlight-color:transparent; }
+    .btn-quiz-home  { flex:1; padding:14px; border-radius:12px; cursor:pointer; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.12); color:var(--text-muted); font-size:0.95rem; font-weight:600; -webkit-tap-highlight-color:transparent; }
   </style>
 </head>
 <body>
@@ -319,6 +430,13 @@
       <div>
         <div class="mode-card-name">Edit Words</div>
         <div class="mode-card-desc">Add or correct vocabulary</div>
+      </div>
+    </button>
+    <button class="mode-card" onclick="showView('quizSetup')">
+      <div class="mode-card-icon">🎯</div>
+      <div>
+        <div class="mode-card-name">Quiz</div>
+        <div class="mode-card-desc">Multiple choice or type — pick your settings</div>
       </div>
     </button>
   </div>
@@ -515,6 +633,176 @@
     </div>
   </div>
   <div class="editor-hint">Click a word in the <a onclick="showView('browser')">Word Browser</a> to edit it, or fill the form above to add a new word.</div>
+</div>
+
+<!-- ── Quiz Setup ────────────────────────────────────────────────── -->
+<div id="quizSetupView">
+  <div class="view-header">
+    <button class="btn-home" onclick="showView('home')">← Home</button>
+    <h2>Quiz</h2>
+  </div>
+
+  <div class="setup-section">
+    <div class="setup-label">Number of questions</div>
+    <div class="setup-pills" id="quizCountPills">
+      <button class="pill active" onclick="setQuizOpt('count','quizCountPills',this,10)">10</button>
+      <button class="pill" onclick="setQuizOpt('count','quizCountPills',this,20)">20</button>
+      <button class="pill" onclick="setQuizOpt('count','quizCountPills',this,50)">50</button>
+      <button class="pill" onclick="setQuizOpt('count','quizCountPills',this,100)">100</button>
+      <button class="pill" onclick="setQuizOpt('count','quizCountPills',this,'all')">All</button>
+    </div>
+  </div>
+
+  <div class="setup-section">
+    <div class="setup-label">Question type</div>
+    <div class="setup-pills" id="quizModePills">
+      <button class="pill active" onclick="setQuizOpt('mode','quizModePills',this,'multiple')">Multiple Choice</button>
+      <button class="pill" onclick="setQuizOpt('mode','quizModePills',this,'type')">Type Answer</button>
+      <button class="pill" onclick="setQuizOpt('mode','quizModePills',this,'mixed')">Mixed</button>
+    </div>
+  </div>
+
+  <div class="setup-section">
+    <div class="setup-label">Direction</div>
+    <div class="setup-pills" id="quizDirPills">
+      <button class="pill active" onclick="setQuizOpt('dir','quizDirPills',this,'en-he')">English → Hebrew</button>
+      <button class="pill" onclick="setQuizOpt('dir','quizDirPills',this,'he-en')">Hebrew → English</button>
+      <button class="pill" onclick="setQuizOpt('dir','quizDirPills',this,'both')">Both</button>
+    </div>
+  </div>
+
+  <div class="setup-section">
+    <div class="setup-label">Lesson</div>
+    <div class="setup-pills" id="quizLessonPills">
+      <button class="pill active" onclick="setQuizOpt('lesson','quizLessonPills',this,'all')">All</button>
+      <button class="pill" onclick="setQuizOpt('lesson','quizLessonPills',this,1)">Lesson 1</button>
+      <button class="pill" onclick="setQuizOpt('lesson','quizLessonPills',this,2)">Lesson 2</button>
+      <button class="pill" onclick="setQuizOpt('lesson','quizLessonPills',this,3)">Lesson 3</button>
+      <button class="pill" onclick="setQuizOpt('lesson','quizLessonPills',this,4)">Lesson 4</button>
+      <button class="pill" onclick="setQuizOpt('lesson','quizLessonPills',this,5)">Lesson 5</button>
+      <button class="pill" onclick="setQuizOpt('lesson','quizLessonPills',this,6)">Lesson 6</button>
+    </div>
+  </div>
+
+  <div class="setup-section">
+    <div class="setup-label">Part of Speech</div>
+    <div class="setup-pills" id="quizPosPills">
+      <button class="pill active" onclick="setQuizOpt('pos','quizPosPills',this,'all')">All</button>
+      <button class="pill" onclick="setQuizOpt('pos','quizPosPills',this,'verb')">Verbs</button>
+      <button class="pill" onclick="setQuizOpt('pos','quizPosPills',this,'noun')">Nouns</button>
+      <button class="pill" onclick="setQuizOpt('pos','quizPosPills',this,'adjective')">Adjectives</button>
+      <button class="pill" onclick="setQuizOpt('pos','quizPosPills',this,'adverb')">Adverbs</button>
+      <button class="pill" onclick="setQuizOpt('pos','quizPosPills',this,'preposition')">Prepositions</button>
+    </div>
+  </div>
+
+  <div class="quiz-avail-note" id="quizAvailNote"></div>
+  <button class="btn-start-quiz" onclick="startQuiz()">Start Quiz</button>
+</div>
+
+<!-- ── Quiz ──────────────────────────────────────────────────────── -->
+<div id="quizView">
+  <div class="view-header">
+    <button class="btn-home" onclick="exitQuiz()">← Home</button>
+    <h2>Quiz</h2>
+    <div class="quiz-score-live" id="quizScoreLive">0 / 0</div>
+  </div>
+  <div class="quiz-q-header">
+    <div class="quiz-q-counter" id="quizCounter">Q 1 of 10</div>
+  </div>
+  <div class="quiz-prog-wrap"><div class="quiz-prog-bar" id="quizProgBar" style="width:0%"></div></div>
+
+  <div class="quiz-question-card">
+    <div class="quiz-dir-label" id="quizDirLabel"></div>
+    <div class="quiz-prompt" id="quizPrompt"></div>
+    <div class="quiz-prompt-hint" id="quizPromptHint"></div>
+  </div>
+
+  <!-- Multiple choice -->
+  <div class="quiz-options" id="quizOptions">
+    <button class="quiz-option" id="quizOpt0" onclick="selectOption(0)"><span class="quiz-opt-letter">A</span><span class="quiz-opt-main" id="quizOptMain0"></span></button>
+    <button class="quiz-option" id="quizOpt1" onclick="selectOption(1)"><span class="quiz-opt-letter">B</span><span class="quiz-opt-main" id="quizOptMain1"></span></button>
+    <button class="quiz-option" id="quizOpt2" onclick="selectOption(2)"><span class="quiz-opt-letter">C</span><span class="quiz-opt-main" id="quizOptMain2"></span></button>
+    <button class="quiz-option" id="quizOpt3" onclick="selectOption(3)"><span class="quiz-opt-letter">D</span><span class="quiz-opt-main" id="quizOptMain3"></span></button>
+  </div>
+
+  <!-- Type answer -->
+  <div class="quiz-type-area" id="quizTypeArea" style="display:none">
+    <!-- Hebrew virtual keyboard + display box (en→he) -->
+    <div id="quizHebArea">
+      <div class="quiz-answer-box" id="quizAnswerBox" dir="rtl">
+        <span id="quizTypedSpan"></span><span class="quiz-cursor"></span>
+      </div>
+      <div class="heb-keyboard">
+        <div class="heb-row">
+          <button class="heb-key" onclick="hebKey('א')">א</button>
+          <button class="heb-key" onclick="hebKey('ב')">ב</button>
+          <button class="heb-key" onclick="hebKey('ג')">ג</button>
+          <button class="heb-key" onclick="hebKey('ד')">ד</button>
+          <button class="heb-key" onclick="hebKey('ה')">ה</button>
+          <button class="heb-key" onclick="hebKey('ו')">ו</button>
+          <button class="heb-key" onclick="hebKey('ז')">ז</button>
+          <button class="heb-key" onclick="hebKey('ח')">ח</button>
+          <button class="heb-key" onclick="hebKey('ט')">ט</button>
+          <button class="heb-key" onclick="hebKey('י')">י</button>
+        </div>
+        <div class="heb-row">
+          <button class="heb-key" onclick="hebKey('כ')">כ</button>
+          <button class="heb-key" onclick="hebKey('ל')">ל</button>
+          <button class="heb-key" onclick="hebKey('מ')">מ</button>
+          <button class="heb-key" onclick="hebKey('נ')">נ</button>
+          <button class="heb-key" onclick="hebKey('ס')">ס</button>
+          <button class="heb-key" onclick="hebKey('ע')">ע</button>
+          <button class="heb-key" onclick="hebKey('פ')">פ</button>
+          <button class="heb-key" onclick="hebKey('צ')">צ</button>
+          <button class="heb-key" onclick="hebKey('ק')">ק</button>
+          <button class="heb-key" onclick="hebKey('ר')">ר</button>
+        </div>
+        <div class="heb-row">
+          <button class="heb-key" onclick="hebKey('ש')">ש</button>
+          <button class="heb-key" onclick="hebKey('ת')">ת</button>
+          <button class="heb-key" onclick="hebKey('ך')">ך</button>
+          <button class="heb-key" onclick="hebKey('ם')">ם</button>
+          <button class="heb-key" onclick="hebKey('ן')">ן</button>
+          <button class="heb-key" onclick="hebKey('ף')">ף</button>
+          <button class="heb-key" onclick="hebKey('ץ')">ץ</button>
+          <button class="heb-key wide" onclick="hebKey(' ')">space</button>
+          <button class="heb-key del" onclick="hebBackspace()">⌫</button>
+        </div>
+      </div>
+    </div>
+    <!-- English text input (he→en) -->
+    <input class="quiz-en-input" id="quizEnInput" type="text" placeholder="Type the English meaning..." autocorrect="off" autocapitalize="off">
+    <button class="quiz-check-btn" onclick="submitTypeAnswer()">Check Answer</button>
+  </div>
+
+  <!-- Feedback -->
+  <div class="quiz-feedback" id="quizFeedback" style="display:none">
+    <div class="quiz-fb-icon" id="quizFbIcon"></div>
+    <div class="quiz-fb-label" id="quizFbLabel"></div>
+    <div class="quiz-fb-answer" id="quizFbAnswer"></div>
+    <div class="quiz-fb-hebrew" id="quizFbHebrew"></div>
+  </div>
+  <button class="btn-next-q" id="btnNextQ" onclick="nextQuizQuestion()" style="display:none">Next →</button>
+</div>
+
+<!-- ── Quiz Results ───────────────────────────────────────────────── -->
+<div id="quizResultsView">
+  <div class="view-header">
+    <button class="btn-home" onclick="showView('home')">← Home</button>
+    <h2>Results</h2>
+  </div>
+  <div class="quiz-results-card">
+    <div class="quiz-results-score" id="resultsScore"></div>
+    <div class="quiz-results-pct" id="resultsPct"></div>
+    <div class="quiz-results-grade" id="resultsGrade"></div>
+  </div>
+  <div class="quiz-wrong-section-label" id="quizWrongLabel"></div>
+  <div class="quiz-wrong-list" id="quizWrongList"></div>
+  <div class="quiz-results-btns">
+    <button class="btn-quiz-retry" onclick="retryQuiz()">Try Again</button>
+    <button class="btn-quiz-home" onclick="showView('home')">Home</button>
+  </div>
 </div>
 
 <script>
@@ -1226,16 +1514,20 @@ scene.addEventListener('click', e => { if (e.target.closest('#audioBtn')) return
 
 // ── View system ───────────────────────────────────────────────────────────────
 function showView(view) {
-  document.getElementById('homeScreen').style.display    = view === 'home'      ? 'flex'  : 'none';
-  document.getElementById('flashcardView').style.display = view === 'flashcard' ? 'block' : 'none';
-  document.getElementById('browserView').style.display   = view === 'browser'   ? 'flex'  : 'none';
-  document.getElementById('editorView').style.display    = view === 'editor'    ? 'flex'  : 'none';
+  document.getElementById('homeScreen').style.display      = view === 'home'        ? 'flex'  : 'none';
+  document.getElementById('flashcardView').style.display   = view === 'flashcard'   ? 'block' : 'none';
+  document.getElementById('browserView').style.display     = view === 'browser'     ? 'flex'  : 'none';
+  document.getElementById('editorView').style.display      = view === 'editor'      ? 'flex'  : 'none';
+  document.getElementById('quizSetupView').style.display   = view === 'quizSetup'   ? 'flex'  : 'none';
+  document.getElementById('quizView').style.display        = view === 'quiz'        ? 'flex'  : 'none';
+  document.getElementById('quizResultsView').style.display = view === 'quizResults' ? 'flex'  : 'none';
   if (view === 'home') {
     const ev = getEffectiveVocab();
     document.getElementById('homeSubtitle').textContent = `${ev.length} word${ev.length===1?'':'s'} · 6 lessons`;
   }
   if (view === 'browser') renderBrowser();
   if (view === 'editor' && editorEditingId === null) clearEditorForm();
+  if (view === 'quizSetup') updateQuizAvailNote();
 }
 
 function enterFlashcards() {
@@ -1362,6 +1654,226 @@ function exportVocab() {
   const a = document.createElement('a'); a.href = url; a.download = 'vocab-export.js';
   document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
 }
+
+// ── Quiz ──────────────────────────────────────────────────────────────────────
+const quizConfig = { count:10, mode:'multiple', dir:'en-he', lesson:'all', pos:'all' };
+let quizQuestions=[], quizIndex=0, quizScore=0, quizWrong=[], quizTyped='', quizAnswered=false;
+let quizCurrentOptions=[], quizCorrectIdx=-1;
+
+function setQuizOpt(key, pillsId, btn, val) {
+  quizConfig[key] = val;
+  document.getElementById(pillsId).querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  updateQuizAvailNote();
+}
+
+function getQuizPool() {
+  let pool = getEffectiveVocab().filter(w => w.hebrew && w.hebrew.trim());
+  if (quizConfig.lesson !== 'all') pool = pool.filter(w => w.lesson === quizConfig.lesson);
+  if (quizConfig.pos !== 'all') pool = pool.filter(w => (w.pos||'').toLowerCase().includes(quizConfig.pos));
+  return pool;
+}
+
+function updateQuizAvailNote() {
+  const pool = getQuizPool();
+  const n = quizConfig.count === 'all' ? pool.length : Math.min(pool.length, quizConfig.count);
+  const el = document.getElementById('quizAvailNote');
+  if (!el) return;
+  if (pool.length < 4) {
+    el.textContent = `⚠ Only ${pool.length} word${pool.length===1?'':'s'} match — need at least 4 for a quiz`;
+    el.style.color = '#f87171';
+  } else {
+    el.textContent = `${pool.length} words available · quiz will use ${n}`;
+    el.style.color = '';
+  }
+}
+
+function startQuiz() {
+  const pool = getQuizPool();
+  if (pool.length < 4) { alert('Not enough words for a quiz with these filters — need at least 4.'); return; }
+  const count = quizConfig.count === 'all' ? pool.length : Math.min(pool.length, quizConfig.count);
+  const selected = shuffle([...pool]).slice(0, count);
+  quizQuestions = selected.map(card => {
+    const dir  = quizConfig.dir  === 'both'  ? (Math.random()<0.5 ? 'en-he' : 'he-en') : quizConfig.dir;
+    const mode = quizConfig.mode === 'mixed' ? (Math.random()<0.5 ? 'multiple' : 'type') : quizConfig.mode;
+    return { card, dir, mode };
+  });
+  quizIndex=0; quizScore=0; quizWrong=[];
+  showView('quiz');
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+  const q = quizQuestions[quizIndex];
+  quizTyped=''; quizAnswered=false;
+  const total = quizQuestions.length;
+  document.getElementById('quizCounter').textContent = `Q ${quizIndex+1} of ${total}`;
+  document.getElementById('quizScoreLive').textContent = `${quizScore} / ${quizIndex}`;
+  document.getElementById('quizProgBar').style.width = `${(quizIndex/total)*100}%`;
+  document.getElementById('quizFeedback').style.display = 'none';
+  document.getElementById('btnNextQ').style.display = 'none';
+
+  const dirLabel = document.getElementById('quizDirLabel');
+  const prompt   = document.getElementById('quizPrompt');
+  const hint     = document.getElementById('quizPromptHint');
+  if (q.dir === 'en-he') {
+    dirLabel.textContent = 'Translate to Hebrew';
+    prompt.textContent = q.card.english;
+    prompt.className = 'quiz-prompt';
+    hint.textContent = '';
+  } else {
+    dirLabel.textContent = 'What does this mean in English?';
+    prompt.textContent = q.card.hebrew;
+    prompt.className = 'quiz-prompt hebrew';
+    hint.textContent = q.card.transliteration;
+  }
+
+  const optionsDiv = document.getElementById('quizOptions');
+  const typeDiv    = document.getElementById('quizTypeArea');
+  if (q.mode === 'multiple') {
+    optionsDiv.style.display = 'flex';
+    typeDiv.style.display    = 'none';
+    renderMultipleChoice(q);
+  } else {
+    optionsDiv.style.display = 'none';
+    typeDiv.style.display    = 'flex';
+    renderTypeAnswer(q);
+  }
+}
+
+function renderMultipleChoice(q) {
+  const pool = getEffectiveVocab().filter(w => w.hebrew && w.id !== q.card.id);
+  const distractors = shuffle(pool).slice(0, 3);
+  quizCurrentOptions = shuffle([q.card, ...distractors]);
+  quizCorrectIdx = quizCurrentOptions.findIndex(w => w.id === q.card.id);
+  quizCurrentOptions.forEach((w, i) => {
+    const btn  = document.getElementById('quizOpt' + i);
+    const main = document.getElementById('quizOptMain' + i);
+    btn.className = 'quiz-option';
+    btn.disabled  = false;
+    if (q.dir === 'en-he') {
+      main.innerHTML = `<span class="quiz-opt-hebrew">${esc(w.hebrew)}</span><span class="quiz-opt-translit">${esc(w.transliteration)}</span>`;
+    } else {
+      main.innerHTML = `<span>${esc(w.english)}</span>`;
+    }
+  });
+}
+
+function selectOption(i) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const isCorrect = i === quizCorrectIdx;
+  if (isCorrect) quizScore++; else quizWrong.push(quizQuestions[quizIndex].card);
+  document.querySelectorAll('.quiz-option').forEach((btn, idx) => {
+    btn.disabled = true;
+    if (idx === quizCorrectIdx) btn.classList.add('correct');
+    else if (idx === i) btn.classList.add('wrong');
+  });
+  showQuizFeedback(isCorrect, quizQuestions[quizIndex].card);
+}
+
+function renderTypeAnswer(q) {
+  quizTyped = '';
+  const hebArea = document.getElementById('quizHebArea');
+  const enInput = document.getElementById('quizEnInput');
+  if (q.dir === 'en-he') {
+    hebArea.style.display = 'flex';
+    hebArea.style.flexDirection = 'column';
+    hebArea.style.gap = '10px';
+    enInput.style.display = 'none';
+    document.getElementById('quizTypedSpan').textContent = '';
+  } else {
+    hebArea.style.display = 'none';
+    enInput.style.display = 'block';
+    enInput.value = '';
+    setTimeout(() => enInput.focus(), 150);
+  }
+}
+
+function hebKey(char) {
+  if (quizAnswered) return;
+  quizTyped += char;
+  document.getElementById('quizTypedSpan').textContent = quizTyped;
+}
+
+function hebBackspace() {
+  if (quizAnswered) return;
+  quizTyped = [...quizTyped].slice(0, -1).join('');
+  document.getElementById('quizTypedSpan').textContent = quizTyped;
+}
+
+// Handle Enter key on English input
+document.getElementById('quizEnInput').addEventListener('keydown', e => { if (e.key === 'Enter') submitTypeAnswer(); });
+
+function normalizeHebrew(s) { return (s||'').replace(/[\u05B0-\u05C7]/g,'').trim(); }
+
+function submitTypeAnswer() {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const q = quizQuestions[quizIndex];
+  let isCorrect;
+  if (q.dir === 'en-he') {
+    isCorrect = normalizeHebrew(quizTyped) === normalizeHebrew(q.card.hebrew);
+  } else {
+    const typed = document.getElementById('quizEnInput').value.trim().toLowerCase();
+    const correct = q.card.english.toLowerCase();
+    const variants = correct.split(/[\/,]/).map(s => s.trim().replace(/\(.*?\)/g,'').trim());
+    isCorrect = typed === correct || variants.some(v => v === typed);
+  }
+  if (isCorrect) quizScore++; else quizWrong.push(q.card);
+  showQuizFeedback(isCorrect, q.card);
+}
+
+function showQuizFeedback(isCorrect, card) {
+  const fb = document.getElementById('quizFeedback');
+  fb.className = 'quiz-feedback ' + (isCorrect ? 'correct-fb' : 'wrong-fb');
+  document.getElementById('quizFbIcon').textContent = isCorrect ? '✓' : '✗';
+  const lbl = document.getElementById('quizFbLabel');
+  lbl.textContent = isCorrect ? 'Correct!' : 'Incorrect';
+  lbl.className = 'quiz-fb-label ' + (isCorrect ? 'correct-fb' : 'wrong-fb');
+  const answerEl = document.getElementById('quizFbAnswer');
+  const hebrewEl = document.getElementById('quizFbHebrew');
+  if (!isCorrect) {
+    answerEl.textContent = card.english + ' — ' + card.transliteration;
+    hebrewEl.textContent = card.hebrew || '';
+  } else { answerEl.textContent = ''; hebrewEl.textContent = ''; }
+  fb.style.display = 'flex';
+  document.getElementById('btnNextQ').style.display = 'block';
+  document.getElementById('quizScoreLive').textContent = `${quizScore} / ${quizIndex+1}`;
+}
+
+function nextQuizQuestion() {
+  quizIndex++;
+  if (quizIndex >= quizQuestions.length) showQuizResults();
+  else renderQuizQuestion();
+}
+
+function showQuizResults() {
+  showView('quizResults');
+  const total = quizQuestions.length;
+  const pct = Math.round((quizScore / total) * 100);
+  document.getElementById('resultsScore').textContent = `${quizScore} / ${total}`;
+  document.getElementById('resultsPct').textContent = `${pct}% correct`;
+  const grade = pct===100 ? 'Perfect! 🌟' : pct>=90 ? 'Excellent! 🏆' : pct>=70 ? 'Good job! 💪' : pct>=50 ? 'Keep studying 📚' : 'Practice more 🔄';
+  document.getElementById('resultsGrade').textContent = grade;
+  const labelEl = document.getElementById('quizWrongLabel');
+  const listEl  = document.getElementById('quizWrongList');
+  if (quizWrong.length === 0) {
+    labelEl.textContent = '';
+    listEl.innerHTML = '<div style="text-align:center;color:var(--gold);padding:10px 0;font-size:0.95rem">No mistakes — perfect score!</div>';
+  } else {
+    labelEl.textContent = `Review these ${quizWrong.length} word${quizWrong.length===1?'':'s'}`;
+    listEl.innerHTML = quizWrong.map(card => `
+      <div class="quiz-wrong-item">
+        <div class="quiz-wrong-en">${esc(card.english)}</div>
+        <div class="quiz-wrong-he">${esc(card.hebrew||'')}</div>
+        <div class="quiz-wrong-tr">${esc(card.transliteration)}</div>
+      </div>`).join('');
+  }
+}
+
+function exitQuiz() { showView('home'); }
+function retryQuiz() { startQuiz(); }
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
 initDeck();
