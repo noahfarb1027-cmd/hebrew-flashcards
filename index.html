@@ -783,7 +783,10 @@
     <div class="quiz-fb-answer" id="quizFbAnswer"></div>
     <div class="quiz-fb-hebrew" id="quizFbHebrew"></div>
   </div>
-  <button class="btn-next-q" id="btnNextQ" onclick="nextQuizQuestion()" style="display:none">Next →</button>
+  <div style="width:100%;max-width:480px;display:flex;gap:10px">
+    <button class="btn-next-q" id="btnNextQ" onclick="nextQuizQuestion()" style="display:none;flex:1">Next →</button>
+    <button id="btnOverride" onclick="overrideAnswer()" style="display:none;padding:14px 16px;border-radius:12px;cursor:pointer;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text-muted);font-size:0.82rem;font-weight:600;white-space:nowrap;-webkit-tap-highlight-color:transparent"></button>
+  </div>
 </div>
 
 <!-- ── Quiz Results ───────────────────────────────────────────────── -->
@@ -1712,6 +1715,7 @@ function renderQuizQuestion() {
   document.getElementById('quizProgBar').style.width = `${(quizIndex/total)*100}%`;
   document.getElementById('quizFeedback').style.display = 'none';
   document.getElementById('btnNextQ').style.display = 'none';
+  document.getElementById('btnOverride').style.display = 'none';
 
   const dirLabel = document.getElementById('quizDirLabel');
   const prompt   = document.getElementById('quizPrompt');
@@ -1824,7 +1828,10 @@ function submitTypeAnswer() {
   showQuizFeedback(isCorrect, q.card);
 }
 
+let quizLastCorrect = false;
+
 function showQuizFeedback(isCorrect, card) {
+  quizLastCorrect = isCorrect;
   const fb = document.getElementById('quizFeedback');
   fb.className = 'quiz-feedback ' + (isCorrect ? 'correct-fb' : 'wrong-fb');
   document.getElementById('quizFbIcon').textContent = isCorrect ? '✓' : '✗';
@@ -1840,6 +1847,31 @@ function showQuizFeedback(isCorrect, card) {
   fb.style.display = 'flex';
   document.getElementById('btnNextQ').style.display = 'block';
   document.getElementById('quizScoreLive').textContent = `${quizScore} / ${quizIndex+1}`;
+  const ov = document.getElementById('btnOverride');
+  ov.textContent = isCorrect ? 'Mark wrong' : 'Mark correct';
+  ov.style.display = 'block';
+}
+
+function overrideAnswer() {
+  const wasCorrect = quizLastCorrect;
+  const card = quizQuestions[quizIndex].card;
+  if (wasCorrect) {
+    quizScore--;
+    quizWrong.push(card);
+    quizLastCorrect = false;
+  } else {
+    quizScore++;
+    quizWrong = quizWrong.filter(w => w.id !== card.id);
+    quizLastCorrect = true;
+  }
+  document.getElementById('quizScoreLive').textContent = `${quizScore} / ${quizIndex+1}`;
+  const fb = document.getElementById('quizFeedback');
+  fb.className = 'quiz-feedback ' + (quizLastCorrect ? 'correct-fb' : 'wrong-fb');
+  document.getElementById('quizFbIcon').textContent = quizLastCorrect ? '✓' : '✗';
+  const lbl = document.getElementById('quizFbLabel');
+  lbl.textContent = quizLastCorrect ? 'Correct!' : 'Incorrect';
+  lbl.className = 'quiz-fb-label ' + (quizLastCorrect ? 'correct-fb' : 'wrong-fb');
+  document.getElementById('btnOverride').style.display = 'none';
 }
 
 function nextQuizQuestion() {
