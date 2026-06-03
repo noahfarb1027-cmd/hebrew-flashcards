@@ -327,6 +327,7 @@
     .quiz-question-card {
       width:100%; max-width:480px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1);
       border-radius:20px; padding:26px 22px; text-align:center; margin-bottom:16px;
+      position: relative;
     }
     .quiz-dir-label { font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim); margin-bottom:10px; }
     .quiz-prompt { font-size:1.8rem; font-weight:700; color:var(--text); line-height:1.25; }
@@ -726,6 +727,7 @@
   <div class="quiz-prog-wrap"><div class="quiz-prog-bar" id="quizProgBar" style="width:0%"></div></div>
 
   <div class="quiz-question-card">
+    <button class="btn-star" id="quizBtnStar" onclick="toggleQuizFav(event)">☆</button>
     <div class="quiz-dir-label" id="quizDirLabel"></div>
     <div class="quiz-prompt" id="quizPrompt"></div>
     <div class="quiz-prompt-hint" id="quizPromptHint"></div>
@@ -1270,6 +1272,19 @@ function updateStarBtn(id) {
   const btn = document.getElementById('btnStar');
   if (btn) btn.textContent = isFav(id) ? '⭐' : '☆';
 }
+function toggleQuizFav(e) {
+  if (e) e.stopPropagation();
+  const q = quizQuestions[quizIndex];
+  if (!q) return;
+  const favs = getFavs();
+  if (favs.has(q.card.id)) favs.delete(q.card.id); else favs.add(q.card.id);
+  saveFavs(favs);
+  updateQuizStar(q.card.id);
+}
+function updateQuizStar(id) {
+  const btn = document.getElementById('quizBtnStar');
+  if (btn) btn.textContent = isFav(id) ? '⭐' : '☆';
+}
 
 function getEffectiveVocab() {
   let edits = {};
@@ -1781,6 +1796,7 @@ function renderQuizQuestion() {
   document.getElementById('quizFeedback').style.display = 'none';
   document.getElementById('btnNextQ').style.display = 'none';
   document.getElementById('btnOverride').style.display = 'none';
+  updateQuizStar(q.card.id);
 
   const dirLabel = document.getElementById('quizDirLabel');
   const prompt   = document.getElementById('quizPrompt');
