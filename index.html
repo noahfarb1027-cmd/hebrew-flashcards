@@ -540,7 +540,10 @@
     <h2>Word Browser</h2>
   </div>
   <div class="browser-filters">
-    <input class="browser-search" id="browserSearch" type="text" placeholder="Search English, transliteration, Hebrew..." autocomplete="off" autocorrect="off" autocapitalize="off">
+    <div style="display:flex;gap:8px;align-items:center">
+      <input class="browser-search" id="browserSearch" type="text" placeholder="Search English, transliteration, Hebrew..." autocomplete="off" autocorrect="off" autocapitalize="off" style="flex:1">
+      <button id="browserFavBtn" onclick="toggleBrowserFavFilter()" style="flex-shrink:0;padding:10px 14px;border-radius:12px;font-size:0.9rem;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:var(--text-muted);cursor:pointer;-webkit-tap-highlight-color:transparent;white-space:nowrap">☆ Starred</button>
+    </div>
     <div class="browser-selects">
       <select class="browser-select" id="browserLesson">
         <option value="">All Lessons</option>
@@ -1545,14 +1548,14 @@ let touchStartX=0, touchStartY=0, didTouch=false;
 const scene = document.getElementById('cardScene');
 scene.addEventListener('touchstart', e => { touchStartX=e.touches[0].clientX; touchStartY=e.touches[0].clientY; didTouch=true; }, {passive:true});
 scene.addEventListener('touchend', e => {
-  if (e.target.closest('#audioBtn')) return;
+  if (e.target.closest('#audioBtn') || e.target.closest('#btnStar')) return;
   e.preventDefault();
   const dx = e.changedTouches[0].clientX - touchStartX;
   const dy = e.changedTouches[0].clientY - touchStartY;
   if (Math.abs(dx)>50 && Math.abs(dx)>Math.abs(dy)) { dx<0 ? markAgain() : markGood(); }
   else if (Math.abs(dx)<10 && Math.abs(dy)<10) { flipCard(); }
 });
-scene.addEventListener('click', e => { if (e.target.closest('#audioBtn')) return; if (didTouch){didTouch=false;return;} flipCard(); });
+scene.addEventListener('click', e => { if (e.target.closest('#audioBtn') || e.target.closest('#btnStar')) return; if (didTouch){didTouch=false;return;} flipCard(); });
 
 // ── View system ───────────────────────────────────────────────────────────────
 function showView(view) {
@@ -1589,14 +1592,15 @@ function renderBrowser() {
   const posF = document.getElementById('browserPos').value;
   const edits = (() => { try { return JSON.parse(localStorage.getItem(EDITS_KEY) || '{}'); } catch { return {}; } })();
   const ev = getEffectiveVocab();
+  const favs = getFavs();
   const filtered = ev.filter(w => {
+    if (browserFavOnly && !favs.has(w.id)) return false;
     if (lessonF && String(w.lesson) !== lessonF) return false;
     if (posF && !w.pos.toLowerCase().includes(posF.toLowerCase())) return false;
     if (q && !w.english.toLowerCase().includes(q) && !(w.transliteration||'').toLowerCase().includes(q) && !(w.hebrew||'').includes(q)) return false;
     return true;
   });
   document.getElementById('wordCount').textContent = `${filtered.length} word${filtered.length===1?'':'s'}`;
-  const favs = getFavs();
   const tbody = document.getElementById('wordTableBody');
   tbody.innerHTML = filtered.map(w => {
     const isNew = w.id >= 1000;
@@ -1622,6 +1626,17 @@ function toggleFavBrowser(id, btn) {
   if (favs.has(id)) { favs.delete(id); btn.textContent = '☆'; }
   else              { favs.add(id);    btn.textContent = '⭐'; }
   saveFavs(favs);
+}
+
+let browserFavOnly = false;
+function toggleBrowserFavFilter() {
+  browserFavOnly = !browserFavOnly;
+  const btn = document.getElementById('browserFavBtn');
+  btn.textContent = browserFavOnly ? '⭐ Starred' : '☆ Starred';
+  btn.style.background = browserFavOnly ? 'rgba(251,191,36,0.15)' : 'rgba(255,255,255,0.07)';
+  btn.style.borderColor = browserFavOnly ? 'rgba(251,191,36,0.4)' : 'rgba(255,255,255,0.12)';
+  btn.style.color = browserFavOnly ? 'var(--gold)' : 'var(--text-muted)';
+  renderBrowser();
 }
 
 document.getElementById('browserSearch').addEventListener('input', renderBrowser);
