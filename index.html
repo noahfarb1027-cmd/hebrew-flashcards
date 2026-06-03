@@ -11,7 +11,6 @@
   <link rel="apple-touch-icon" href="icon.png" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
       --gold: #fbbf24;
       --card-border: rgba(255,255,255,0.1);
@@ -19,401 +18,176 @@
       --text-muted: #aaaaaa;
       --text-dim: #555555;
     }
-
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: linear-gradient(160deg, #111111 0%, #1c1c1c 60%, #0d0d0d 100%);
-      min-height: 100vh;
-      min-height: -webkit-fill-available;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      min-height: 100vh; min-height: -webkit-fill-available;
+      display: flex; flex-direction: column; align-items: center;
       padding: env(safe-area-inset-top, 20px) 16px env(safe-area-inset-bottom, 20px);
     }
-
     header {
-      width: 100%;
-      max-width: 480px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 0 12px;
+      width: 100%; max-width: 480px;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 16px 0 10px;
     }
-
-    header h1 {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: 0.02em;
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
+    header h1 { font-size: 1.25rem; font-weight: 700; color: var(--text); letter-spacing: 0.02em; }
+    .header-right { display: flex; align-items: center; gap: 8px; }
     .lesson-badge {
-      background: rgba(251,191,36,0.15);
-      border: 1px solid rgba(251,191,36,0.4);
-      color: var(--gold);
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 4px 12px;
-      border-radius: 999px;
-      box-shadow: 0 2px 10px rgba(251,191,36,0.2);
+      background: rgba(251,191,36,0.15); border: 1px solid rgba(251,191,36,0.4);
+      color: var(--gold); font-size: 0.7rem; font-weight: 600;
+      padding: 4px 10px; border-radius: 999px; box-shadow: 0 2px 10px rgba(251,191,36,0.2);
+      white-space: nowrap;
     }
-
     .btn-reset {
-      background: rgba(220,38,38,0.12);
-      border: 1px solid rgba(220,38,38,0.3);
-      color: #f87171;
-      font-size: 0.7rem;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 999px;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-      transition: background 0.15s;
+      background: rgba(220,38,38,0.12); border: 1px solid rgba(220,38,38,0.3);
+      color: #f87171; font-size: 0.7rem; font-weight: 600;
+      padding: 4px 10px; border-radius: 999px; cursor: pointer;
+      -webkit-tap-highlight-color: transparent; transition: background 0.15s;
     }
-
     .btn-reset:active { background: rgba(220,38,38,0.25); }
 
+    /* Lesson selector */
+    .lesson-row {
+      width: 100%; max-width: 480px;
+      display: flex; gap: 6px; overflow-x: auto;
+      padding-bottom: 4px; margin-bottom: 10px;
+      scrollbar-width: none;
+    }
+    .lesson-row::-webkit-scrollbar { display: none; }
+    .lesson-btn {
+      flex-shrink: 0;
+      background: rgba(255,255,255,0.06); border: 1px solid var(--card-border);
+      color: var(--text-muted); padding: 5px 13px; border-radius: 999px;
+      font-size: 0.75rem; font-weight: 600; cursor: pointer;
+      -webkit-tap-highlight-color: transparent; transition: all 0.15s;
+    }
+    .lesson-btn.active {
+      background: rgba(251,191,36,0.15); border-color: rgba(251,191,36,0.4);
+      color: var(--gold);
+    }
+
     .progress-bar-wrap {
-      width: 100%;
-      max-width: 480px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 999px;
-      height: 6px;
-      margin-bottom: 8px;
+      width: 100%; max-width: 480px;
+      background: rgba(255,255,255,0.1); border-radius: 999px; height: 6px; margin-bottom: 8px;
     }
-
     .progress-bar {
-      height: 6px;
-      background: linear-gradient(90deg, #888888, var(--gold));
-      border-radius: 999px;
-      transition: width 0.3s ease;
-      box-shadow: 0 0 8px rgba(251,191,36,0.4);
+      height: 6px; background: linear-gradient(90deg, #888888, var(--gold));
+      border-radius: 999px; transition: width 0.3s ease; box-shadow: 0 0 8px rgba(251,191,36,0.4);
     }
-
     .progress-text {
-      width: 100%;
-      max-width: 480px;
-      text-align: right;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-bottom: 20px;
+      width: 100%; max-width: 480px; text-align: right;
+      font-size: 0.75rem; color: var(--text-muted); margin-bottom: 16px;
     }
-
-    /* Card */
     .card-scene {
-      width: 100%;
-      max-width: 480px;
-      height: 300px;
-      perspective: 1000px;
-      cursor: pointer;
-      margin-bottom: 24px;
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-      -webkit-user-select: none;
+      width: 100%; max-width: 480px; height: 300px;
+      perspective: 1000px; cursor: pointer; margin-bottom: 20px;
+      -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none;
     }
-
     .card-inner {
-      width: 100%;
-      height: 100%;
-      position: relative;
+      width: 100%; height: 100%; position: relative;
       transform-style: preserve-3d;
-      transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-      will-change: transform;
+      transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1); will-change: transform;
     }
-
-    .card-scene.flipped .card-inner {
-      transform: rotateY(180deg);
-    }
-
+    .card-scene.flipped .card-inner { transform: rotateY(180deg); }
     .card-face {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-      background: rgba(255,255,255,0.07);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid var(--card-border);
-      border-radius: 24px;
+      position: absolute; width: 100%; height: 100%;
+      backface-visibility: hidden; -webkit-backface-visibility: hidden;
+      background: rgba(255,255,255,0.07); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border); border-radius: 24px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 28px 24px;
-      gap: 10px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 28px 24px; gap: 10px;
     }
-
     .card-back {
       transform: rotateY(180deg);
-      background: rgba(251,191,36,0.05);
-      border-color: rgba(251,191,36,0.2);
+      background: rgba(251,191,36,0.05); border-color: rgba(251,191,36,0.2);
     }
-
-    .card-label {
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-    }
-
-    .card-main {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--text);
-      text-align: center;
-      line-height: 1.2;
-    }
-
-    .card-history {
-      font-size: 0.7rem;
-      color: var(--text-dim);
-      display: flex;
-      gap: 8px;
-    }
-
+    .card-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+    .card-main { font-size: 2rem; font-weight: 700; color: var(--text); text-align: center; line-height: 1.2; }
+    .card-history { font-size: 0.7rem; color: var(--text-dim); display: flex; gap: 8px; }
     .card-history .h-good { color: #4ade80; }
     .card-history .h-again { color: #f87171; }
-
-    .card-hebrew {
-      font-size: 1.5rem;
-      color: var(--gold);
-      text-align: center;
-      direction: rtl;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-    }
-
-    .card-translit {
-      font-size: 0.95rem;
-      color: var(--text-muted);
-      text-align: center;
-      font-style: italic;
-    }
-
+    .card-hebrew { font-size: 1.5rem; color: var(--gold); text-align: center; direction: rtl; font-weight: 600; }
+    .card-translit { font-size: 0.95rem; color: var(--text-muted); text-align: center; font-style: italic; }
     .card-meta {
-      font-size: 0.75rem;
-      color: var(--gold);
-      font-weight: 600;
-      background: rgba(251,191,36,0.15);
-      border: 1px solid rgba(251,191,36,0.3);
-      padding: 3px 10px;
-      border-radius: 999px;
+      font-size: 0.75rem; color: var(--gold); font-weight: 600;
+      background: rgba(251,191,36,0.15); border: 1px solid rgba(251,191,36,0.3);
+      padding: 3px 10px; border-radius: 999px;
     }
-
     .audio-btn {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
-      color: var(--text);
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      font-size: 1.1rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      -webkit-tap-highlight-color: transparent;
-      transition: background 0.15s, transform 0.1s;
-      margin-top: 4px;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      color: var(--text); width: 42px; height: 42px; border-radius: 50%;
+      font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      -webkit-tap-highlight-color: transparent; transition: background 0.15s, transform 0.1s; margin-top: 4px;
     }
-
     .audio-btn:active { background: rgba(251,191,36,0.2); transform: scale(0.92); }
     .audio-btn.speaking { background: rgba(251,191,36,0.2); border-color: rgba(251,191,36,0.5); }
-
-    .tap-hint {
-      font-size: 0.75rem;
-      color: var(--text-dim);
-      text-align: center;
-      margin-bottom: 16px;
-    }
-
-    /* Action buttons */
-    .actions {
-      width: 100%;
-      max-width: 480px;
-      display: flex;
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-
+    .tap-hint { font-size: 0.75rem; color: var(--text-dim); text-align: center; margin-bottom: 14px; }
+    .actions { width: 100%; max-width: 480px; display: flex; gap: 12px; margin-bottom: 20px; }
     .btn {
-      flex: 1;
-      padding: 16px;
-      border: none;
-      border-radius: 14px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: opacity 0.15s, transform 0.1s;
-      -webkit-tap-highlight-color: transparent;
+      flex: 1; padding: 16px; border: none; border-radius: 14px;
+      font-size: 1rem; font-weight: 600; cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s; -webkit-tap-highlight-color: transparent;
     }
-
     .btn:active { transform: scale(0.97); opacity: 0.85; }
-
     .btn-again { background: rgba(220,38,38,0.18); color: #f87171; border: 1px solid rgba(220,38,38,0.35); }
     .btn-good  { background: rgba(22,163,74,0.18);  color: #4ade80; border: 1px solid rgba(22,163,74,0.35); }
-
-    /* Nav */
-    .nav {
-      width: 100%;
-      max-width: 480px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-    }
-
+    .nav { width: 100%; max-width: 480px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
     .btn-nav {
-      background: rgba(255,255,255,0.07);
-      border: 1px solid var(--card-border);
-      color: var(--text);
-      padding: 12px 24px;
-      border-radius: 12px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-      transition: background 0.15s;
+      background: rgba(255,255,255,0.07); border: 1px solid var(--card-border);
+      color: var(--text); padding: 12px 24px; border-radius: 12px;
+      font-size: 0.9rem; font-weight: 600; cursor: pointer;
+      -webkit-tap-highlight-color: transparent; transition: background 0.15s;
     }
-
     .btn-nav:active { background: rgba(255,255,255,0.12); }
     .btn-nav:disabled { opacity: 0.25; cursor: default; }
-
     .btn-shuffle {
-      background: rgba(251,191,36,0.15);
-      border: 1px solid rgba(251,191,36,0.35);
-      color: var(--gold);
-      padding: 12px 16px;
-      border-radius: 12px;
-      font-size: 1.1rem;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
+      background: rgba(251,191,36,0.15); border: 1px solid rgba(251,191,36,0.35);
+      color: var(--gold); padding: 12px 16px; border-radius: 12px;
+      font-size: 1.1rem; cursor: pointer; -webkit-tap-highlight-color: transparent;
     }
-
-    /* Stats */
     .stats {
-      width: 100%;
-      max-width: 480px;
-      display: flex;
-      justify-content: center;
-      gap: 24px;
-      margin-top: 20px;
-      font-size: 0.8rem;
-      color: var(--text-dim);
+      width: 100%; max-width: 480px; display: flex; justify-content: center;
+      gap: 24px; margin-top: 16px; font-size: 0.8rem; color: var(--text-dim);
     }
-
     .stat-item span { font-weight: 700; color: var(--text); }
-
-    /* Smart review toggle */
     .smart-row {
-      width: 100%;
-      max-width: 480px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 14px;
-      padding: 12px 16px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
+      width: 100%; max-width: 480px; display: flex; justify-content: space-between;
+      align-items: center; margin-top: 12px; padding: 12px 16px;
+      background: rgba(255,255,255,0.04); border: 1px solid var(--card-border); border-radius: 12px;
     }
-
-    .smart-label {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-
-    .smart-desc {
-      font-size: 0.7rem;
-      color: var(--text-dim);
-      margin-top: 2px;
-    }
-
-    .toggle {
-      position: relative;
-      display: inline-block;
-      width: 46px;
-      height: 27px;
-      flex-shrink: 0;
-    }
-
+    .smart-label { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+    .smart-desc  { font-size: 0.7rem; color: var(--text-dim); margin-top: 2px; }
+    .toggle { position: relative; display: inline-block; width: 46px; height: 27px; flex-shrink: 0; }
     .toggle input { opacity: 0; width: 0; height: 0; }
-
     .toggle-slider {
-      position: absolute;
-      inset: 0;
-      background: rgba(255,255,255,0.15);
-      border-radius: 999px;
-      cursor: pointer;
-      transition: background 0.2s;
+      position: absolute; inset: 0; background: rgba(255,255,255,0.15);
+      border-radius: 999px; cursor: pointer; transition: background 0.2s;
     }
-
     .toggle-slider::before {
-      content: '';
-      position: absolute;
-      width: 21px;
-      height: 21px;
-      left: 3px;
-      top: 3px;
-      background: white;
-      border-radius: 50%;
-      transition: transform 0.2s;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+      content: ''; position: absolute; width: 21px; height: 21px;
+      left: 3px; top: 3px; background: white; border-radius: 50%;
+      transition: transform 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.3);
     }
-
     .toggle input:checked + .toggle-slider { background: var(--gold); }
     .toggle input:checked + .toggle-slider::before { transform: translateX(19px); }
-
-    /* Done screen */
     .done-screen {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      gap: 14px;
-      width: 100%;
-      max-width: 480px;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid var(--card-border);
-      border-radius: 24px;
-      padding: 40px 24px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; gap: 14px; width: 100%; max-width: 480px;
+      background: rgba(255,255,255,0.07); border: 1px solid var(--card-border);
+      border-radius: 24px; padding: 40px 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);
     }
-
     .done-screen h2 { font-size: 1.5rem; color: var(--text); }
-    .done-stats-grid {
-      display: flex;
-      gap: 20px;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
+    .done-stats-grid { display: flex; gap: 20px; font-size: 0.85rem; color: var(--text-muted); }
     .done-stat { display: flex; flex-direction: column; gap: 2px; }
     .done-stat-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); }
     .done-stat-val { font-size: 1.2rem; font-weight: 700; color: var(--text); }
     .done-stat-val.green { color: #4ade80; }
-    .done-stat-val.red { color: #f87171; }
-
+    .done-stat-val.red   { color: #f87171; }
     .btn-restart {
-      background: linear-gradient(135deg, #fbbf24, #f59e0b);
-      color: #0d0d0d;
-      border: none;
-      padding: 14px 32px;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 4px;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #0d0d0d;
+      border: none; padding: 14px 32px; border-radius: 12px;
+      font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 4px;
       box-shadow: 0 4px 16px rgba(251,191,36,0.35);
     }
   </style>
@@ -424,17 +198,25 @@
   <h1>Hebrew Flashcards</h1>
   <div class="header-right">
     <button class="btn-reset" onclick="resetProgress()">Reset</button>
-    <span class="lesson-badge" id="lessonBadge">Lesson 1</span>
+    <span class="lesson-badge" id="lessonBadge">All · 418</span>
   </div>
 </header>
 
-<div class="progress-bar-wrap">
-  <div class="progress-bar" id="progressBar" style="width:0%"></div>
+<div class="lesson-row" id="lessonRow">
+  <button class="lesson-btn active" data-lesson="all"  onclick="selectLesson('all')">All</button>
+  <button class="lesson-btn"        data-lesson="1"    onclick="selectLesson(1)">Lesson 1</button>
+  <button class="lesson-btn"        data-lesson="2"    onclick="selectLesson(2)">Lesson 2</button>
+  <button class="lesson-btn"        data-lesson="3"    onclick="selectLesson(3)">Lesson 3</button>
+  <button class="lesson-btn"        data-lesson="4"    onclick="selectLesson(4)">Lesson 4</button>
+  <button class="lesson-btn"        data-lesson="5"    onclick="selectLesson(5)">Lesson 5</button>
+  <button class="lesson-btn"        data-lesson="6"    onclick="selectLesson(6)">Lesson 6</button>
 </div>
-<div class="progress-text" id="progressText">1 / 30</div>
+
+<div class="progress-bar-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+<div class="progress-text" id="progressText">1 / 418</div>
 
 <div class="card-scene" id="cardScene">
-  <div class="card-inner" id="cardInner">
+  <div class="card-inner">
     <div class="card-face card-front">
       <div class="card-label">English</div>
       <div class="card-main" id="frontMain"></div>
@@ -442,9 +224,9 @@
     </div>
     <div class="card-face card-back">
       <div class="card-label">Hebrew</div>
-      <div class="card-hebrew" id="backHebrew"></div>
+      <div class="card-hebrew"  id="backHebrew"></div>
       <div class="card-translit" id="backTranslit"></div>
-      <div class="card-meta" id="backMeta"></div>
+      <div class="card-meta"    id="backMeta"></div>
       <button class="audio-btn" id="audioBtn" aria-label="Play pronunciation">🔊</button>
     </div>
   </div>
@@ -454,12 +236,12 @@
 
 <div class="actions">
   <button class="btn btn-again" onclick="markAgain()">Again</button>
-  <button class="btn btn-good" onclick="markGood()">Got it</button>
+  <button class="btn btn-good"  onclick="markGood()">Got it</button>
 </div>
 
 <div class="nav">
   <button class="btn-nav" id="btnPrev" onclick="prevCard()">← Prev</button>
-  <button class="btn-shuffle" onclick="shuffleDeck()" title="Shuffle">⇄</button>
+  <button class="btn-shuffle" onclick="shuffleDeck()">⇄</button>
   <button class="btn-nav" id="btnNext" onclick="nextCard()">Next →</button>
 </div>
 
@@ -482,233 +264,561 @@
   <div style="font-size:2.5rem">🎉</div>
   <h2>Deck complete!</h2>
   <div class="done-stats-grid">
-    <div class="done-stat">
-      <div class="done-stat-label">This session</div>
-      <div class="done-stat-val green" id="doneSessionGood">0</div>
-      <div class="done-stat-label">got it</div>
-    </div>
-    <div class="done-stat">
-      <div class="done-stat-label">&nbsp;</div>
-      <div class="done-stat-val red" id="doneSessionAgain">0</div>
-      <div class="done-stat-label">again</div>
-    </div>
+    <div class="done-stat"><div class="done-stat-label">This session</div><div class="done-stat-val green" id="doneSessionGood">0</div><div class="done-stat-label">got it</div></div>
+    <div class="done-stat"><div class="done-stat-label">&nbsp;</div><div class="done-stat-val red" id="doneSessionAgain">0</div><div class="done-stat-label">again</div></div>
     <div style="width:1px;background:rgba(255,255,255,0.1);margin:0 4px"></div>
-    <div class="done-stat">
-      <div class="done-stat-label">All time</div>
-      <div class="done-stat-val green" id="doneTotalGood">0</div>
-      <div class="done-stat-label">got it</div>
-    </div>
-    <div class="done-stat">
-      <div class="done-stat-label">&nbsp;</div>
-      <div class="done-stat-val red" id="doneTotalAgain">0</div>
-      <div class="done-stat-label">again</div>
-    </div>
+    <div class="done-stat"><div class="done-stat-label">All time</div><div class="done-stat-val green" id="doneTotalGood">0</div><div class="done-stat-label">got it</div></div>
+    <div class="done-stat"><div class="done-stat-label">&nbsp;</div><div class="done-stat-val red" id="doneTotalAgain">0</div><div class="done-stat-label">again</div></div>
   </div>
   <button class="btn-restart" onclick="restartDeck()">Go again</button>
 </div>
 
 <script>
 const vocab = [
-  { id:1,  english:"read",                transliteration:"ko're",      hebrew:"קורא",       pos:"verb",           gender:"m, s",  lesson:1 },
-  { id:2,  english:"write",               transliteration:"cotev",      hebrew:"כותב",       pos:"verb",           gender:"m, s",  lesson:1 },
-  { id:3,  english:"near / next to",      transliteration:"leyad",      hebrew:"ליד",        pos:"preposition",    gender:"",      lesson:1 },
-  { id:4,  english:"like always",         transliteration:"c'mo tamid", hebrew:"כמו תמיד",   pos:"adverb",         gender:"",      lesson:1 },
-  { id:5,  english:"store",               transliteration:"chanut",     hebrew:"חנות",       pos:"noun",           gender:"m, s",  lesson:1 },
-  { id:6,  english:"learn",               transliteration:"lomed",      hebrew:"לומד",       pos:"verb",           gender:"m, s",  lesson:1 },
-  { id:7,  english:"bye",                 transliteration:"lehitraot",  hebrew:"להתראות",    pos:"interjection",   gender:"",      lesson:1 },
-  { id:8,  english:"car",                 transliteration:"me'ko'nit",  hebrew:"מכונית",     pos:"noun",           gender:"f, s",  lesson:1 },
-  { id:9,  english:"center (of a place)", transliteration:"mer'kaz",    hebrew:"מרכז",       pos:"noun",           gender:"m, s",  lesson:1 },
-  { id:10, english:"coffee shop",         transliteration:"beit cafe",  hebrew:"בית קפה",    pos:"noun",           gender:"m, s",  lesson:1 },
-  { id:11, english:"friends",             transliteration:"chaverim",   hebrew:"חברים",      pos:"noun",           gender:"m, pl", lesson:1 },
-  { id:12, english:"restaurant",          transliteration:"mis'a'da",   hebrew:"מסעדה",      pos:"noun",           gender:"f, s",  lesson:1 },
-  { id:13, english:"because",             transliteration:"kee",        hebrew:"כי",         pos:"conjunction",    gender:"",      lesson:1 },
-  { id:14, english:"man",                 transliteration:"eesh",       hebrew:"איש",        pos:"noun",           gender:"m, s",  lesson:1 },
-  { id:15, english:"noise",               transliteration:"ra'ash",     hebrew:"רעש",        pos:"noun",           gender:"m, s",  lesson:1 },
-  { id:16, english:"quiet",               transliteration:"sheket",     hebrew:"שקט",        pos:"noun/adjective", gender:"m, s",  lesson:1 },
-  { id:17, english:"now",                 transliteration:"achshav",    hebrew:"עכשיו",      pos:"adverb",         gender:"",      lesson:1 },
-  { id:18, english:"we",                  transliteration:"anachnu",    hebrew:"אנחנו",      pos:"pronoun",        gender:"pl",    lesson:1 },
-  { id:19, english:"city",                transliteration:"eer",        hebrew:"עיר",        pos:"noun",           gender:"f, s",  lesson:1 },
-  { id:20, english:"people",              transliteration:"anashim",    hebrew:"אנשים",      pos:"noun",           gender:"m, pl", lesson:1 },
-  { id:21, english:"to...",               transliteration:"la-",        hebrew:"ל־",         pos:"preposition",    gender:"",      lesson:1 },
-  { id:22, english:"today",               transliteration:"hayom",      hebrew:"היום",       pos:"adverb",         gender:"",      lesson:1 },
-  { id:23, english:"beach / ocean",       transliteration:"yam",        hebrew:"ים",         pos:"noun",           gender:"m, s",  lesson:1 },
-  { id:24, english:"only",                transliteration:"rak",        hebrew:"רק",         pos:"adverb",         gender:"",      lesson:1 },
-  { id:25, english:"those",               transliteration:"ele",        hebrew:"אלה",        pos:"pronoun",        gender:"pl",    lesson:1 },
-  { id:26, english:"computer",            transliteration:"machshev",   hebrew:"מחשב",       pos:"noun",           gender:"m, s",  lesson:1 },
-  { id:27, english:"everyone",            transliteration:"kulam",      hebrew:"כולם",       pos:"pronoun",        gender:"m, s",  lesson:1 },
-  { id:28, english:"garden",              transliteration:"gina",       hebrew:"גינה",       pos:"noun",           gender:"f, s",  lesson:1 },
-  { id:29, english:"from",                transliteration:"me-",        hebrew:"מ־",         pos:"preposition",    gender:"",      lesson:1 },
-  { id:30, english:"classroom",           transliteration:"kita",       hebrew:"כיתה",       pos:"noun",           gender:"f, s",  lesson:1 },
+  {id:1,   english:"read",                   transliteration:"ko're",           hebrew:"קורא",          pos:"verb",           gender:"m, s",    lesson:1},
+  {id:2,   english:"write",                  transliteration:"cotev",            hebrew:"כותב",          pos:"verb",           gender:"m, s",    lesson:1},
+  {id:3,   english:"near / next to",         transliteration:"leyad",            hebrew:"ליד",           pos:"preposition",    gender:"",        lesson:1},
+  {id:4,   english:"like always",            transliteration:"c'mo tamid",       hebrew:"כמו תמיד",      pos:"adverb",         gender:"",        lesson:1},
+  {id:5,   english:"store",                  transliteration:"chanut",           hebrew:"חנות",          pos:"noun",           gender:"f, s",    lesson:1},
+  {id:6,   english:"learn",                  transliteration:"lomed",            hebrew:"לומד",          pos:"verb",           gender:"m, s",    lesson:1},
+  {id:7,   english:"bye",                    transliteration:"lehitraot",        hebrew:"להתראות",       pos:"interjection",   gender:"",        lesson:1},
+  {id:8,   english:"car",                    transliteration:"me'ko'nit",        hebrew:"מכונית",        pos:"noun",           gender:"f, s",    lesson:1},
+  {id:9,   english:"center (of a place)",    transliteration:"mer'kaz",          hebrew:"מרכז",          pos:"noun",           gender:"m, s",    lesson:1},
+  {id:10,  english:"coffee shop",            transliteration:"beit cafe",        hebrew:"בית קפה",       pos:"noun",           gender:"m, s",    lesson:1},
+  {id:11,  english:"friends",                transliteration:"chaverim",         hebrew:"חברים",         pos:"noun",           gender:"m, pl",   lesson:1},
+  {id:12,  english:"restaurant",             transliteration:"mis'a'da",         hebrew:"מסעדה",         pos:"noun",           gender:"f, s",    lesson:1},
+  {id:13,  english:"because",                transliteration:"kee",              hebrew:"כי",            pos:"conjunction",    gender:"",        lesson:1},
+  {id:14,  english:"man",                    transliteration:"eesh",             hebrew:"איש",           pos:"noun",           gender:"m, s",    lesson:1},
+  {id:15,  english:"noise",                  transliteration:"ra'ash",           hebrew:"רעש",           pos:"noun",           gender:"m, s",    lesson:1},
+  {id:16,  english:"quiet",                  transliteration:"sheket",           hebrew:"שקט",           pos:"noun/adjective", gender:"m, s",    lesson:1},
+  {id:17,  english:"now",                    transliteration:"achshav",          hebrew:"עכשיו",         pos:"adverb",         gender:"",        lesson:1},
+  {id:18,  english:"we",                     transliteration:"anachnu",          hebrew:"אנחנו",         pos:"pronoun",        gender:"pl",      lesson:1},
+  {id:19,  english:"city",                   transliteration:"eer",              hebrew:"עיר",           pos:"noun",           gender:"f, s",    lesson:1},
+  {id:20,  english:"people",                 transliteration:"anashim",          hebrew:"אנשים",         pos:"noun",           gender:"m, pl",   lesson:1},
+  {id:21,  english:"to...",                  transliteration:"la-",              hebrew:"ל־",            pos:"preposition",    gender:"",        lesson:1},
+  {id:22,  english:"today",                  transliteration:"hayom",            hebrew:"היום",          pos:"adverb",         gender:"",        lesson:1},
+  {id:23,  english:"beach / ocean",          transliteration:"yam",              hebrew:"ים",            pos:"noun",           gender:"m, s",    lesson:3},
+  {id:24,  english:"only",                   transliteration:"rak",              hebrew:"רק",            pos:"adverb",         gender:"",        lesson:1},
+  {id:25,  english:"those",                  transliteration:"ele",              hebrew:"אלה",           pos:"pronoun",        gender:"pl",      lesson:1},
+  {id:26,  english:"computer",               transliteration:"machshev",         hebrew:"מחשב",          pos:"noun",           gender:"m, s",    lesson:1},
+  {id:27,  english:"everyone",               transliteration:"kulam",            hebrew:"כולם",          pos:"pronoun",        gender:"m, s",    lesson:1},
+  {id:28,  english:"garden",                 transliteration:"gina",             hebrew:"גינה",          pos:"noun",           gender:"f, s",    lesson:1},
+  {id:29,  english:"from",                   transliteration:"me-",              hebrew:"מ־",            pos:"preposition",    gender:"",        lesson:1},
+  {id:30,  english:"classroom",              transliteration:"kita",             hebrew:"כיתה",          pos:"noun",           gender:"f, s",    lesson:1},
+  {id:31,  english:"it's all good",          transliteration:"hacol beseder",    hebrew:"הכל בסדר",      pos:"phrase",         gender:"",        lesson:1},
+  {id:32,  english:"what's up",              transliteration:"manishma",         hebrew:"מה נשמע",       pos:"phrase",         gender:"",        lesson:1},
+  {id:33,  english:"movie",                  transliteration:"seret",            hebrew:"סרט",           pos:"noun",           gender:"m, s",    lesson:4},
+  {id:34,  english:"time / hour",            transliteration:"sha'a",            hebrew:"שעה",           pos:"noun",           gender:"f, s",    lesson:4},
+  {id:35,  english:"enter",                  transliteration:"nik'nas",          hebrew:"נכנס",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:36,  english:"praying",                transliteration:"tefilah",          hebrew:"תפילה",         pos:"noun",           gender:"f, s",    lesson:4},
+  {id:37,  english:"art",                    transliteration:"omanut",           hebrew:"אומנות",        pos:"noun",           gender:"f, s",    lesson:4},
+  {id:38,  english:"village",                transliteration:"kfar",             hebrew:"כפר",           pos:"noun",           gender:"m, s",    lesson:3},
+  {id:39,  english:"horse",                  transliteration:"soos",             hebrew:"סוס",           pos:"noun",           gender:"m, s",    lesson:3},
+  {id:40,  english:"volunteer",              transliteration:"mit'nadev",        hebrew:"מתנדב",         pos:"verb",           gender:"m, s",    lesson:2},
+  {id:41,  english:"start",                  transliteration:"matchil",          hebrew:"מתחיל",         pos:"verb",           gender:"m, s",    lesson:2},
+  {id:42,  english:"field",                  transliteration:"sa'de",            hebrew:"שדה",           pos:"noun",           gender:"m, s",    lesson:3},
+  {id:43,  english:"i don't have",           transliteration:"ein li",           hebrew:"אין לי",        pos:"phrase",         gender:"",        lesson:4},
+  {id:44,  english:"i have",                 transliteration:"yesh li",          hebrew:"יש לי",         pos:"phrase",         gender:"",        lesson:4},
+  {id:45,  english:"work",                   transliteration:"oved",             hebrew:"עובד",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:46,  english:"walking / going",        transliteration:"holech",           hebrew:"הולך",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:47,  english:"job",                    transliteration:"avodah",           hebrew:"עבודה",         pos:"noun",           gender:"f, s",    lesson:4},
+  {id:48,  english:"play (instrument)",      transliteration:"meh'na'gen",       hebrew:"מנגן",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:49,  english:"ball",                   transliteration:"ka'duur",          hebrew:"כדור",          pos:"noun",           gender:"m, s",    lesson:3},
+  {id:50,  english:"sometimes",              transliteration:"lif'a'mim",        hebrew:"לפעמים",        pos:"adverb",         gender:"",        lesson:3},
+  {id:51,  english:"playing",                transliteration:"mes'a'chek",       hebrew:"משחק",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:52,  english:"to play",                transliteration:"lee'sa'chek",      hebrew:"לשחק",          pos:"infinitive",     gender:"",        lesson:2},
+  {id:53,  english:"foot",                   transliteration:"regel",            hebrew:"רגל",           pos:"noun",           gender:"f, s",    lesson:3},
+  {id:54,  english:"basket",                 transliteration:"sal",              hebrew:"סל",            pos:"noun",           gender:"m, s",    lesson:3},
+  {id:55,  english:"hand",                   transliteration:"yad",              hebrew:"יד",            pos:"noun",           gender:"f, s",    lesson:3},
+  {id:56,  english:"traveling",              transliteration:"may'ta'yeel",      hebrew:"מטייל",         pos:"verb",           gender:"m, s",    lesson:3},
+  {id:57,  english:"soccer",                 transliteration:"ka'duur regel",    hebrew:"כדור רגל",      pos:"noun",           gender:"m, s",    lesson:3},
+  {id:58,  english:"basketball",             transliteration:"ka'duur sal",      hebrew:"כדור סל",       pos:"noun",           gender:"m, s",    lesson:3},
+  {id:59,  english:"volleyball",             transliteration:"ka'duur yad",      hebrew:"כדור יד",       pos:"noun",           gender:"m, s",    lesson:3},
+  {id:60,  english:"picture",                transliteration:"tee'moo'nah",      hebrew:"תמונה",         pos:"noun",           gender:"f, s",    lesson:6},
+  {id:61,  english:"want",                   transliteration:"rot'ze",           hebrew:"רוצה",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:62,  english:"to learn",               transliteration:"lil'mod",          hebrew:"ללמוד",         pos:"infinitive",     gender:"",        lesson:2},
+  {id:63,  english:"like / love",            transliteration:"ohev",             hebrew:"אוהב",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:64,  english:"know (something)",       transliteration:"yodea",            hebrew:"יודע",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:65,  english:"feel",                   transliteration:"margeesh",         hebrew:"מרגיש",         pos:"verb",           gender:"m, s",    lesson:2},
+  {id:66,  english:"to feel",                transliteration:"lehargeesh",       hebrew:"להרגיש",        pos:"infinitive",     gender:"",        lesson:2},
+  {id:67,  english:"to write",               transliteration:"lichtov",          hebrew:"לכתוב",         pos:"infinitive",     gender:"",        lesson:2},
+  {id:68,  english:"area",                   transliteration:"ezor",             hebrew:"אזור",          pos:"noun",           gender:"m, s",    lesson:3},
+  {id:69,  english:"mountain",               transliteration:"har",              hebrew:"הר",            pos:"noun",           gender:"m, s",    lesson:3},
+  {id:70,  english:"desert",                 transliteration:"midbar",           hebrew:"מדבר",          pos:"noun",           gender:"m, s",    lesson:3},
+  {id:71,  english:"fun",                    transliteration:"kef",              hebrew:"כיף",           pos:"noun",           gender:"m, s",    lesson:3},
+  {id:72,  english:"hot",                    transliteration:"cham",             hebrew:"חם",            pos:"adjective",      gender:"m, s",    lesson:3},
+  {id:73,  english:"sun",                    transliteration:"shemesh",          hebrew:"שמש",           pos:"noun",           gender:"f, s",    lesson:3},
+  {id:74,  english:"do / make",              transliteration:"ose",              hebrew:"עושה",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:75,  english:"sit",                    transliteration:"yoshev",           hebrew:"יושב",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:76,  english:"looking for",            transliteration:"mechapes",         hebrew:"מחפש",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:77,  english:"idea",                   transliteration:"ra'a'yon",         hebrew:"רעיון",         pos:"noun",           gender:"m, s",    lesson:4},
+  {id:78,  english:"on / about",             transliteration:"al",               hebrew:"על",            pos:"preposition",    gender:"",        lesson:1},
+  {id:79,  english:"don't",                  transliteration:"al",               hebrew:"אל",            pos:"adverb",         gender:"",        lesson:1},
+  {id:80,  english:"to know",                transliteration:"la'da'at",         hebrew:"לדעת",          pos:"infinitive",     gender:"",        lesson:2},
+  {id:81,  english:"milk",                   transliteration:"chalav",           hebrew:"חלב",           pos:"noun",           gender:"m, s",    lesson:3},
+  {id:82,  english:"person",                 transliteration:"eesh",             hebrew:"איש",           pos:"noun",           gender:"m, s",    lesson:1},
+  {id:83,  english:"water",                  transliteration:"ma'im",            hebrew:"מים",           pos:"noun",           gender:"m, pl",   lesson:3},
+  {id:84,  english:"those",                  transliteration:"el'le",            hebrew:"אלה",           pos:"pronoun",        gender:"pl",      lesson:1},
+  {id:85,  english:"good (okay)",            transliteration:"beseder",          hebrew:"בסדר",          pos:"adjective",      gender:"",        lesson:1},
+  {id:86,  english:"good",                   transliteration:"tov",              hebrew:"טוב",           pos:"adjective",      gender:"m, s",    lesson:1},
+  {id:87,  english:"wine",                   transliteration:"ya'in",            hebrew:"יין",           pos:"noun",           gender:"m, s",    lesson:4},
+  {id:88,  english:"here it is",             transliteration:"hine",             hebrew:"הנה",           pos:"interjection",   gender:"",        lesson:1},
+  {id:89,  english:"please",                 transliteration:"bevakasha",        hebrew:"בבקשה",         pos:"adverb",         gender:"",        lesson:1},
+  {id:90,  english:"cake",                   transliteration:"u'ga",             hebrew:"עוגה",          pos:"noun",           gender:"f, s",    lesson:4},
+  {id:91,  english:"to work",                transliteration:"la'avod",          hebrew:"לעבוד",         pos:"infinitive",     gender:"",        lesson:2},
+  {id:92,  english:"already",                transliteration:"ke'var",           hebrew:"כבר",           pos:"adverb",         gender:"",        lesson:1},
+  {id:93,  english:"snow",                   transliteration:"sheleg",           hebrew:"שלג",           pos:"noun",           gender:"m, s",    lesson:3},
+  {id:94,  english:"tomorrow",               transliteration:"machar",           hebrew:"מחר",           pos:"adverb",         gender:"",        lesson:1},
+  {id:95,  english:"yesterday",              transliteration:"etmol",            hebrew:"אתמול",         pos:"adverb",         gender:"",        lesson:1},
+  {id:96,  english:"to pray",                transliteration:"lehitpalel",       hebrew:"להתפלל",        pos:"infinitive",     gender:"",        lesson:2},
+  {id:97,  english:"pray",                   transliteration:"mitpalel",         hebrew:"מתפלל",         pos:"verb",           gender:"m, s",    lesson:2},
+  {id:98,  english:"to play (instrument)",   transliteration:"lenagen",          hebrew:"לנגן",          pos:"infinitive",     gender:"",        lesson:2},
+  {id:99,  english:"to take a trip",         transliteration:"le'ta'yel",        hebrew:"לטייל",         pos:"infinitive",     gender:"",        lesson:2},
+  {id:100, english:"sand",                   transliteration:"chol",             hebrew:"חול",           pos:"noun",           gender:"m, s",    lesson:3},
+  {id:101, english:"river",                  transliteration:"nachal",           hebrew:"נחל",           pos:"noun",           gender:"m, s",    lesson:3},
+  {id:102, english:"nature",                 transliteration:"teva",             hebrew:"טבע",           pos:"noun",           gender:"f, s",    lesson:3},
+  {id:103, english:"to read",                transliteration:"lik'ro",           hebrew:"לקרוא",         pos:"infinitive",     gender:"",        lesson:2},
+  {id:104, english:"to start",               transliteration:"le'hat'chil",      hebrew:"להתחיל",        pos:"infinitive",     gender:"",        lesson:2},
+  {id:105, english:"live",                   transliteration:"gar",              hebrew:"גר",            pos:"verb",           gender:"m, s",    lesson:2},
+  {id:106, english:"to enter",               transliteration:"lehicanes",        hebrew:"להיכנס",        pos:"infinitive",     gender:"",        lesson:2},
+  {id:107, english:"evening",                transliteration:"erev",             hebrew:"ערב",           pos:"noun",           gender:"m, s",    lesson:4},
+  {id:108, english:"morning",                transliteration:"boker",            hebrew:"בוקר",          pos:"noun",           gender:"m, s",    lesson:4},
+  {id:109, english:"arabic",                 transliteration:"aravit",           hebrew:"ערבית",         pos:"noun/adjective", gender:"f, s",    lesson:6},
+  {id:110, english:"word",                   transliteration:"mila",             hebrew:"מילה",          pos:"noun",           gender:"f, s",    lesson:4},
+  {id:111, english:"rain",                   transliteration:"geshem",           hebrew:"גשם",           pos:"noun",           gender:"m, s",    lesson:3},
+  {id:112, english:"like / as",              transliteration:"c'mo",             hebrew:"כמו",           pos:"preposition",    gender:"",        lesson:4},
+  {id:113, english:"drink",                  transliteration:"sho'te",           hebrew:"שותה",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:114, english:"juice",                  transliteration:"mitz",             hebrew:"מיץ",           pos:"noun",           gender:"m, s",    lesson:4},
+  {id:115, english:"ice cream",              transliteration:"glida",            hebrew:"גלידה",         pos:"noun",           gender:"f, s",    lesson:4},
+  {id:116, english:"waking up",              transliteration:"kam",              hebrew:"קם",            pos:"verb",           gender:"m, s",    lesson:2},
+  {id:117, english:"travelling / driving",   transliteration:"nosea",            hebrew:"נוסע",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:118, english:"eat / food",             transliteration:"ochel",            hebrew:"אוכל",          pos:"verb/noun",      gender:"m, s",    lesson:2},
+  {id:119, english:"afternoon",              transliteration:"tzo'ho'rayim",     hebrew:"צהריים",        pos:"noun",           gender:"m, pl",   lesson:4},
+  {id:120, english:"sunday",                 transliteration:"yom rishon",       hebrew:"יום ראשון",     pos:"noun",           gender:"m, s",    lesson:4},
+  {id:121, english:"monday",                 transliteration:"yom sheni",        hebrew:"יום שני",       pos:"noun",           gender:"m, s",    lesson:4},
+  {id:122, english:"tuesday",                transliteration:"yom shelishi",     hebrew:"יום שלישי",     pos:"noun",           gender:"m, s",    lesson:4},
+  {id:123, english:"wednesday",              transliteration:"yom re'vi'i",      hebrew:"יום רביעי",     pos:"noun",           gender:"m, s",    lesson:4},
+  {id:124, english:"thursday",               transliteration:"yom chameishi",    hebrew:"יום חמישי",     pos:"noun",           gender:"m, s",    lesson:4},
+  {id:125, english:"friday",                 transliteration:"yom shishi",       hebrew:"יום שישי",      pos:"noun",           gender:"m, s",    lesson:4},
+  {id:126, english:"was",                    transliteration:"haya",             hebrew:"היה",           pos:"verb",           gender:"m, s",    lesson:2},
+  {id:127, english:"will be",                transliteration:"ee'he'yay",        hebrew:"יהיה",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:128, english:"of course",              transliteration:"betach",           hebrew:"בטח",           pos:"adverb",         gender:"",        lesson:1},
+  {id:129, english:"camel",                  transliteration:"gamal",            hebrew:"גמל",           pos:"noun",           gender:"m, s",    lesson:3},
+  {id:130, english:"guide",                  transliteration:"modrich",          hebrew:"מדריך",         pos:"noun",           gender:"m, s",    lesson:3},
+  {id:131, english:"tent",                   transliteration:"ohel",             hebrew:"אוהל",          pos:"noun",           gender:"m, s",    lesson:3},
+  {id:132, english:"meat",                   transliteration:"basar",            hebrew:"בשר",           pos:"noun",           gender:"m, s",    lesson:4},
+  {id:133, english:"to eat",                 transliteration:"le'echol",         hebrew:"לאכול",         pos:"infinitive",     gender:"",        lesson:4},
+  {id:134, english:"coming",                 transliteration:"ba",               hebrew:"בא",            pos:"verb",           gender:"m, s",    lesson:2},
+  {id:135, english:"light",                  transliteration:"or",               hebrew:"אור",           pos:"noun",           gender:"m, s",    lesson:3},
+  {id:136, english:"to drive",               transliteration:"linsoa",           hebrew:"לנסוע",         pos:"infinitive",     gender:"",        lesson:2},
+  {id:137, english:"to sit",                 transliteration:"lashevet",         hebrew:"לשבת",          pos:"infinitive",     gender:"",        lesson:2},
+  {id:138, english:"to go",                  transliteration:"lalechet",         hebrew:"ללכת",          pos:"infinitive",     gender:"",        lesson:2},
+  {id:139, english:"say",                    transliteration:"omer",             hebrew:"אומר",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:140, english:"to say",                 transliteration:"lomar",            hebrew:"לומר",          pos:"infinitive",     gender:"",        lesson:2},
+  {id:141, english:"library",                transliteration:"sfriya",           hebrew:"ספרייה",        pos:"noun",           gender:"f, s",    lesson:6},
+  {id:142, english:"speak",                  transliteration:"medaber",          hebrew:"מדבר",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:143, english:"to speak",               transliteration:"ledaber",          hebrew:"לדבר",          pos:"infinitive",     gender:"",        lesson:2},
+  {id:144, english:"to look for",            transliteration:"lechapes",         hebrew:"לחפש",          pos:"infinitive",     gender:"",        lesson:2},
+  {id:145, english:"early",                  transliteration:"mookdam",          hebrew:"מוקדם",         pos:"adjective",      gender:"m, s",    lesson:5},
+  {id:146, english:"late",                   transliteration:"meuchar",          hebrew:"מאוחר",         pos:"adjective",      gender:"m, s",    lesson:5},
+  {id:147, english:"buy",                    transliteration:"kone",             hebrew:"קונה",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:148, english:"tourist",                transliteration:"ta'yaar",          hebrew:"תייר",          pos:"noun",           gender:"m, s",    lesson:3},
+  {id:149, english:"inside",                 transliteration:"betoch",           hebrew:"בתוך",          pos:"preposition",    gender:"",        lesson:5},
+  {id:150, english:"afterward",              transliteration:"achar kach",       hebrew:"אחר כך",        pos:"adverb",         gender:"",        lesson:5},
+  {id:151, english:"on the side of",         transliteration:"mitzad",           hebrew:"מצד",           pos:"noun",           gender:"m, s",    lesson:5},
+  {id:152, english:"train",                  transliteration:"rekevet",          hebrew:"רכבת",          pos:"noun",           gender:"f, s",    lesson:3},
+  {id:153, english:"boring",                 transliteration:"mesha'a'meim",     hebrew:"משעמם",         pos:"adjective",      gender:"m, s",    lesson:5},
+  {id:154, english:"where to",               transliteration:"le'an",            hebrew:"לאן",           pos:"adverb",         gender:"",        lesson:3},
+  {id:155, english:"side",                   transliteration:"tzad",             hebrew:"צד",            pos:"noun",           gender:"m, s",    lesson:5},
+  {id:156, english:"city wall",              transliteration:"cho'ma",           hebrew:"חומה",          pos:"noun",           gender:"f, s",    lesson:3},
+  {id:157, english:"ancient",                transliteration:"atti'ka",          hebrew:"עתיקה",         pos:"adjective",      gender:"f, s",    lesson:3},
+  {id:158, english:"interesting",            transliteration:"me'an'yen",        hebrew:"מעניין",        pos:"adjective",      gender:"m, s",    lesson:5},
+  {id:159, english:"street",                 transliteration:"rehov",            hebrew:"רחוב",          pos:"noun",           gender:"m, s",    lesson:3},
+  {id:160, english:"what's up",              transliteration:"eich holech",      hebrew:"איך הולך",      pos:"phrase",         gender:"",        lesson:1},
+  {id:161, english:"fruit",                  transliteration:"peri",             hebrew:"פרי",           pos:"noun",           gender:"m, s",    lesson:3},
+  {id:162, english:"which (pl)",             transliteration:"elu",              hebrew:"אלו",           pos:"pronoun",        gender:"pl",      lesson:5},
+  {id:163, english:"which (f)",              transliteration:"ezo",              hebrew:"איזו",          pos:"pronoun",        gender:"f, s",    lesson:3},
+  {id:164, english:"which (m)",              transliteration:"eze",              hebrew:"איזה",          pos:"pronoun",        gender:"m, s",    lesson:3},
+  {id:165, english:"how much / many",        transliteration:"cama",             hebrew:"כמה",           pos:"adverb",         gender:"",        lesson:3},
+  {id:166, english:"party",                  transliteration:"mes'i'ba",         hebrew:"מסיבה",         pos:"noun",           gender:"f, s",    lesson:6},
+  {id:167, english:"special",                transliteration:"me'oo'chad",       hebrew:"מיוחד",         pos:"adjective",      gender:"m, s",    lesson:6},
+  {id:168, english:"ask",                    transliteration:"shoel",            hebrew:"שואל",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:169, english:"dog",                    transliteration:"celev",            hebrew:"כלב",           pos:"noun",           gender:"m, s",    lesson:6},
+  {id:170, english:"surprise",               transliteration:"haf'ta'a",         hebrew:"הפתעה",         pos:"noun",           gender:"f, s",    lesson:6},
+  {id:171, english:"hears",                  transliteration:"sho'me'a",         hebrew:"שומע",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:172, english:"hours",                  transliteration:"sha'ot",           hebrew:"שעות",          pos:"noun",           gender:"f, pl",   lesson:4},
+  {id:173, english:"working out",            transliteration:"mit'a'mel",        hebrew:"מתעמל",         pos:"verb",           gender:"m, s",    lesson:3},
+  {id:174, english:"room",                   transliteration:"cheder",           hebrew:"חדר",           pos:"noun",           gender:"m, s",    lesson:5},
+  {id:175, english:"how",                    transliteration:"ech",              hebrew:"איך",           pos:"adverb",         gender:"",        lesson:3},
+  {id:176, english:"test",                   transliteration:"mivhanim",         hebrew:"מבחנים",        pos:"noun",           gender:"m, pl",   lesson:3},
+  {id:177, english:"to know someone",        transliteration:"makir",            hebrew:"מכיר",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:178, english:"meet",                   transliteration:"pogesh",           hebrew:"פוגש",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:179, english:"expensive",              transliteration:"ya'har",           hebrew:"יקר",           pos:"adjective",      gender:"m, s",    lesson:5},
+  {id:180, english:"cheap",                  transliteration:"zol",              hebrew:"זול",           pos:"adjective",      gender:"m, s",    lesson:5},
+  {id:181, english:"little bit",             transliteration:"kitz'at",          hebrew:"קצת",           pos:"adverb",         gender:"",        lesson:5},
+  {id:182, english:"small",                  transliteration:"katan",            hebrew:"קטן",           pos:"adjective",      gender:"m, s",    lesson:5},
+  {id:183, english:"money",                  transliteration:"kesef",            hebrew:"כסף",           pos:"noun",           gender:"m, s",    lesson:5},
+  {id:184, english:"apartment",              transliteration:"dira",             hebrew:"דירה",          pos:"noun",           gender:"f, s",    lesson:5},
+  {id:185, english:"sees",                   transliteration:"ro'e",             hebrew:"רואה",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:186, english:"weather",                transliteration:"mezag avir",       hebrew:"מזג אוויר",     pos:"noun",           gender:"m, s",    lesson:5},
+  {id:187, english:"green",                  transliteration:"yarok",            hebrew:"ירוק",          pos:"adjective",      gender:"m, s",    lesson:5},
+  {id:188, english:"blue",                   transliteration:"kachol",           hebrew:"כחול",          pos:"adjective",      gender:"m, s",    lesson:5},
+  {id:189, english:"red",                    transliteration:"adom",             hebrew:"אדום",          pos:"adjective",      gender:"m, s",    lesson:5},
+  {id:190, english:"white",                  transliteration:"lavan",            hebrew:"לבן",           pos:"adjective",      gender:"m, s",    lesson:5},
+  {id:191, english:"orange (color)",         transliteration:"katom",            hebrew:"כתום",          pos:"adjective",      gender:"m, s",    lesson:5},
+  {id:192, english:"pink",                   transliteration:"va'rod",           hebrew:"ורוד",          pos:"adjective",      gender:"m, s",    lesson:5},
+  {id:193, english:"black",                  transliteration:"shahor",           hebrew:"שחור",          pos:"adjective",      gender:"m, s",    lesson:5},
+  {id:194, english:"wall (interior)",        transliteration:"kir",              hebrew:"קיר",           pos:"noun",           gender:"m, s",    lesson:5},
+  {id:195, english:"color",                  transliteration:"tzeva",            hebrew:"צבע",           pos:"noun",           gender:"m, s",    lesson:5},
+  {id:196, english:"brown",                  transliteration:"huum",             hebrew:"חום",           pos:"adjective",      gender:"m, s",    lesson:5},
+  {id:197, english:"yellow",                 transliteration:"tzahov",           hebrew:"צהוב",          pos:"adjective",      gender:"m, s",    lesson:5},
+  {id:198, english:"table / desk",           transliteration:"shulchan",         hebrew:"שולחן",         pos:"noun",           gender:"m, s",    lesson:5},
+  {id:199, english:"chair",                  transliteration:"kee'say",          hebrew:"כיסא",          pos:"noun",           gender:"m, s",    lesson:5},
+  {id:200, english:"closet",                 transliteration:"aron",             hebrew:"ארון",          pos:"noun",           gender:"m, s",    lesson:5},
+  {id:201, english:"room",                   transliteration:"cheder",           hebrew:"חדר",           pos:"noun",           gender:"m, s",    lesson:5},
+  {id:202, english:"door",                   transliteration:"delet",            hebrew:"דלת",           pos:"noun",           gender:"f, s",    lesson:5},
+  {id:203, english:"windows",                transliteration:"chalonot",         hebrew:"חלונות",        pos:"noun",           gender:"f, pl",   lesson:5},
+  {id:204, english:"two",                    transliteration:"shne",             hebrew:"שניים",         pos:"number",         gender:"",        lesson:5},
+  {id:205, english:"drug",                   transliteration:"sam",              hebrew:"סַם",           pos:"noun",           gender:"m, s",    lesson:5},
+  {id:206, english:"put",                    transliteration:"sam",              hebrew:"שָׂם",          pos:"verb",           gender:"m, s",    lesson:5},
+  {id:207, english:"organize",               transliteration:"meseder",          hebrew:"מסדר",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:208, english:"to organize",            transliteration:"leseder",          hebrew:"לסדר",          pos:"infinitive",     gender:"",        lesson:5},
+  {id:209, english:"to put",                 transliteration:"la'asim",          hebrew:"לשים",          pos:"infinitive",     gender:"",        lesson:5},
+  {id:210, english:"mess",                   transliteration:"balagan",          hebrew:"בלגן",          pos:"noun",           gender:"m, s",    lesson:5},
+  {id:211, english:"to find",                transliteration:"lim'tzo",          hebrew:"למצוא",         pos:"infinitive",     gender:"",        lesson:5},
+  {id:212, english:"find",                   transliteration:"motze",            hebrew:"מוצא",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:213, english:"to invite / to order",   transliteration:"lehazmin",         hebrew:"להזמין",        pos:"infinitive",     gender:"",        lesson:5},
+  {id:214, english:"invite / order",         transliteration:"mazmin",           hebrew:"מזמין",         pos:"verb",           gender:"m, s",    lesson:2},
+  {id:215, english:"important",              transliteration:"chashuv",          hebrew:"חשוב",          pos:"adjective",      gender:"m, s",    lesson:5},
+  {id:216, english:"exactly",                transliteration:"be'dee'ook",       hebrew:"בדיוק",         pos:"adverb",         gender:"",        lesson:5},
+  {id:217, english:"asking from",            transliteration:"mevakesh me-",     hebrew:"מבקש מ־",       pos:"verb",           gender:"m, s",    lesson:2},
+  {id:218, english:"to ask",                 transliteration:"levakesh",         hebrew:"לבקש",          pos:"infinitive",     gender:"",        lesson:5},
+  {id:219, english:"never",                  transliteration:"af pa'am",         hebrew:"אף פעם",        pos:"adverb",         gender:"",        lesson:5},
+  {id:220, english:"ours",                   transliteration:"shelanu",          hebrew:"שלנו",          pos:"pronoun",        gender:"pl",      lesson:5},
+  {id:221, english:"my",                     transliteration:"sheli",            hebrew:"שלי",           pos:"pronoun",        gender:"",        lesson:5},
+  {id:222, english:"yours (pl)",             transliteration:"shelachem",        hebrew:"שלכם",          pos:"pronoun",        gender:"pl",      lesson:5},
+  {id:223, english:"your (f)",               transliteration:"shelach",          hebrew:"שלך",           pos:"pronoun",        gender:"f, s",    lesson:5},
+  {id:224, english:"your (m)",               transliteration:"shelcha",          hebrew:"שלך",           pos:"pronoun",        gender:"m, s",    lesson:5},
+  {id:225, english:"theirs",                 transliteration:"shelahem",         hebrew:"שלהם",          pos:"pronoun",        gender:"pl",      lesson:5},
+  {id:226, english:"hers",                   transliteration:"shela",            hebrew:"שלה",           pos:"pronoun",        gender:"f, s",    lesson:5},
+  {id:227, english:"his",                    transliteration:"shelo",            hebrew:"שלו",           pos:"pronoun",        gender:"m, s",    lesson:5},
+  {id:228, english:"tickets",                transliteration:"karteeseem",       hebrew:"כרטיסים",       pos:"noun",           gender:"m, pl",   lesson:5},
+  {id:229, english:"band",                   transliteration:"lehaka",           hebrew:"להקה",          pos:"noun",           gender:"f, s",    lesson:5},
+  {id:230, english:"show",                   transliteration:"ho'fa'a",          hebrew:"הופעה",         pos:"noun",           gender:"f, s",    lesson:5},
+  {id:231, english:"saturday evening",       transliteration:"motze shabbat",    hebrew:"מוצאי שבת",     pos:"noun",           gender:"m, s",    lesson:5},
+  {id:232, english:"how much does it cost?", transliteration:"cama zeh ole",     hebrew:"כמה זה עולה?",  pos:"phrase",         gender:"",        lesson:1},
+  {id:233, english:"remember",               transliteration:"zocher",           hebrew:"זוכר",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:234, english:"to tell / narrate",      transliteration:"mesaper",          hebrew:"מספר",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:235, english:"that",                   transliteration:"she-",             hebrew:"ש־",            pos:"conjunction",    gender:"",        lesson:5},
+  {id:236, english:"central station",        transliteration:"ta'cha'na merkazit",hebrew:"תחנה מרכזית", pos:"noun",           gender:"f, s",    lesson:5},
+  {id:237, english:"arrives",                transliteration:"magiya",           hebrew:"מגיע",          pos:"verb",           gender:"m, s",    lesson:5},
+  {id:238, english:"order",                  transliteration:"seder",            hebrew:"סדר",           pos:"noun",           gender:"m, s",    lesson:5},
+  {id:239, english:"clothes",                transliteration:"bagadim",          hebrew:"בגדים",         pos:"noun",           gender:"m, pl",   lesson:5},
+  {id:240, english:"parents",                transliteration:"horim",            hebrew:"הורים",         pos:"noun",           gender:"m, pl",   lesson:5},
+  {id:241, english:"minute",                 transliteration:"daka",             hebrew:"דקה",           pos:"noun",           gender:"f, s",    lesson:4},
+  {id:242, english:"minutes",                transliteration:"dakot",            hebrew:"דקות",          pos:"noun",           gender:"f, pl",   lesson:4},
+  {id:243, english:"kitchen",                transliteration:"mitbach",          hebrew:"מטבח",          pos:"noun",           gender:"m, s",    lesson:5},
+  {id:244, english:"explain",                transliteration:"masbir",           hebrew:"מסביר",         pos:"verb",           gender:"m, s",    lesson:2},
+  {id:245, english:"twice a day",            transliteration:"pa'a'mayim bayom", hebrew:"פעמיים ביום",   pos:"adverb",         gender:"",        lesson:4},
+  {id:246, english:"brother",                transliteration:"ach",              hebrew:"אח",            pos:"noun",           gender:"m, s",    lesson:4},
+  {id:247, english:"together",               transliteration:"yachad",           hebrew:"יחד",           pos:"adverb",         gender:"",        lesson:6},
+  {id:248, english:"daily schedule",         transliteration:"looz",             hebrew:"לוז",           pos:"noun",           gender:"m, s",    lesson:6},
+  {id:249, english:"usually",                transliteration:"bederech clal",    hebrew:"בדרך כלל",      pos:"adverb",         gender:"",        lesson:4},
+  {id:250, english:"doctor",                 transliteration:"rofe",             hebrew:"רופא",          pos:"noun",           gender:"m, s",    lesson:6},
+  {id:251, english:"at / with (someone)",    transliteration:"etzel",            hebrew:"אצל",           pos:"preposition",    gender:"",        lesson:6},
+  {id:252, english:"appointment",            transliteration:"tor",              hebrew:"תור",           pos:"noun",           gender:"m, s",    lesson:6},
+  {id:253, english:"busy",                   transliteration:"asuk",             hebrew:"עסוק",          pos:"adjective",      gender:"m, s",    lesson:6},
+  {id:254, english:"break",                  transliteration:"hafsaka",          hebrew:"הפסקה",         pos:"noun",           gender:"f, s",    lesson:6},
+  {id:255, english:"vegetarian",             transliteration:"tzim'ho'niyim",    hebrew:"צמחונים",       pos:"adjective",      gender:"m, pl",   lesson:4},
+  {id:256, english:"barbecue",               transliteration:"al haesh",         hebrew:"על האש",        pos:"phrase",         gender:"",        lesson:4},
+  {id:257, english:"preparing",              transliteration:"mechinim",         hebrew:"מכינים",        pos:"verb",           gender:"m, pl",   lesson:4},
+  {id:258, english:"salad",                  transliteration:"salat",            hebrew:"סלט",           pos:"noun",           gender:"m, s",    lesson:4},
+  {id:259, english:"potatoes",               transliteration:"tapuche adama",    hebrew:"תפוחי אדמה",    pos:"noun",           gender:"m, pl",   lesson:4},
+  {id:260, english:"apple",                  transliteration:"tapuach",          hebrew:"תפוח",          pos:"noun",           gender:"m, s",    lesson:4},
+  {id:261, english:"sick",                   transliteration:"cho'le",           hebrew:"חולה",          pos:"adjective",      gender:"m, s",    lesson:4},
+  {id:262, english:"healthy",                transliteration:"br'e'im",          hebrew:"בריאים",        pos:"adjective",      gender:"m, pl",   lesson:4},
+  {id:263, english:"tasty",                  transliteration:"ta'im",            hebrew:"טעים",          pos:"adjective",      gender:"m, s",    lesson:4},
+  {id:264, english:"tasty (pl)",             transliteration:"ta'i'meem",        hebrew:"טעימים",        pos:"adjective",      gender:"m, pl",   lesson:4},
+  {id:265, english:"cook",                   transliteration:"mevashel",         hebrew:"מבשל",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:266, english:"mad",                    transliteration:"co'es",            hebrew:"כועס",          pos:"adjective",      gender:"m, s",    lesson:5},
+  {id:267, english:"tough / hard",           transliteration:"kashe",            hebrew:"קשה",           pos:"adjective",      gender:"m, s",    lesson:5},
+  {id:268, english:"vegetables",             transliteration:"ye'ra'kot",        hebrew:"ירקות",         pos:"noun",           gender:"f, pl",   lesson:4},
+  {id:269, english:"waiters",                transliteration:"mei'tza'rim",      hebrew:"מלצרים",        pos:"noun",           gender:"m, pl",   lesson:4},
+  {id:270, english:"excellent (f)",          transliteration:"metsuyenet",       hebrew:"מצוינת",        pos:"adjective",      gender:"f, s",    lesson:4},
+  {id:271, english:"problem",                transliteration:"be'aya",           hebrew:"בעיה",          pos:"noun",           gender:"f, s",    lesson:4},
+  {id:272, english:"soup",                   transliteration:"marak",            hebrew:"מרק",           pos:"noun",           gender:"m, s",    lesson:4},
+  {id:273, english:"ordinary",               transliteration:"ragil",            hebrew:"רגיל",          pos:"adjective",      gender:"m, s",    lesson:4},
+  {id:274, english:"exactly",                transliteration:"bediyuk",          hebrew:"בדיוק",         pos:"adverb",         gender:"",        lesson:3},
+  {id:275, english:"something",              transliteration:"mashehu",          hebrew:"משהו",          pos:"pronoun",        gender:"",        lesson:4},
+  {id:276, english:"cold",                   transliteration:"kar",              hebrew:"קר",            pos:"adjective",      gender:"m, s",    lesson:4},
+  {id:277, english:"sugar",                  transliteration:"succar",           hebrew:"סוכר",          pos:"noun",           gender:"m, s",    lesson:4},
+  {id:278, english:"to hear",                transliteration:"lish'moa",         hebrew:"לשמוע",         pos:"infinitive",     gender:"",        lesson:2},
+  {id:279, english:"understand",             transliteration:"mevin",            hebrew:"מבין",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:280, english:"fast",                   transliteration:"maher",            hebrew:"מהיר",          pos:"adjective/adverb",gender:"m, s",   lesson:5},
+  {id:281, english:"really / truly",         transliteration:"mamash",           hebrew:"ממש",           pos:"adverb",         gender:"",        lesson:5},
+  {id:282, english:"nice",                   transliteration:"naim",             hebrew:"נעים",          pos:"adjective",      gender:"m, s",    lesson:5},
+  {id:283, english:"strong",                 transliteration:"chazak",           hebrew:"חזק",           pos:"adjective",      gender:"m, s",    lesson:5},
+  {id:284, english:"pleasant (pl)",          transliteration:"nekhmadim",        hebrew:"נחמדים",        pos:"adjective",      gender:"m, pl",   lesson:5},
+  {id:285, english:"breakfast",              transliteration:"aruchat boker",    hebrew:"ארוחת בוקר",    pos:"noun",           gender:"f, s",    lesson:4},
+  {id:286, english:"lunch",                  transliteration:"aruchat tzohorayim",hebrew:"ארוחת צהריים", pos:"noun",           gender:"f, s",    lesson:4},
+  {id:287, english:"dinner",                 transliteration:"aruchat erev",     hebrew:"ארוחת ערב",     pos:"noun",           gender:"f, s",    lesson:4},
+  {id:288, english:"meal",                   transliteration:"arucha",           hebrew:"ארוחה",         pos:"noun",           gender:"f, s",    lesson:4},
+  {id:289, english:"egg",                    transliteration:"be'itza",          hebrew:"ביצה",          pos:"noun",           gender:"f, s",    lesson:4},
+  {id:290, english:"omelette",               transliteration:"chavita",          hebrew:"חביתה",         pos:"noun",           gender:"f, s",    lesson:4},
+  {id:291, english:"olive oil",              transliteration:"shemen zayit",     hebrew:"שמן זית",       pos:"noun",           gender:"m, s",    lesson:4},
+  {id:292, english:"soft cheese",            transliteration:"gvina levana",     hebrew:"גבינה לבנה",    pos:"noun",           gender:"f, s",    lesson:4},
+  {id:293, english:"bread rolls",            transliteration:"lach'ma'niyot",    hebrew:"לחמניות",       pos:"noun",           gender:"f, pl",   lesson:4},
+  {id:294, english:"orange (fruit, pl)",     transliteration:"tapuzim",          hebrew:"תפוזים",        pos:"noun",           gender:"m, pl",   lesson:4},
+  {id:295, english:"was born",               transliteration:"nolad",            hebrew:"נולד",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:296, english:"world",                  transliteration:"olam",             hebrew:"עולם",          pos:"noun",           gender:"m, s",    lesson:3},
+  {id:297, english:"simple",                 transliteration:"pashut",           hebrew:"פשוט",          pos:"adjective",      gender:"m, s",    lesson:1},
+  {id:298, english:"salt",                   transliteration:"melach",           hebrew:"מלח",           pos:"noun",           gender:"m, s",    lesson:4},
+  {id:299, english:"garlic",                 transliteration:"shum",             hebrew:"שום",           pos:"noun",           gender:"m, s",    lesson:4},
+  {id:300, english:"to mix",                 transliteration:"lear'bev",         hebrew:"לערבב",         pos:"infinitive",     gender:"",        lesson:2},
+  {id:301, english:"mix",                    transliteration:"mearbev",          hebrew:"מערבב",         pos:"verb",           gender:"m, s",    lesson:2},
+  {id:302, english:"bon appétit",            transliteration:"be'tei avon",      hebrew:"בתאבון",        pos:"phrase",         gender:"",        lesson:4},
+  {id:303, english:"wellness store",         transliteration:"chanut teva",      hebrew:"חנות טבע",      pos:"noun",           gender:"f, s",    lesson:4},
+  {id:304, english:"fish (pl)",              transliteration:"dagim",            hebrew:"דגים",          pos:"noun",           gender:"m, pl",   lesson:3},
+  {id:305, english:"no",                     transliteration:"lo",               hebrew:"לא",            pos:"adverb",         gender:"",        lesson:1},
+  {id:306, english:"to him",                 transliteration:"lo",               hebrew:"לו",            pos:"preposition",    gender:"",        lesson:1},
+  {id:307, english:"brother",                transliteration:"ach",              hebrew:"אח",            pos:"noun",           gender:"m, s",    lesson:3},
+  {id:308, english:"plural",                 transliteration:"ravim",            hebrew:"רבים",          pos:"adjective",      gender:"m, pl",   lesson:5},
+  {id:309, english:"singular",               transliteration:"yachid",           hebrew:"יחיד",          pos:"adjective",      gender:"m, s",    lesson:5},
+  {id:310, english:"to us",                  transliteration:"lanu",             hebrew:"לנו",           pos:"preposition",    gender:"",        lesson:1},
+  {id:311, english:"to me",                  transliteration:"li",               hebrew:"לי",            pos:"preposition",    gender:"",        lesson:1},
+  {id:312, english:"male",                   transliteration:"zachar",           hebrew:"זכר",           pos:"noun/adjective", gender:"m, s",    lesson:1},
+  {id:313, english:"female",                 transliteration:"ne'ke'va",         hebrew:"נקבה",          pos:"noun/adjective", gender:"f, s",    lesson:1},
+  {id:314, english:"to you all (f)",         transliteration:"lachen",           hebrew:"לכן",           pos:"preposition",    gender:"f, pl",   lesson:6},
+  {id:315, english:"to you all (m)",         transliteration:"lachem",           hebrew:"לכם",           pos:"preposition",    gender:"m, pl",   lesson:6},
+  {id:316, english:"to them (f)",            transliteration:"lahen",            hebrew:"להן",           pos:"preposition",    gender:"f, pl",   lesson:6},
+  {id:317, english:"to them (m)",            transliteration:"lahem",            hebrew:"להם",           pos:"preposition",    gender:"m, pl",   lesson:6},
+  {id:318, english:"to you (f)",             transliteration:"lach",             hebrew:"לך",            pos:"preposition",    gender:"f, s",    lesson:6},
+  {id:319, english:"to you (m)",             transliteration:"lecha",            hebrew:"לך",            pos:"preposition",    gender:"m, s",    lesson:6},
+  {id:320, english:"to her",                 transliteration:"lah",              hebrew:"לה",            pos:"preposition",    gender:"f, s",    lesson:6},
+  {id:321, english:"to him",                 transliteration:"lo",               hebrew:"לו",            pos:"preposition",    gender:"m, s",    lesson:6},
+  {id:322, english:"if",                     transliteration:"eem",              hebrew:"אם",            pos:"conjunction",    gender:"",        lesson:1},
+  {id:323, english:"with",                   transliteration:"eem",              hebrew:"עם",            pos:"preposition",    gender:"",        lesson:1},
+  {id:324, english:"in",                     transliteration:"ba-",              hebrew:"ב־",            pos:"preposition",    gender:"",        lesson:1},
+  {id:325, english:"coming",                 transliteration:"ba",               hebrew:"בא",            pos:"verb",           gender:"m, s",    lesson:3},
+  {id:326, english:"yes",                    transliteration:"ken",              hebrew:"כן",            pos:"adverb",         gender:"",        lesson:1},
+  {id:327, english:"nest",                   transliteration:"ken",              hebrew:"קן",            pos:"noun",           gender:"m, s",    lesson:1},
+  {id:328, english:"on",                     transliteration:"al",               hebrew:"על",            pos:"preposition",    gender:"",        lesson:3},
+  {id:329, english:"don't",                  transliteration:"al",               hebrew:"אל",            pos:"adverb",         gender:"",        lesson:3},
+  {id:330, english:"poultry / bird",         transliteration:"of",               hebrew:"עוף",           pos:"noun",           gender:"m, s",    lesson:3},
+  {id:331, english:"turkey",                 transliteration:"tarnegol hodu",    hebrew:"תרנגול הודו",   pos:"noun",           gender:"m, s",    lesson:3},
+  {id:332, english:"pomegranate",            transliteration:"rimon",            hebrew:"רימון",         pos:"noun",           gender:"m, s",    lesson:3},
+  {id:333, english:"chicken",                transliteration:"tarnegol",         hebrew:"תרנגול",        pos:"noun",           gender:"m, s",    lesson:3},
+  {id:334, english:"two hours",              transliteration:"sha'a'tayim",      hebrew:"שעתיים",        pos:"noun",           gender:"f, pl",   lesson:3},
+  {id:335, english:"alone",                  transliteration:"levad",            hebrew:"לבד",           pos:"adverb",         gender:"",        lesson:3},
+  {id:336, english:"cooking (f)",            transliteration:"mevashelet",       hebrew:"מבשלת",         pos:"verb",           gender:"f, s",    lesson:2},
+  {id:337, english:"to be",                  transliteration:"liheeyot",         hebrew:"להיות",         pos:"infinitive",     gender:"",        lesson:2},
+  {id:338, english:"more",                   transliteration:"yoter",            hebrew:"יותר",          pos:"adverb",         gender:"",        lesson:5},
+  {id:339, english:"first time",             transliteration:"pa'am rishona",    hebrew:"פעם ראשונה",    pos:"noun",           gender:"f, s",    lesson:3},
+  {id:340, english:"time / instance",        transliteration:"pa'am",            hebrew:"פעם",           pos:"noun",           gender:"f, s",    lesson:3},
+  {id:341, english:"fruit (pl)",             transliteration:"perot",            hebrew:"פירות",         pos:"noun",           gender:"m, pl",   lesson:3},
+  {id:342, english:"without",                transliteration:"be'li",            hebrew:"בלי",           pos:"preposition",    gender:"",        lesson:5},
+  {id:343, english:"animals",                transliteration:"cha'yot",          hebrew:"חיות",          pos:"noun",           gender:"f, pl",   lesson:3},
+  {id:344, english:"no one",                 transliteration:"af echad",         hebrew:"אף אחד",        pos:"pronoun",        gender:"",        lesson:6},
+  {id:345, english:"kinds / types",          transliteration:"sugim",            hebrew:"סוגים",         pos:"noun",           gender:"m, pl",   lesson:6},
+  {id:346, english:"prepare",                transliteration:"mechin",           hebrew:"מכין",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:347, english:"cost",                   transliteration:"o'le",             hebrew:"עולה",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:348, english:"build",                  transliteration:"bo'ne",            hebrew:"בונה",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:349, english:"can",                    transliteration:"yachol",           hebrew:"יכול",          pos:"verb",           gender:"m, s",    lesson:2},
+  {id:350, english:"but",                    transliteration:"aval",             hebrew:"אבל",           pos:"conjunction",    gender:"",        lesson:1},
+  {id:351, english:"child / boy",            transliteration:"yeled",            hebrew:"ילד",           pos:"noun",           gender:"m, s",    lesson:5},
+  {id:352, english:"girl",                   transliteration:"yalda",            hebrew:"ילדה",          pos:"noun",           gender:"f, s",    lesson:5},
+  {id:353, english:"very",                   transliteration:"me'od",            hebrew:"מאוד",          pos:"adverb",         gender:"",        lesson:1},
+  {id:354, english:"very good",              transliteration:"tov me'od",        hebrew:"טוב מאוד",      pos:"phrase",         gender:"",        lesson:1},
+  {id:355, english:"excellent",              transliteration:"mitzuyan",         hebrew:"מצוין",         pos:"adjective",      gender:"m, s",    lesson:1},
+  {id:356, english:"CEO",                    transliteration:"mahn'kahl",        hebrew:"מנכ\"ל",        pos:"noun",           gender:"m, s",    lesson:6},
+  {id:357, english:"percent",                transliteration:"achooz",           hebrew:"אחוז",          pos:"noun",           gender:"m, s",    lesson:6},
+  {id:358, english:"corridor",               transliteration:"mis'dron",         hebrew:"מסדרון",        pos:"noun",           gender:"m, s",    lesson:6},
+  {id:359, english:"finish",                 transliteration:"me'sa'yim",        hebrew:"מסיים",         pos:"verb",           gender:"m, s",    lesson:6},
+  {id:360, english:"office",                 transliteration:"mis'rad",          hebrew:"משרד",          pos:"noun",           gender:"m, s",    lesson:6},
+  {id:361, english:"company",                transliteration:"chevra",           hebrew:"חברה",          pos:"noun",           gender:"f, s",    lesson:6},
+  {id:362, english:"until",                  transliteration:"ad",               hebrew:"עד",            pos:"preposition",    gender:"",        lesson:6},
+  {id:363, english:"bathroom",               transliteration:"she'roo'tim",      hebrew:"שירותים",       pos:"noun",           gender:"m, pl",   lesson:6},
+  {id:364, english:"floor (of building)",    transliteration:"ko'ma",            hebrew:"קומה",          pos:"noun",           gender:"f, s",    lesson:6},
+  {id:365, english:"work desk",              transliteration:"shulchan avoda",   hebrew:"שולחן עבודה",   pos:"noun",           gender:"m, s",    lesson:6},
+  {id:366, english:"high",                   transliteration:"gavo'ah",          hebrew:"גבוה",          pos:"adjective",      gender:"m, s",    lesson:6},
+  {id:367, english:"low",                    transliteration:"namuche",          hebrew:"נמוך",          pos:"adjective",      gender:"m, s",    lesson:6},
+  {id:368, english:"ID",                     transliteration:"te'uda",           hebrew:"תעודה",         pos:"noun",           gender:"f, s",    lesson:6},
+  {id:369, english:"elevator",               transliteration:"ma'a'lit",         hebrew:"מעלית",         pos:"noun",           gender:"f, s",    lesson:6},
+  {id:370, english:"economics",              transliteration:"kalkala",          hebrew:"כלכלה",         pos:"noun",           gender:"f, s",    lesson:6},
+  {id:371, english:"entrance",               transliteration:"ke'nee'sa",        hebrew:"כניסה",         pos:"noun",           gender:"f, s",    lesson:6},
+  {id:372, english:"about (approx)",         transliteration:"kei-",             hebrew:"כ־",            pos:"preposition",    gender:"",        lesson:6},
+  {id:373, english:"to tell me",             transliteration:"lehagidli",        hebrew:"להגיד לי",      pos:"infinitive",     gender:"",        lesson:2},
+  {id:374, english:"i am an intern",         transliteration:"ani mit'ma'che",   hebrew:"אני מתמחה",     pos:"phrase",         gender:"",        lesson:6},
+  {id:375, english:"document",               transliteration:"mis'ma'che",       hebrew:"מסמך",          pos:"noun",           gender:"m, s",    lesson:6},
+  {id:376, english:"day",                    transliteration:"yom",              hebrew:"יום",           pos:"noun",           gender:"m, s",    lesson:6},
+  {id:377, english:"week",                   transliteration:"shavua",           hebrew:"שבוע",          pos:"noun",           gender:"m, s",    lesson:6},
+  {id:378, english:"month",                  transliteration:"chodesh",          hebrew:"חודש",          pos:"noun",           gender:"m, s",    lesson:6},
+  {id:379, english:"year",                   transliteration:"shana",            hebrew:"שנה",           pos:"noun",           gender:"f, s",    lesson:6},
+  {id:380, english:"signature",              transliteration:"cha'ti'ma",        hebrew:"חתימה",         pos:"noun",           gender:"f, s",    lesson:6},
+  {id:381, english:"far",                    transliteration:"rachok",           hebrew:"רחוק",          pos:"adjective",      gender:"m, s",    lesson:3},
+  {id:382, english:"one thousand",           transliteration:"elef",             hebrew:"אלף",           pos:"number",         gender:"",        lesson:6},
+  {id:383, english:"twenty",                 transliteration:"esrim",            hebrew:"עשרים",         pos:"number",         gender:"",        lesson:6},
+  {id:384, english:"thirty",                 transliteration:"shloshim",         hebrew:"שלושים",        pos:"number",         gender:"",        lesson:6},
+  {id:385, english:"forty",                  transliteration:"arba'im",          hebrew:"ארבעים",        pos:"number",         gender:"",        lesson:6},
+  {id:386, english:"fifty",                  transliteration:"chameishim",       hebrew:"חמישים",        pos:"number",         gender:"",        lesson:6},
+  {id:387, english:"sixty",                  transliteration:"shishim",          hebrew:"שישים",         pos:"number",         gender:"",        lesson:6},
+  {id:388, english:"seventy",                transliteration:"sheva'im",         hebrew:"שבעים",         pos:"number",         gender:"",        lesson:6},
+  {id:389, english:"eighty",                 transliteration:"shmonim",          hebrew:"שמונים",        pos:"number",         gender:"",        lesson:6},
+  {id:390, english:"ninety",                 transliteration:"tishim",           hebrew:"תשעים",         pos:"number",         gender:"",        lesson:6},
+  {id:391, english:"one hundred",            transliteration:"me'a",             hebrew:"מאה",           pos:"number",         gender:"",        lesson:6},
+  {id:392, english:"give me (to m)",         transliteration:"ten li",           hebrew:"תן לי",         pos:"verb",           gender:"m, s",    lesson:6},
+  {id:393, english:"give me (to f)",         transliteration:"t'ni li",          hebrew:"תני לי",        pos:"verb",           gender:"f, s",    lesson:6},
+  {id:394, english:"give us",                transliteration:"t'nu lanu",        hebrew:"תנו לנו",       pos:"verb",           gender:"pl",      lesson:6},
+  {id:395, english:"customer",               transliteration:"lakoach",          hebrew:"לקוח",          pos:"noun",           gender:"m, s",    lesson:6},
+  {id:396, english:"seller / vendor",        transliteration:"mocher",           hebrew:"מוכר",          pos:"noun",           gender:"m, s",    lesson:6},
+  {id:397, english:"salt",                   transliteration:"malach",           hebrew:"מלח",           pos:"noun",           gender:"m, s",    lesson:6},
+  {id:398, english:"piece (of something)",   transliteration:"hati'cha",         hebrew:"חתיכה",         pos:"noun",           gender:"f, s",    lesson:6},
+  {id:399, english:"run",                    transliteration:"ratz",             hebrew:"רץ",            pos:"verb",           gender:"m, s",    lesson:6},
+  {id:400, english:"wake up",                transliteration:"kam",              hebrew:"קם",            pos:"verb",           gender:"m, s",    lesson:6},
+  {id:401, english:"sing",                   transliteration:"shar",             hebrew:"שר",            pos:"verb",           gender:"m, s",    lesson:6},
+  {id:402, english:"fly",                    transliteration:"tas",              hebrew:"טס",            pos:"verb",           gender:"m, s",    lesson:6},
+  {id:403, english:"to live",                transliteration:"la'goor",          hebrew:"לגור",          pos:"infinitive",     gender:"",        lesson:3},
+  {id:404, english:"to run",                 transliteration:"larootz",          hebrew:"לרוץ",          pos:"infinitive",     gender:"",        lesson:3},
+  {id:405, english:"to wake up",             transliteration:"lakoom",           hebrew:"לקום",          pos:"infinitive",     gender:"",        lesson:3},
+  {id:406, english:"to sing",                transliteration:"lashoor",          hebrew:"לשיר",          pos:"infinitive",     gender:"",        lesson:3},
+  {id:407, english:"to fly",                 transliteration:"latoos",           hebrew:"לטוס",          pos:"infinitive",     gender:"",        lesson:3},
+  {id:408, english:"need to",                transliteration:"tzarik",           hebrew:"צריך",          pos:"verb",           gender:"m, s",    lesson:6},
+  {id:409, english:"swim",                   transliteration:"sho'che",          hebrew:"שוחה",          pos:"verb",           gender:"m, s",    lesson:3},
+  {id:410, english:"i was",                  transliteration:"ha'ee'ti",         hebrew:"הייתי",         pos:"verb",           gender:"1st, s",  lesson:6},
+  {id:411, english:"you were (m)",           transliteration:"ha'ee'ta",         hebrew:"היית",          pos:"verb",           gender:"m, s",    lesson:6},
+  {id:412, english:"you were (f)",           transliteration:"ha'eet",           hebrew:"היית",          pos:"verb",           gender:"f, s",    lesson:6},
+  {id:413, english:"he was",                 transliteration:"ha'ya",            hebrew:"היה",           pos:"verb",           gender:"m, s",    lesson:6},
+  {id:414, english:"she was",                transliteration:"hai'ta",           hebrew:"הייתה",         pos:"verb",           gender:"f, s",    lesson:6},
+  {id:415, english:"we were",                transliteration:"ha'eenu",          hebrew:"היינו",         pos:"verb",           gender:"pl",      lesson:6},
+  {id:416, english:"you all were",           transliteration:"ha'ee'tem",        hebrew:"הייתם",         pos:"verb",           gender:"m, pl",   lesson:6},
+  {id:417, english:"they were",              transliteration:"ha'yoo",           hebrew:"היו",           pos:"verb",           gender:"pl",      lesson:6},
+  {id:418, english:"night",                  transliteration:"laila",            hebrew:"לילה",          pos:"noun",           gender:"f, s",    lesson:4},
 ];
 
-// ── Storage ──────────────────────────────────────────────────────────────────
-
+// ── Storage ───────────────────────────────────────────────────────────────────
 const STORAGE_KEY = 'hebrew_fc_v1';
+function loadProgress() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || freshProgress(); } catch { return freshProgress(); } }
+function freshProgress() { return { cards:{}, totals:{gotIt:0,again:0}, deckIds:vocab.map(v=>v.id), position:0, smartReview:false, currentLesson:'all' }; }
+function save() { progress.deckIds = deck.map(v=>v.id); progress.position = index; localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); }
 
-function loadProgress() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || freshProgress(); }
-  catch { return freshProgress(); }
+// ── Lesson filter ─────────────────────────────────────────────────────────────
+let currentLesson = 'all';
+function getFilteredVocab() { return currentLesson === 'all' ? vocab : vocab.filter(v => v.lesson === currentLesson); }
+
+function selectLesson(lesson) {
+  currentLesson = lesson;
+  progress.currentLesson = lesson;
+  document.querySelectorAll('.lesson-btn').forEach(b => b.classList.toggle('active', b.dataset.lesson === String(lesson)));
+  speechSynthesis.cancel();
+  sessionCounts = {gotIt:0, again:0};
+  document.getElementById('statGood').textContent = 0;
+  document.getElementById('statAgain').textContent = 0;
+  const filtered = getFilteredVocab();
+  deck = progress.smartReview ? buildSmartDeck(filtered) : [...filtered];
+  index = 0;
+  save();
+  updateBadge();
+  renderCard();
 }
 
-function freshProgress() {
-  return {
-    cards: {},            // { [id]: { gotIt: N, again: N } }
-    totals: { gotIt: 0, again: 0 },
-    deckIds: vocab.map(v => v.id),
-    position: 0,
-    smartReview: false,
-  };
-}
-
-function save() {
-  progress.deckIds = deck.map(v => v.id);
-  progress.position = index;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+function updateBadge() {
+  const n = getFilteredVocab().length;
+  const label = currentLesson === 'all' ? `All · ${n}` : `Lesson ${currentLesson} · ${n}`;
+  document.getElementById('lessonBadge').textContent = label;
 }
 
 // ── Deck building ─────────────────────────────────────────────────────────────
-
-function buildSmartDeck() {
+function buildSmartDeck(filteredVocab) {
   const weighted = [];
-  for (const card of vocab) {
-    const h = progress.cards[card.id] || { gotIt: 0, again: 0 };
-    // unseen or struggling cards appear twice
+  for (const card of filteredVocab) {
+    const h = progress.cards[card.id] || {gotIt:0, again:0};
     const reps = (h.again > h.gotIt || (h.gotIt === 0 && h.again === 0)) ? 2 : 1;
     for (let i = 0; i < reps; i++) weighted.push(card);
   }
   return shuffle(weighted);
 }
 
-function buildNormalDeck() {
-  // restore saved order if available, otherwise original order
+function buildNormalDeck(filteredVocab) {
+  if (currentLesson !== 'all') return [...filteredVocab];
   if (progress.deckIds && progress.deckIds.length === vocab.length) {
     const map = Object.fromEntries(vocab.map(v => [v.id, v]));
     return progress.deckIds.map(id => map[id]).filter(Boolean);
   }
-  return [...vocab];
+  return [...filteredVocab];
 }
 
 function shuffle(arr) {
   const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
+  for (let i = a.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
   return a;
 }
 
 // ── State ─────────────────────────────────────────────────────────────────────
-
 let progress = loadProgress();
-let deck = [];
-let index = 0;
-let isFlipped = false;
-let isAnimating = false;
-let sessionCounts = { gotIt: 0, again: 0 };
+let deck = [], index = 0, isFlipped = false, isAnimating = false;
+let sessionCounts = {gotIt:0, again:0};
 
 function initDeck() {
-  if (progress.smartReview) {
-    deck = buildSmartDeck();
-    index = 0;
-  } else {
-    deck = buildNormalDeck();
-    index = Math.min(progress.position, deck.length - 1);
-  }
+  currentLesson = progress.currentLesson || 'all';
+  document.querySelectorAll('.lesson-btn').forEach(b => b.classList.toggle('active', b.dataset.lesson === String(currentLesson)));
   document.getElementById('smartToggle').checked = progress.smartReview;
+  const filtered = getFilteredVocab();
+  if (progress.smartReview) { deck = buildSmartDeck(filtered); index = 0; }
+  else { deck = buildNormalDeck(filtered); index = Math.min(progress.position, Math.max(0, deck.length-1)); }
+  updateBadge();
 }
 
 // ── Render ────────────────────────────────────────────────────────────────────
-
 function renderCard() {
   const card = deck[index];
-  const scene = document.getElementById('cardScene');
-  scene.classList.remove('flipped');
+  document.getElementById('cardScene').classList.remove('flipped');
   isFlipped = false;
-
   document.getElementById('frontMain').textContent = card.english;
   document.getElementById('backHebrew').textContent = card.hebrew;
   document.getElementById('backTranslit').textContent = card.transliteration;
-
-  const meta = card.gender || '';
+  const meta = [card.pos, card.gender].filter(Boolean).join(' · ');
   const metaEl = document.getElementById('backMeta');
-  metaEl.textContent = meta;
-  metaEl.style.display = meta ? 'inline-block' : 'none';
-
-  // per-card history indicator on front
+  metaEl.textContent = meta; metaEl.style.display = meta ? 'inline-block' : 'none';
   const h = progress.cards[card.id];
   const histEl = document.getElementById('cardHistory');
-  if (h && (h.gotIt > 0 || h.again > 0)) {
-    histEl.innerHTML =
-      `<span class="h-good">✓ ${h.gotIt}</span><span class="h-again">✗ ${h.again}</span>`;
-  } else {
-    histEl.innerHTML = '';
-  }
-
+  histEl.innerHTML = (h && (h.gotIt>0||h.again>0))
+    ? `<span class="h-good">✓ ${h.gotIt}</span><span class="h-again">✗ ${h.again}</span>` : '';
   document.getElementById('tapHint').textContent = 'Tap card to reveal';
   document.getElementById('audioBtn').classList.remove('speaking');
-
   const total = deck.length;
-  document.getElementById('progressText').textContent = `${index + 1} / ${total}`;
-  document.getElementById('progressBar').style.width = `${((index + 1) / total) * 100}%`;
+  document.getElementById('progressText').textContent = `${index+1} / ${total}`;
+  document.getElementById('progressBar').style.width = `${((index+1)/total)*100}%`;
   document.getElementById('btnPrev').disabled = index === 0;
-  document.getElementById('btnNext').disabled = index === total - 1;
-
+  document.getElementById('btnNext').disabled = index === total-1;
   save();
 }
 
 // ── Actions ───────────────────────────────────────────────────────────────────
-
 function flipCard() {
   if (isAnimating) return;
-  isAnimating = true;
-  setTimeout(() => { isAnimating = false; }, 460);
+  isAnimating = true; setTimeout(()=>{ isAnimating=false; }, 460);
   isFlipped = !isFlipped;
   document.getElementById('cardScene').classList.toggle('flipped', isFlipped);
   document.getElementById('tapHint').textContent = isFlipped ? 'Tap card to flip back' : 'Tap card to reveal';
 }
 
-function recordCardResult(gotIt) {
+function recordResult(gotIt) {
   const card = deck[index];
-  if (!progress.cards[card.id]) progress.cards[card.id] = { gotIt: 0, again: 0 };
-  if (gotIt) {
-    progress.cards[card.id].gotIt++;
-    progress.totals.gotIt++;
-    sessionCounts.gotIt++;
-    document.getElementById('statGood').textContent = sessionCounts.gotIt;
-  } else {
-    progress.cards[card.id].again++;
-    progress.totals.again++;
-    sessionCounts.again++;
-    document.getElementById('statAgain').textContent = sessionCounts.again;
-  }
+  if (!progress.cards[card.id]) progress.cards[card.id] = {gotIt:0, again:0};
+  if (gotIt) { progress.cards[card.id].gotIt++; progress.totals.gotIt++; sessionCounts.gotIt++; document.getElementById('statGood').textContent = sessionCounts.gotIt; }
+  else        { progress.cards[card.id].again++; progress.totals.again++; sessionCounts.again++; document.getElementById('statAgain').textContent = sessionCounts.again; }
 }
 
-function markAgain() {
-  recordCardResult(false);
-  nextCard();
-}
+function markAgain() { recordResult(false); nextCard(); }
+function markGood()  { recordResult(true);  nextCard(); }
 
-function markGood() {
-  recordCardResult(true);
-  nextCard();
-}
-
-function nextCard() {
-  speechSynthesis.cancel();
-  if (index < deck.length - 1) { index++; renderCard(); }
-  else showDone();
-}
-
-function prevCard() {
-  speechSynthesis.cancel();
-  if (index > 0) { index--; renderCard(); }
-}
+function nextCard() { speechSynthesis.cancel(); if (index < deck.length-1) { index++; renderCard(); } else showDone(); }
+function prevCard() { speechSynthesis.cancel(); if (index > 0) { index--; renderCard(); } }
 
 function shuffleDeck() {
   speechSynthesis.cancel();
-  deck = shuffle(deck);
-  index = 0;
-  sessionCounts = { gotIt: 0, again: 0 };
+  deck = shuffle(deck); index = 0;
+  sessionCounts = {gotIt:0, again:0};
   document.getElementById('statGood').textContent = 0;
   document.getElementById('statAgain').textContent = 0;
   renderCard();
@@ -717,23 +827,18 @@ function shuffleDeck() {
 function onSmartToggle() {
   progress.smartReview = document.getElementById('smartToggle').checked;
   speechSynthesis.cancel();
-  sessionCounts = { gotIt: 0, again: 0 };
+  sessionCounts = {gotIt:0, again:0};
   document.getElementById('statGood').textContent = 0;
   document.getElementById('statAgain').textContent = 0;
-  deck = progress.smartReview ? buildSmartDeck() : buildNormalDeck();
-  index = 0;
-  save();
-  renderCard();
+  const filtered = getFilteredVocab();
+  deck = progress.smartReview ? buildSmartDeck(filtered) : buildNormalDeck(filtered);
+  index = 0; save(); renderCard();
 }
 
 function showDone() {
   save();
-  document.getElementById('cardScene').style.display = 'none';
-  document.getElementById('tapHint').style.display = 'none';
-  document.querySelector('.actions').style.display = 'none';
-  document.querySelector('.nav').style.display = 'none';
-  document.querySelector('.stats').style.display = 'none';
-  document.querySelector('.smart-row').style.display = 'none';
+  ['cardScene','tapHint'].forEach(id => document.getElementById(id).style.display='none');
+  ['.actions','.nav','.stats','.smart-row','.lesson-row'].forEach(s => document.querySelector(s).style.display='none');
   document.getElementById('doneSessionGood').textContent = sessionCounts.gotIt;
   document.getElementById('doneSessionAgain').textContent = sessionCounts.again;
   document.getElementById('doneTotalGood').textContent = progress.totals.gotIt;
@@ -743,96 +848,67 @@ function showDone() {
 
 function restartDeck() {
   speechSynthesis.cancel();
-  sessionCounts = { gotIt: 0, again: 0 };
+  sessionCounts = {gotIt:0, again:0};
   document.getElementById('statGood').textContent = 0;
   document.getElementById('statAgain').textContent = 0;
-  deck = progress.smartReview ? buildSmartDeck() : shuffle([...vocab]);
+  const filtered = getFilteredVocab();
+  deck = progress.smartReview ? buildSmartDeck(filtered) : shuffle([...filtered]);
   index = 0;
-  document.getElementById('cardScene').style.display = 'block';
-  document.getElementById('tapHint').style.display = 'block';
-  document.querySelector('.actions').style.display = 'flex';
-  document.querySelector('.nav').style.display = 'flex';
-  document.querySelector('.stats').style.display = 'flex';
-  document.querySelector('.smart-row').style.display = 'flex';
+  ['cardScene','tapHint'].forEach(id => document.getElementById(id).style.display='block');
+  ['.actions','.nav','.stats','.smart-row','.lesson-row'].forEach(s => { const el=document.querySelector(s); el.style.display = s==='.lesson-row'?'flex':s==='.actions'||s==='.nav'?'flex':'flex'; });
+  document.getElementById('doneScreen').style.display = 'none';
+  renderCard();
+}
+
+function resetProgress() {
+  if (!confirm('Reset all progress? This clears your Got it / Again history.')) return;
+  speechSynthesis.cancel();
+  const sr = document.getElementById('smartToggle').checked;
+  progress = freshProgress(); progress.smartReview = sr; progress.currentLesson = currentLesson;
+  sessionCounts = {gotIt:0, again:0};
+  document.getElementById('statGood').textContent = 0;
+  document.getElementById('statAgain').textContent = 0;
+  save();
+  const filtered = getFilteredVocab();
+  deck = sr ? buildSmartDeck(filtered) : [...filtered];
+  index = 0;
+  ['cardScene','tapHint'].forEach(id => document.getElementById(id).style.display='block');
+  ['.actions','.nav','.stats','.smart-row','.lesson-row'].forEach(s => document.querySelector(s).style.display='flex');
   document.getElementById('doneScreen').style.display = 'none';
   renderCard();
 }
 
 // ── Audio ─────────────────────────────────────────────────────────────────────
-
 function playAudio(e) {
   e.stopPropagation();
   const card = deck[index];
   if (!card.hebrew || !window.speechSynthesis) return;
   const btn = document.getElementById('audioBtn');
   speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(card.hebrew);
-  utterance.lang = 'he-IL';
-  utterance.rate = 0.85;
-  utterance.onstart = () => btn.classList.add('speaking');
-  utterance.onend = () => btn.classList.remove('speaking');
-  utterance.onerror = () => btn.classList.remove('speaking');
-  speechSynthesis.speak(utterance);
+  const u = new SpeechSynthesisUtterance(card.hebrew);
+  u.lang = 'he-IL'; u.rate = 0.85;
+  u.onstart = () => btn.classList.add('speaking');
+  u.onend = u.onerror = () => btn.classList.remove('speaking');
+  speechSynthesis.speak(u);
 }
-
 document.getElementById('audioBtn').addEventListener('click', playAudio);
 document.getElementById('audioBtn').addEventListener('touchend', e => { e.preventDefault(); playAudio(e); });
 
-// ── Touch / click handling ────────────────────────────────────────────────────
-
-let touchStartX = 0, touchStartY = 0, didTouch = false;
+// ── Touch / click ─────────────────────────────────────────────────────────────
+let touchStartX=0, touchStartY=0, didTouch=false;
 const scene = document.getElementById('cardScene');
-
-scene.addEventListener('touchstart', e => {
-  touchStartX = e.touches[0].clientX;
-  touchStartY = e.touches[0].clientY;
-  didTouch = true;
-}, { passive: true });
-
+scene.addEventListener('touchstart', e => { touchStartX=e.touches[0].clientX; touchStartY=e.touches[0].clientY; didTouch=true; }, {passive:true});
 scene.addEventListener('touchend', e => {
   if (e.target.closest('#audioBtn')) return;
   e.preventDefault();
   const dx = e.changedTouches[0].clientX - touchStartX;
   const dy = e.changedTouches[0].clientY - touchStartY;
-  if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
-    dx < 0 ? markAgain() : markGood();
-  } else if (Math.abs(dx) < 10 && Math.abs(dy) < 10) {
-    flipCard();
-  }
+  if (Math.abs(dx)>50 && Math.abs(dx)>Math.abs(dy)) { dx<0 ? markAgain() : markGood(); }
+  else if (Math.abs(dx)<10 && Math.abs(dy)<10) { flipCard(); }
 });
-
-scene.addEventListener('click', e => {
-  if (e.target.closest('#audioBtn')) return;
-  if (didTouch) { didTouch = false; return; }
-  flipCard();
-});
-
-// ── Reset ─────────────────────────────────────────────────────────────────────
-
-function resetProgress() {
-  if (!confirm('Reset all progress? This clears your Got it / Again history.')) return;
-  speechSynthesis.cancel();
-  progress = freshProgress();
-  progress.smartReview = document.getElementById('smartToggle').checked;
-  sessionCounts = { gotIt: 0, again: 0 };
-  document.getElementById('statGood').textContent = 0;
-  document.getElementById('statAgain').textContent = 0;
-  save();
-  deck = progress.smartReview ? buildSmartDeck() : buildNormalDeck();
-  index = 0;
-  // make sure main UI is visible if done screen was showing
-  document.getElementById('cardScene').style.display = 'block';
-  document.getElementById('tapHint').style.display = 'block';
-  document.querySelector('.actions').style.display = 'flex';
-  document.querySelector('.nav').style.display = 'flex';
-  document.querySelector('.stats').style.display = 'flex';
-  document.querySelector('.smart-row').style.display = 'flex';
-  document.getElementById('doneScreen').style.display = 'none';
-  renderCard();
-}
+scene.addEventListener('click', e => { if (e.target.closest('#audioBtn')) return; if (didTouch){didTouch=false;return;} flipCard(); });
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
-
 initDeck();
 renderCard();
 </script>
