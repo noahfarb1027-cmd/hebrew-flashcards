@@ -184,6 +184,13 @@
     .done-stat-val { font-size: 1.2rem; font-weight: 700; color: var(--text); }
     .done-stat-val.green { color: #4ade80; }
     .done-stat-val.red   { color: #f87171; }
+    .btn-star {
+      background: none; border: none; cursor: pointer; font-size: 1.3rem; line-height: 1;
+      padding: 4px 6px; -webkit-tap-highlight-color: transparent; transition: transform 0.15s;
+      position: absolute; top: 12px; right: 14px;
+    }
+    .btn-star:active { transform: scale(1.3); }
+    .card-face { position: relative; }
     .sr-badge {
       font-size: 0.65rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
       padding: 3px 9px; border-radius: 999px; display: none;
@@ -452,8 +459,9 @@
 </header>
 
 <div class="lesson-row" id="lessonRow">
-  <button class="lesson-btn active" data-lesson="all"  onclick="selectLesson('all')">All</button>
-  <button class="lesson-btn"        data-lesson="1"    onclick="selectLesson(1)">Lesson 1</button>
+  <button class="lesson-btn active" data-lesson="all"      onclick="selectLesson('all')">All</button>
+  <button class="lesson-btn"        data-lesson="favorites" onclick="selectLesson('favorites')">⭐ Favorites</button>
+  <button class="lesson-btn"        data-lesson="1"         onclick="selectLesson(1)">Lesson 1</button>
   <button class="lesson-btn"        data-lesson="2"    onclick="selectLesson(2)">Lesson 2</button>
   <button class="lesson-btn"        data-lesson="3"    onclick="selectLesson(3)">Lesson 3</button>
   <button class="lesson-btn"        data-lesson="4"    onclick="selectLesson(4)">Lesson 4</button>
@@ -467,6 +475,7 @@
 <div class="card-scene" id="cardScene">
   <div class="card-inner">
     <div class="card-face card-front">
+      <button class="btn-star" id="btnStar" onclick="toggleFavorite(event)">☆</button>
       <div class="card-label">English</div>
       <div class="card-main" id="frontMain"></div>
       <div class="card-history" id="cardHistory"></div>
@@ -566,6 +575,7 @@
         <th>Hebrew</th>
         <th>POS</th>
         <th>L</th>
+        <th>⭐</th>
         <th></th>
       </tr>
     </thead>
@@ -675,6 +685,7 @@
     <div class="setup-label">Lesson</div>
     <div class="setup-pills" id="quizLessonPills">
       <button class="pill active" onclick="setQuizOpt('lesson','quizLessonPills',this,'all')">All</button>
+      <button class="pill" onclick="setQuizOpt('lesson','quizLessonPills',this,'favorites')">⭐ Favorites</button>
       <button class="pill" onclick="setQuizOpt('lesson','quizLessonPills',this,1)">Lesson 1</button>
       <button class="pill" onclick="setQuizOpt('lesson','quizLessonPills',this,2)">Lesson 2</button>
       <button class="pill" onclick="setQuizOpt('lesson','quizLessonPills',this,3)">Lesson 3</button>
@@ -865,7 +876,7 @@ const vocab = [
   {id:53, english:"foot", transliteration:"regel", hebrew:"רגל", pos:"noun", gender:"f, s", lesson:3},
   {id:54, english:"basket", transliteration:"sal", hebrew:"סל", pos:"noun", gender:"m, s", lesson:3},
   {id:55, english:"hand", transliteration:"yad", hebrew:"יד", pos:"noun", gender:"f, s", lesson:3},
-  {id:56, english:"traveling", transliteration:"may'ta'yeel", hebrew:"מטייל", pos:"verb", gender:"m, s", lesson:3},
+  {id:56, english:"traveling", transliteration:"met'a'yel", hebrew:"מטייל", pos:"verb", gender:"m, s", lesson:3},
   {id:57, english:"soccer", transliteration:"ka'duur regel", hebrew:"כדור רגל", pos:"noun", gender:"m, s", lesson:3},
   {id:58, english:"basketball", transliteration:"ka'duur sal", hebrew:"כדור סל", pos:"noun", gender:"m, s", lesson:3},
   {id:59, english:"volleyball", transliteration:"ka'duur yad", hebrew:"כדור יד", pos:"noun", gender:"m, s", lesson:3},
@@ -1233,12 +1244,31 @@ const vocab = [
 // ── Storage ───────────────────────────────────────────────────────────────────
 const STORAGE_KEY = 'hebrew_fc_v1';
 const EDITS_KEY = 'hebrew_fc_edits';
+const FAVS_KEY = 'hebrew_fc_favs';
 function loadProgress() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || freshProgress(); } catch { return freshProgress(); } }
 function freshProgress() { return { cards:{}, totals:{gotIt:0,again:0}, deckIds:getEffectiveVocab().map(v=>v.id), position:0, smartReview:false, currentLesson:'all' }; }
 function save() { progress.deckIds = deck.map(v=>v.id); progress.position = index; localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); }
 
 // ── Lesson filter ─────────────────────────────────────────────────────────────
 let currentLesson = 'all';
+// ── Favorites ─────────────────────────────────────────────────────────────────
+function getFavs() { try { return new Set(JSON.parse(localStorage.getItem(FAVS_KEY) || '[]')); } catch { return new Set(); } }
+function saveFavs(set) { localStorage.setItem(FAVS_KEY, JSON.stringify([...set])); }
+function isFav(id) { return getFavs().has(id); }
+function toggleFavorite(e) {
+  e.stopPropagation();
+  const card = deck[index];
+  if (!card) return;
+  const favs = getFavs();
+  if (favs.has(card.id)) favs.delete(card.id); else favs.add(card.id);
+  saveFavs(favs);
+  updateStarBtn(card.id);
+}
+function updateStarBtn(id) {
+  const btn = document.getElementById('btnStar');
+  if (btn) btn.textContent = isFav(id) ? '⭐' : '☆';
+}
+
 function getEffectiveVocab() {
   let edits = {};
   try { edits = JSON.parse(localStorage.getItem(EDITS_KEY) || '{}'); } catch {}
@@ -1246,7 +1276,12 @@ function getEffectiveVocab() {
   const added = Object.entries(edits).filter(([id]) => Number(id) >= 1000).map(([, w]) => w);
   return [...edited, ...added];
 }
-function getFilteredVocab() { const ev = getEffectiveVocab(); return currentLesson === 'all' ? ev : ev.filter(v => v.lesson === currentLesson); }
+function getFilteredVocab() {
+  const ev = getEffectiveVocab();
+  if (currentLesson === 'all') return ev;
+  if (currentLesson === 'favorites') { const f = getFavs(); return ev.filter(v => f.has(v.id)); }
+  return ev.filter(v => v.lesson === currentLesson);
+}
 
 function selectLesson(lesson) {
   currentLesson = lesson;
@@ -1267,7 +1302,7 @@ function selectLesson(lesson) {
 
 function updateBadge() {
   const n = getFilteredVocab().length;
-  const label = currentLesson === 'all' ? `All · ${n}` : `Lesson ${currentLesson} · ${n}`;
+  const label = currentLesson === 'all' ? `All · ${n}` : currentLesson === 'favorites' ? `⭐ Favorites · ${n}` : `Lesson ${currentLesson} · ${n}`;
   document.getElementById('lessonBadge').textContent = label;
 }
 
@@ -1385,6 +1420,7 @@ function renderCard() {
       badge.style.display = 'none';
     }
   }
+  updateStarBtn(card.id);
   document.getElementById('tapHint').textContent = 'Tap card to reveal';
   document.getElementById('audioBtn').classList.remove('speaking');
   const total = deck.length;
@@ -1557,23 +1593,33 @@ function renderBrowser() {
     return true;
   });
   document.getElementById('wordCount').textContent = `${filtered.length} word${filtered.length===1?'':'s'}`;
+  const favs = getFavs();
   const tbody = document.getElementById('wordTableBody');
   tbody.innerHTML = filtered.map(w => {
     const isNew = w.id >= 1000;
     const isEdited = !isNew && edits[w.id];
     const badge = isNew ? '<span class="word-badge">new</span>' : (isEdited ? '<span class="word-badge">edited</span>' : '');
-    return `<tr onclick="openEditor(${w.id})">
-      <td>${esc(w.english)}${badge}</td>
-      <td>${esc(w.transliteration)}</td>
-      <td class="td-hebrew">${esc(w.hebrew||'')}</td>
-      <td class="td-pos">${esc(w.pos)}</td>
-      <td class="td-lesson">${w.lesson}</td>
-      <td class="td-edit">›</td>
+    const starred = favs.has(w.id);
+    return `<tr>
+      <td onclick="openEditor(${w.id})">${esc(w.english)}${badge}</td>
+      <td onclick="openEditor(${w.id})">${esc(w.transliteration)}</td>
+      <td class="td-hebrew" onclick="openEditor(${w.id})">${esc(w.hebrew||'')}</td>
+      <td class="td-pos" onclick="openEditor(${w.id})">${esc(w.pos)}</td>
+      <td class="td-lesson" onclick="openEditor(${w.id})">${w.lesson}</td>
+      <td style="text-align:center"><button onclick="toggleFavBrowser(${w.id},this)" style="background:none;border:none;cursor:pointer;font-size:1.1rem;padding:4px;-webkit-tap-highlight-color:transparent">${starred?'⭐':'☆'}</button></td>
+      <td class="td-edit" onclick="openEditor(${w.id})">›</td>
     </tr>`;
   }).join('');
 }
 
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function toggleFavBrowser(id, btn) {
+  const favs = getFavs();
+  if (favs.has(id)) { favs.delete(id); btn.textContent = '☆'; }
+  else              { favs.add(id);    btn.textContent = '⭐'; }
+  saveFavs(favs);
+}
 
 document.getElementById('browserSearch').addEventListener('input', renderBrowser);
 document.getElementById('browserLesson').addEventListener('change', renderBrowser);
@@ -1672,7 +1718,8 @@ function setQuizOpt(key, pillsId, btn, val) {
 
 function getQuizPool() {
   let pool = getEffectiveVocab().filter(w => w.hebrew && w.hebrew.trim());
-  if (quizConfig.lesson !== 'all') pool = pool.filter(w => w.lesson === quizConfig.lesson);
+  if (quizConfig.lesson === 'favorites') { const f = getFavs(); pool = pool.filter(w => f.has(w.id)); }
+  else if (quizConfig.lesson !== 'all') pool = pool.filter(w => w.lesson === quizConfig.lesson);
   if (quizConfig.pos !== 'all') pool = pool.filter(w => (w.pos||'').toLowerCase().includes(quizConfig.pos));
   return pool;
 }
