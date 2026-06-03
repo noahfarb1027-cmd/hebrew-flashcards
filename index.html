@@ -190,10 +190,135 @@
       font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 4px;
       box-shadow: 0 4px 16px rgba(251,191,36,0.35);
     }
+
+    /* ── Home screen ──────────────────────────────────────────── */
+    #homeScreen {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 80vh; width: 100%; max-width: 480px; gap: 24px; padding-top: 10px;
+    }
+    .home-title { font-size: 2.4rem; font-weight: 800; color: var(--text); text-align: center; letter-spacing: 0.02em; }
+    .home-subtitle { font-size: 0.88rem; color: var(--text-muted); text-align: center; margin-top: -14px; }
+    .mode-grid { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+    .mode-card {
+      width: 100%; padding: 20px 22px; border-radius: 16px; cursor: pointer;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      display: flex; align-items: center; gap: 18px; text-align: left;
+      -webkit-tap-highlight-color: transparent; transition: background 0.15s, transform 0.1s;
+    }
+    .mode-card:active { background: rgba(255,255,255,0.12); transform: scale(0.98); }
+    .mode-card-icon { font-size: 2rem; flex-shrink: 0; }
+    .mode-card-name { font-size: 1.05rem; font-weight: 700; color: var(--text); }
+    .mode-card-desc { font-size: 0.78rem; color: var(--text-muted); margin-top: 3px; }
+
+    /* ── Shared view header ───────────────────────────────────── */
+    .view-header {
+      width: 100%; max-width: 480px; display: flex; align-items: center; gap: 12px;
+      padding: 16px 0 12px;
+    }
+    .btn-home {
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-muted); font-size: 0.8rem; font-weight: 600;
+      padding: 6px 14px; border-radius: 999px; cursor: pointer; flex-shrink: 0;
+      -webkit-tap-highlight-color: transparent; transition: background 0.15s;
+    }
+    .btn-home:active { background: rgba(255,255,255,0.14); }
+    .view-header h2 { flex: 1; font-size: 1.1rem; font-weight: 700; color: var(--text); }
+
+    /* ── Word browser ─────────────────────────────────────────── */
+    #browserView { display: none; flex-direction: column; align-items: center; width: 100%; }
+    .browser-filters { width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+    .browser-search {
+      width: 100%; padding: 11px 14px; border-radius: 12px; font-size: 0.9rem;
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text); outline: none;
+    }
+    .browser-search::placeholder { color: var(--text-dim); }
+    .browser-search:focus { border-color: rgba(251,191,36,0.4); }
+    .browser-selects { display: flex; gap: 8px; }
+    .browser-select {
+      flex: 1; padding: 9px 10px; border-radius: 10px; font-size: 0.8rem;
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-muted); outline: none; cursor: pointer;
+      -webkit-appearance: none; appearance: none;
+    }
+    .browser-select:focus { border-color: rgba(251,191,36,0.4); }
+    .word-count { width: 100%; max-width: 480px; font-size: 0.75rem; color: var(--text-dim); margin-bottom: 6px; }
+    .word-table { width: 100%; max-width: 480px; border-collapse: collapse; font-size: 0.8rem; }
+    .word-table th {
+      text-align: left; color: var(--text-dim); font-size: 0.68rem; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 6px 6px; border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .word-table td { padding: 9px 6px; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--text); vertical-align: middle; }
+    .word-table tbody tr:hover td { background: rgba(255,255,255,0.04); cursor: pointer; }
+    .td-hebrew { direction: rtl; color: var(--gold); }
+    .td-pos { color: var(--text-muted); font-size: 0.7rem; }
+    .td-lesson { color: var(--text-dim); text-align: center; }
+    .td-edit { color: var(--text-dim); text-align: center; }
+    .word-badge { font-size: 0.6rem; background: rgba(251,191,36,0.2); color: var(--gold); padding: 1px 5px; border-radius: 999px; margin-left: 4px; vertical-align: middle; }
+
+    /* ── Editor ───────────────────────────────────────────────── */
+    #editorView { display: none; flex-direction: column; align-items: center; width: 100%; }
+    .editor-form {
+      width: 100%; max-width: 480px; background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;
+      padding: 20px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px;
+    }
+    .field-row { display: flex; gap: 10px; }
+    .field-group { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+    .field-label { font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); }
+    .field-input {
+      padding: 10px 12px; border-radius: 10px; font-size: 0.9rem;
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text); outline: none; width: 100%;
+    }
+    .field-input:focus { border-color: rgba(251,191,36,0.4); }
+    .field-input.rtl { direction: rtl; font-size: 1.05rem; }
+    .field-select {
+      padding: 10px 12px; border-radius: 10px; font-size: 0.88rem;
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text); outline: none; width: 100%; -webkit-appearance: none; appearance: none; cursor: pointer;
+    }
+    .field-select:focus { border-color: rgba(251,191,36,0.4); }
+    .editor-btns { display: flex; gap: 8px; margin-top: 2px; }
+    .btn-save { background: linear-gradient(135deg,#fbbf24,#f59e0b); color: #0d0d0d; border: none; padding: 13px 0; border-radius: 12px; font-size: 0.95rem; font-weight: 700; cursor: pointer; flex: 2; -webkit-tap-highlight-color: transparent; }
+    .btn-cancel { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); color: var(--text-muted); padding: 13px 0; border-radius: 12px; font-size: 0.9rem; font-weight: 600; cursor: pointer; flex: 1; -webkit-tap-highlight-color: transparent; }
+    .btn-delete { background: rgba(220,38,38,0.15); border: 1px solid rgba(220,38,38,0.3); color: #f87171; padding: 13px 0; border-radius: 12px; font-size: 0.9rem; font-weight: 600; cursor: pointer; flex: 1; -webkit-tap-highlight-color: transparent; }
+    .btn-export { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); color: var(--text-muted); padding: 6px 12px; border-radius: 999px; font-size: 0.74rem; font-weight: 600; cursor: pointer; white-space: nowrap; -webkit-tap-highlight-color: transparent; }
+    .editor-hint { width: 100%; max-width: 480px; font-size: 0.8rem; color: var(--text-dim); text-align: center; margin-top: 4px; padding-bottom: 40px; }
+    .editor-hint a { color: var(--gold); cursor: pointer; text-decoration: underline; }
   </style>
 </head>
 <body>
 
+<div id="homeScreen">
+  <div class="home-title">Hebrew</div>
+  <div class="home-subtitle" id="homeSubtitle">418 words · 6 lessons</div>
+  <div class="mode-grid">
+    <button class="mode-card" onclick="enterFlashcards()">
+      <div class="mode-card-icon">🃏</div>
+      <div>
+        <div class="mode-card-name">Flashcards</div>
+        <div class="mode-card-desc">Study with flip cards</div>
+      </div>
+    </button>
+    <button class="mode-card" onclick="showView('browser')">
+      <div class="mode-card-icon">🔍</div>
+      <div>
+        <div class="mode-card-name">Word Browser</div>
+        <div class="mode-card-desc">Search all words by lesson, type, or text</div>
+      </div>
+    </button>
+    <button class="mode-card" onclick="showView('editor')">
+      <div class="mode-card-icon">✏️</div>
+      <div>
+        <div class="mode-card-name">Edit Words</div>
+        <div class="mode-card-desc">Add or correct vocabulary</div>
+      </div>
+    </button>
+  </div>
+</div>
+
+<div id="flashcardView" style="display:none">
 <header>
   <h1>Hebrew Flashcards</h1>
   <div class="header-right">
@@ -271,6 +396,118 @@
     <div class="done-stat"><div class="done-stat-label">&nbsp;</div><div class="done-stat-val red" id="doneTotalAgain">0</div><div class="done-stat-label">again</div></div>
   </div>
   <button class="btn-restart" onclick="restartDeck()">Go again</button>
+</div>
+
+</div><!-- /flashcardView -->
+
+<!-- ── Word Browser ─────────────────────────────────────────────── -->
+<div id="browserView">
+  <div class="view-header">
+    <button class="btn-home" onclick="showView('home')">← Home</button>
+    <h2>Word Browser</h2>
+  </div>
+  <div class="browser-filters">
+    <input class="browser-search" id="browserSearch" type="text" placeholder="Search English, transliteration, Hebrew..." autocomplete="off" autocorrect="off" autocapitalize="off">
+    <div class="browser-selects">
+      <select class="browser-select" id="browserLesson">
+        <option value="">All Lessons</option>
+        <option value="1">Lesson 1</option>
+        <option value="2">Lesson 2</option>
+        <option value="3">Lesson 3</option>
+        <option value="4">Lesson 4</option>
+        <option value="5">Lesson 5</option>
+        <option value="6">Lesson 6</option>
+      </select>
+      <select class="browser-select" id="browserPos">
+        <option value="">All Parts of Speech</option>
+        <option value="verb">Verb</option>
+        <option value="noun">Noun</option>
+        <option value="adjective">Adjective</option>
+        <option value="adverb">Adverb</option>
+        <option value="preposition">Preposition</option>
+        <option value="pronoun">Pronoun</option>
+        <option value="conjunction">Conjunction</option>
+        <option value="interjection">Interjection</option>
+        <option value="phrase">Phrase</option>
+      </select>
+    </div>
+  </div>
+  <div class="word-count" id="wordCount"></div>
+  <table class="word-table">
+    <thead>
+      <tr>
+        <th>English</th>
+        <th>Translit.</th>
+        <th>Hebrew</th>
+        <th>POS</th>
+        <th>L</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="wordTableBody"></tbody>
+  </table>
+</div>
+
+<!-- ── Editor ───────────────────────────────────────────────────── -->
+<div id="editorView">
+  <div class="view-header">
+    <button class="btn-home" onclick="showView('home')">← Home</button>
+    <h2 id="editorTitle">Add Word</h2>
+    <button class="btn-export" onclick="exportVocab()">Export vocab.js</button>
+  </div>
+  <div class="editor-form">
+    <input type="hidden" id="editId">
+    <div class="field-row">
+      <div class="field-group" style="flex:2">
+        <div class="field-label">English</div>
+        <input class="field-input" id="editEnglish" type="text" placeholder="e.g. hello" autocorrect="off" autocapitalize="off">
+      </div>
+      <div class="field-group">
+        <div class="field-label">Lesson</div>
+        <select class="field-select" id="editLesson">
+          <option value="1">1</option><option value="2">2</option>
+          <option value="3">3</option><option value="4">4</option>
+          <option value="5">5</option><option value="6">6</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-group">
+      <div class="field-label">Transliteration</div>
+      <input class="field-input" id="editTranslit" type="text" placeholder="e.g. sha'lom" autocorrect="off" autocapitalize="off">
+    </div>
+    <div class="field-group">
+      <div class="field-label">Hebrew</div>
+      <input class="field-input rtl" id="editHebrew" type="text" placeholder="שלום">
+    </div>
+    <div class="field-row">
+      <div class="field-group" style="flex:2">
+        <div class="field-label">Part of Speech</div>
+        <select class="field-select" id="editPos">
+          <option value="verb">verb</option>
+          <option value="noun">noun</option>
+          <option value="adjective">adjective</option>
+          <option value="adverb">adverb</option>
+          <option value="preposition">preposition</option>
+          <option value="pronoun">pronoun</option>
+          <option value="conjunction">conjunction</option>
+          <option value="interjection">interjection</option>
+          <option value="phrase">phrase</option>
+          <option value="noun/adjective">noun/adjective</option>
+          <option value="other">other</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <div class="field-label">Gender/Number</div>
+        <input class="field-input" id="editGender" type="text" placeholder="m, s" autocorrect="off" autocapitalize="off">
+      </div>
+    </div>
+    <div class="editor-btns">
+      <button class="btn-save" onclick="saveEdit()">Save</button>
+      <button class="btn-cancel" onclick="cancelEdit()">Cancel</button>
+      <button class="btn-delete" id="btnDeleteWord" onclick="deleteWord()" style="display:none">Delete</button>
+    </div>
+  </div>
+  <div class="editor-hint">Click a word in the <a onclick="showView('browser')">Word Browser</a> to edit it, or fill the form above to add a new word.</div>
 </div>
 
 <script>
@@ -697,13 +934,21 @@ const vocab = [
 
 // ── Storage ───────────────────────────────────────────────────────────────────
 const STORAGE_KEY = 'hebrew_fc_v1';
+const EDITS_KEY = 'hebrew_fc_edits';
 function loadProgress() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || freshProgress(); } catch { return freshProgress(); } }
-function freshProgress() { return { cards:{}, totals:{gotIt:0,again:0}, deckIds:vocab.map(v=>v.id), position:0, smartReview:false, currentLesson:'all' }; }
+function freshProgress() { return { cards:{}, totals:{gotIt:0,again:0}, deckIds:getEffectiveVocab().map(v=>v.id), position:0, smartReview:false, currentLesson:'all' }; }
 function save() { progress.deckIds = deck.map(v=>v.id); progress.position = index; localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); }
 
 // ── Lesson filter ─────────────────────────────────────────────────────────────
 let currentLesson = 'all';
-function getFilteredVocab() { return currentLesson === 'all' ? vocab : vocab.filter(v => v.lesson === currentLesson); }
+function getEffectiveVocab() {
+  let edits = {};
+  try { edits = JSON.parse(localStorage.getItem(EDITS_KEY) || '{}'); } catch {}
+  const edited = vocab.map(w => edits[w.id] ? { ...w, ...edits[w.id] } : w);
+  const added = Object.entries(edits).filter(([id]) => Number(id) >= 1000).map(([, w]) => w);
+  return [...edited, ...added];
+}
+function getFilteredVocab() { const ev = getEffectiveVocab(); return currentLesson === 'all' ? ev : ev.filter(v => v.lesson === currentLesson); }
 
 function selectLesson(lesson) {
   currentLesson = lesson;
@@ -740,8 +985,9 @@ function buildSmartDeck(filteredVocab) {
 
 function buildNormalDeck(filteredVocab) {
   if (currentLesson !== 'all') return [...filteredVocab];
-  if (progress.deckIds && progress.deckIds.length === vocab.length) {
-    const map = Object.fromEntries(vocab.map(v => [v.id, v]));
+  const ev = getEffectiveVocab();
+  if (progress.deckIds && progress.deckIds.length === ev.length) {
+    const map = Object.fromEntries(ev.map(v => [v.id, v]));
     return progress.deckIds.map(id => map[id]).filter(Boolean);
   }
   return [...filteredVocab];
@@ -908,9 +1154,148 @@ scene.addEventListener('touchend', e => {
 });
 scene.addEventListener('click', e => { if (e.target.closest('#audioBtn')) return; if (didTouch){didTouch=false;return;} flipCard(); });
 
+// ── View system ───────────────────────────────────────────────────────────────
+function showView(view) {
+  document.getElementById('homeScreen').style.display    = view === 'home'      ? 'flex'  : 'none';
+  document.getElementById('flashcardView').style.display = view === 'flashcard' ? 'block' : 'none';
+  document.getElementById('browserView').style.display   = view === 'browser'   ? 'flex'  : 'none';
+  document.getElementById('editorView').style.display    = view === 'editor'    ? 'flex'  : 'none';
+  if (view === 'home') {
+    const ev = getEffectiveVocab();
+    document.getElementById('homeSubtitle').textContent = `${ev.length} word${ev.length===1?'':'s'} · 6 lessons`;
+  }
+  if (view === 'browser') renderBrowser();
+  if (view === 'editor' && editorEditingId === null) clearEditorForm();
+}
+
+function enterFlashcards() {
+  showView('flashcard');
+  document.getElementById('doneScreen').style.display = 'none';
+  document.getElementById('cardScene').style.display = 'block';
+  document.getElementById('tapHint').style.display = 'block';
+  ['.actions','.nav','.stats','.smart-row','.lesson-row'].forEach(s => { const el = document.querySelector(s); if (el) el.style.display = 'flex'; });
+  initDeck();
+  renderCard();
+}
+
+// ── Word browser ──────────────────────────────────────────────────────────────
+function renderBrowser() {
+  const q = (document.getElementById('browserSearch').value || '').toLowerCase();
+  const lessonF = document.getElementById('browserLesson').value;
+  const posF = document.getElementById('browserPos').value;
+  const edits = (() => { try { return JSON.parse(localStorage.getItem(EDITS_KEY) || '{}'); } catch { return {}; } })();
+  const ev = getEffectiveVocab();
+  const filtered = ev.filter(w => {
+    if (lessonF && String(w.lesson) !== lessonF) return false;
+    if (posF && !w.pos.toLowerCase().includes(posF.toLowerCase())) return false;
+    if (q && !w.english.toLowerCase().includes(q) && !(w.transliteration||'').toLowerCase().includes(q) && !(w.hebrew||'').includes(q)) return false;
+    return true;
+  });
+  document.getElementById('wordCount').textContent = `${filtered.length} word${filtered.length===1?'':'s'}`;
+  const tbody = document.getElementById('wordTableBody');
+  tbody.innerHTML = filtered.map(w => {
+    const isNew = w.id >= 1000;
+    const isEdited = !isNew && edits[w.id];
+    const badge = isNew ? '<span class="word-badge">new</span>' : (isEdited ? '<span class="word-badge">edited</span>' : '');
+    return `<tr onclick="openEditor(${w.id})">
+      <td>${esc(w.english)}${badge}</td>
+      <td>${esc(w.transliteration)}</td>
+      <td class="td-hebrew">${esc(w.hebrew||'')}</td>
+      <td class="td-pos">${esc(w.pos)}</td>
+      <td class="td-lesson">${w.lesson}</td>
+      <td class="td-edit">›</td>
+    </tr>`;
+  }).join('');
+}
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+document.getElementById('browserSearch').addEventListener('input', renderBrowser);
+document.getElementById('browserLesson').addEventListener('change', renderBrowser);
+document.getElementById('browserPos').addEventListener('change', renderBrowser);
+
+// ── Editor ────────────────────────────────────────────────────────────────────
+let editorEditingId = null;
+
+function openEditor(id) {
+  const ev = getEffectiveVocab();
+  const word = ev.find(w => w.id === id);
+  if (!word) return;
+  editorEditingId = id;
+  document.getElementById('editorTitle').textContent = 'Edit Word';
+  document.getElementById('editId').value = id;
+  document.getElementById('editEnglish').value = word.english || '';
+  document.getElementById('editTranslit').value = word.transliteration || '';
+  document.getElementById('editHebrew').value = word.hebrew || '';
+  document.getElementById('editPos').value = word.pos || 'noun';
+  document.getElementById('editGender').value = word.gender || '';
+  document.getElementById('editLesson').value = word.lesson || 1;
+  document.getElementById('btnDeleteWord').style.display = id >= 1000 ? 'block' : 'none';
+  showView('editor');
+}
+
+function clearEditorForm() {
+  editorEditingId = null;
+  document.getElementById('editorTitle').textContent = 'Add Word';
+  ['editId','editEnglish','editTranslit','editHebrew','editGender'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('editPos').value = 'noun';
+  document.getElementById('editLesson').value = '1';
+  document.getElementById('btnDeleteWord').style.display = 'none';
+}
+
+function cancelEdit() {
+  const wasEditing = editorEditingId !== null;
+  clearEditorForm();
+  showView(wasEditing ? 'browser' : 'home');
+}
+
+function saveEdit() {
+  const english = document.getElementById('editEnglish').value.trim();
+  if (!english) { alert('English word is required.'); return; }
+  const translit = document.getElementById('editTranslit').value.trim();
+  const hebrew   = document.getElementById('editHebrew').value.trim();
+  const pos      = document.getElementById('editPos').value;
+  const gender   = document.getElementById('editGender').value.trim();
+  const lesson   = parseInt(document.getElementById('editLesson').value, 10);
+  let edits = {};
+  try { edits = JSON.parse(localStorage.getItem(EDITS_KEY) || '{}'); } catch {}
+  let id = editorEditingId;
+  if (!id) {
+    const customIds = Object.keys(edits).map(Number).filter(n => n >= 1000);
+    id = customIds.length > 0 ? Math.max(...customIds) + 1 : 1000;
+  }
+  edits[id] = { id, english, transliteration: translit, hebrew, pos, gender, lesson };
+  localStorage.setItem(EDITS_KEY, JSON.stringify(edits));
+  clearEditorForm();
+  showView('browser');
+}
+
+function deleteWord() {
+  if (!editorEditingId || editorEditingId < 1000) return;
+  if (!confirm('Delete this custom word?')) return;
+  let edits = {};
+  try { edits = JSON.parse(localStorage.getItem(EDITS_KEY) || '{}'); } catch {}
+  delete edits[editorEditingId];
+  localStorage.setItem(EDITS_KEY, JSON.stringify(edits));
+  clearEditorForm();
+  showView('browser');
+}
+
+function exportVocab() {
+  const ev = getEffectiveVocab();
+  const lines = ev.map(w =>
+    `  {id:${w.id}, english:${JSON.stringify(w.english)}, transliteration:${JSON.stringify(w.transliteration||'')}, hebrew:${JSON.stringify(w.hebrew||'')}, pos:${JSON.stringify(w.pos||'')}, gender:${JSON.stringify(w.gender||'')}, lesson:${w.lesson}}`
+  );
+  const js = `// Exported vocab — replace the vocab array in index.html with this content\nconst vocab = [\n${lines.join(',\n')}\n];\n`;
+  const blob = new Blob([js], {type:'text/javascript'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'vocab-export.js';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
 // ── Boot ──────────────────────────────────────────────────────────────────────
 initDeck();
-renderCard();
+showView('home');
 </script>
 </body>
 </html>
