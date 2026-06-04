@@ -395,8 +395,17 @@
     .btn-next-q {
       width:100%; max-width:480px; padding:14px; border-radius:12px; cursor:pointer;
       background:rgba(255,255,255,0.09); border:1px solid rgba(255,255,255,0.15); color:var(--text);
-      font-size:0.95rem; font-weight:600; -webkit-tap-highlight-color:transparent; margin-bottom:20px;
+      font-size:0.95rem; font-weight:600; -webkit-tap-highlight-color:transparent;
     }
+    .action-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
+      display: flex; flex-direction: column; gap: 8px;
+      padding: 10px 16px max(12px, env(safe-area-inset-bottom));
+      background: linear-gradient(to bottom, transparent, #111 22%);
+      pointer-events: none;
+    }
+    .action-bar > * { pointer-events: auto; }
+    #quizView, #grammarView { padding-bottom: 100px; }
     .quiz-results-card {
       width:100%; max-width:480px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1);
       border-radius:20px; padding:28px 24px; text-align:center; margin-bottom:20px;
@@ -798,7 +807,6 @@
     </div>
     <!-- English text input (he→en) -->
     <input class="quiz-en-input" id="quizEnInput" type="text" placeholder="Type the English meaning..." autocorrect="off" autocapitalize="off">
-    <button class="quiz-check-btn" onclick="submitTypeAnswer()">Check Answer</button>
   </div>
 
   <!-- Feedback -->
@@ -808,9 +816,14 @@
     <div class="quiz-fb-answer" id="quizFbAnswer"></div>
     <div class="quiz-fb-hebrew" id="quizFbHebrew"></div>
   </div>
-  <div style="width:100%;max-width:480px;display:flex;gap:10px">
-    <button class="btn-next-q" id="btnNextQ" onclick="nextQuizQuestion()" style="display:none;flex:1">Next →</button>
-    <button id="btnOverride" onclick="overrideAnswer()" style="display:none;padding:14px 16px;border-radius:12px;cursor:pointer;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text-muted);font-size:0.82rem;font-weight:600;white-space:nowrap;-webkit-tap-highlight-color:transparent"></button>
+
+  <!-- Fixed action bar -->
+  <div class="action-bar">
+    <button class="quiz-check-btn" id="quizCheckBtn" onclick="submitTypeAnswer()" style="display:none">Check Answer</button>
+    <div style="display:flex;gap:10px;width:100%">
+      <button class="btn-next-q" id="btnNextQ" onclick="nextQuizQuestion()" style="display:none;flex:1">Next →</button>
+      <button id="btnOverride" onclick="overrideAnswer()" style="display:none;padding:14px 16px;border-radius:12px;cursor:pointer;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text-muted);font-size:0.82rem;font-weight:600;white-space:nowrap;-webkit-tap-highlight-color:transparent"></button>
+    </div>
   </div>
 </div>
 
@@ -920,7 +933,6 @@
         <button class="heb-key del" onclick="gramHebBackspace()">⌫</button>
       </div>
     </div>
-    <button class="quiz-check-btn" onclick="submitGrammarAnswer()">Check Answer</button>
   </div>
   <div class="quiz-feedback" id="grammarFeedback" style="display:none">
     <div class="quiz-fb-icon" id="grammarFbIcon"></div>
@@ -928,9 +940,14 @@
     <div class="quiz-fb-answer" id="grammarFbAnswer"></div>
     <div class="quiz-fb-hebrew" id="grammarFbHebrew"></div>
   </div>
-  <div style="width:100%;max-width:480px;display:flex;gap:10px">
-    <button class="btn-next-q" id="grammarNextBtn" onclick="nextGrammarQ()" style="display:none;flex:1">Next →</button>
-    <button id="grammarOverrideBtn" onclick="overrideGrammar()" style="display:none;padding:14px 16px;border-radius:12px;cursor:pointer;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text-muted);font-size:0.82rem;font-weight:600;white-space:nowrap;-webkit-tap-highlight-color:transparent"></button>
+
+  <!-- Fixed action bar -->
+  <div class="action-bar">
+    <button class="quiz-check-btn" id="grammarCheckBtn" onclick="submitGrammarAnswer()">Check Answer</button>
+    <div style="display:flex;gap:10px;width:100%">
+      <button class="btn-next-q" id="grammarNextBtn" onclick="nextGrammarQ()" style="display:none;flex:1">Next →</button>
+      <button id="grammarOverrideBtn" onclick="overrideGrammar()" style="display:none;padding:14px 16px;border-radius:12px;cursor:pointer;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text-muted);font-size:0.82rem;font-weight:600;white-space:nowrap;-webkit-tap-highlight-color:transparent"></button>
+    </div>
   </div>
 </div>
 
@@ -2109,10 +2126,12 @@ function renderQuizQuestion() {
   if (q.mode === 'multiple') {
     optionsDiv.style.display = 'flex';
     typeDiv.style.display    = 'none';
+    document.getElementById('quizCheckBtn').style.display = 'none';
     renderMultipleChoice(q);
   } else {
     optionsDiv.style.display = 'none';
     typeDiv.style.display    = 'flex';
+    document.getElementById('quizCheckBtn').style.display = 'block';
     renderTypeAnswer(q);
   }
 }
@@ -2181,6 +2200,23 @@ function hebBackspace() {
 // Handle Enter key on English input
 document.getElementById('quizEnInput').addEventListener('keydown', e => { if (e.key === 'Enter') submitTypeAnswer(); });
 
+// Physical keyboard support for Hebrew virtual keyboard (quiz + grammar)
+document.addEventListener('keydown', e => {
+  const quizHebActive = document.getElementById('quizView').style.display !== 'none' && !quizAnswered && document.getElementById('quizHebArea') && document.getElementById('quizHebArea').style.display !== 'none';
+  const grammarHebActive = document.getElementById('grammarView').style.display !== 'none' && !document.getElementById('grammarCheckBtn').disabled && document.getElementById('grammarTypeArea').style.display !== 'none';
+
+  if (quizHebActive) {
+    if (e.key === 'Backspace') { e.preventDefault(); hebBackspace(); }
+    else if (e.key === 'Enter') { e.preventDefault(); submitTypeAnswer(); }
+    else if (e.key === ' ') { e.preventDefault(); hebKey(' '); }
+  }
+  if (grammarHebActive) {
+    if (e.key === 'Backspace') { e.preventDefault(); gramHebBackspace(); }
+    else if (e.key === 'Enter') { e.preventDefault(); submitGrammarAnswer(); }
+    else if (e.key === ' ') { e.preventDefault(); gramHebKey(' '); }
+  }
+});
+
 function normalizeHebrew(s) { return (s||'').replace(/[\u05B0-\u05C7]/g,'').trim(); }
 
 function submitTypeAnswer() {
@@ -2217,6 +2253,7 @@ function showQuizFeedback(isCorrect, card) {
     hebrewEl.textContent = card.hebrew || '';
   } else { answerEl.textContent = ''; hebrewEl.textContent = ''; }
   fb.style.display = 'flex';
+  document.getElementById('quizCheckBtn').style.display = 'none';
   document.getElementById('btnNextQ').style.display = 'block';
   document.getElementById('quizScoreLive').textContent = `${quizScore} / ${quizIndex+1}`;
   const ov = document.getElementById('btnOverride');
@@ -2357,7 +2394,7 @@ function renderGrammarQ() {
   document.getElementById('grammarNextBtn').style.display = 'none';
   document.getElementById('grammarOverrideBtn').style.display = 'none';
   document.getElementById('grammarTypeArea').style.display = 'block';
-  document.getElementById('grammarTypeArea').querySelector('.quiz-check-btn').disabled = false;
+  document.getElementById('grammarCheckBtn').disabled = false;
   document.getElementById('grammarFormLabel').textContent = FORM_LABELS[q.formKey] + ' form of:';
   document.getElementById('grammarWordPrompt').textContent = q.word.english;
   grammarTyped = '';
@@ -2373,7 +2410,7 @@ function submitGrammarAnswer() {
   const isCorrect = q.heb ? normalizeHebrew(grammarTyped) === normalizeHebrew(q.heb) : normalizeTranslit(grammarTyped) === normalizeTranslit(q.translit);
   grammarLastCorrect = isCorrect;
   if (isCorrect) grammarScore++; else grammarWrong.push(q);
-  document.getElementById('grammarTypeArea').querySelector('.quiz-check-btn').disabled = true;
+  document.getElementById('grammarCheckBtn').disabled = true;
   const fb = document.getElementById('grammarFeedback');
   fb.style.display = 'flex';
   document.getElementById('grammarFbIcon').textContent = isCorrect ? '✓' : '✗';
