@@ -2255,6 +2255,7 @@ function showQuizFeedback(isCorrect, card) {
   fb.style.display = 'flex';
   document.getElementById('quizCheckBtn').style.display = 'none';
   document.getElementById('btnNextQ').style.display = 'block';
+  setTimeout(() => fb.scrollIntoView({behavior:'smooth', block:'nearest'}), 50);
   document.getElementById('quizScoreLive').textContent = `${quizScore} / ${quizIndex+1}`;
   const ov = document.getElementById('btnOverride');
   ov.textContent = isCorrect ? 'Mark wrong' : 'Mark correct';
@@ -2413,6 +2414,7 @@ function submitGrammarAnswer() {
   document.getElementById('grammarCheckBtn').disabled = true;
   const fb = document.getElementById('grammarFeedback');
   fb.style.display = 'flex';
+  setTimeout(() => fb.scrollIntoView({behavior:'smooth', block:'nearest'}), 50);
   document.getElementById('grammarFbIcon').textContent = isCorrect ? '✓' : '✗';
   document.getElementById('grammarFbIcon').style.color = isCorrect ? '#4ade80' : '#f87171';
   document.getElementById('grammarFbLabel').textContent = isCorrect ? 'Correct!' : 'Wrong';
