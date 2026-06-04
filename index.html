@@ -880,8 +880,46 @@
     <div class="quiz-prompt" id="grammarWordPrompt"></div>
   </div>
   <div class="quiz-type-area" id="grammarTypeArea">
-    <input class="quiz-en-input" id="grammarInput" type="text" placeholder="Type transliteration..." autocorrect="off" autocapitalize="off" onkeydown="if(event.key==='Enter')submitGrammarAnswer()">
-    <div style="font-size:0.75rem;color:var(--text-dim);margin-top:6px">Type the transliteration, then press Check or Enter</div>
+    <div class="quiz-answer-box" id="grammarAnswerBox" dir="rtl">
+      <span id="grammarTypedSpan"></span><span class="quiz-cursor"></span>
+    </div>
+    <div class="heb-keyboard">
+      <div class="heb-row">
+        <button class="heb-key" onclick="gramHebKey('א')">א</button>
+        <button class="heb-key" onclick="gramHebKey('ב')">ב</button>
+        <button class="heb-key" onclick="gramHebKey('ג')">ג</button>
+        <button class="heb-key" onclick="gramHebKey('ד')">ד</button>
+        <button class="heb-key" onclick="gramHebKey('ה')">ה</button>
+        <button class="heb-key" onclick="gramHebKey('ו')">ו</button>
+        <button class="heb-key" onclick="gramHebKey('ז')">ז</button>
+        <button class="heb-key" onclick="gramHebKey('ח')">ח</button>
+        <button class="heb-key" onclick="gramHebKey('ט')">ט</button>
+        <button class="heb-key" onclick="gramHebKey('י')">י</button>
+      </div>
+      <div class="heb-row">
+        <button class="heb-key" onclick="gramHebKey('כ')">כ</button>
+        <button class="heb-key" onclick="gramHebKey('ל')">ל</button>
+        <button class="heb-key" onclick="gramHebKey('מ')">מ</button>
+        <button class="heb-key" onclick="gramHebKey('נ')">נ</button>
+        <button class="heb-key" onclick="gramHebKey('ס')">ס</button>
+        <button class="heb-key" onclick="gramHebKey('ע')">ע</button>
+        <button class="heb-key" onclick="gramHebKey('פ')">פ</button>
+        <button class="heb-key" onclick="gramHebKey('צ')">צ</button>
+        <button class="heb-key" onclick="gramHebKey('ק')">ק</button>
+        <button class="heb-key" onclick="gramHebKey('ר')">ר</button>
+      </div>
+      <div class="heb-row">
+        <button class="heb-key" onclick="gramHebKey('ש')">ש</button>
+        <button class="heb-key" onclick="gramHebKey('ת')">ת</button>
+        <button class="heb-key" onclick="gramHebKey('ך')">ך</button>
+        <button class="heb-key" onclick="gramHebKey('ם')">ם</button>
+        <button class="heb-key" onclick="gramHebKey('ן')">ן</button>
+        <button class="heb-key" onclick="gramHebKey('ף')">ף</button>
+        <button class="heb-key" onclick="gramHebKey('ץ')">ץ</button>
+        <button class="heb-key wide" onclick="gramHebKey(' ')">space</button>
+        <button class="heb-key del" onclick="gramHebBackspace()">⌫</button>
+      </div>
+    </div>
     <button class="quiz-check-btn" onclick="submitGrammarAnswer()">Check Answer</button>
   </div>
   <div class="quiz-feedback" id="grammarFeedback" style="display:none">
@@ -2244,7 +2282,17 @@ function retryQuiz() { startQuiz(); }
 // ── Grammar Mode ──────────────────────────────────────────────────────────────
 const grammarConfig = { forms: 'all', lesson: 'all' };
 let grammarQuestions = [], grammarIndex = 0, grammarScore = 0, grammarWrong = [];
-let grammarLastCorrect = false;
+let grammarLastCorrect = false, grammarTyped = '';
+
+function gramHebKey(char) {
+  if (document.getElementById('grammarInput') && document.getElementById('grammarInput').disabled) return;
+  grammarTyped += char;
+  document.getElementById('grammarTypedSpan').textContent = grammarTyped;
+}
+function gramHebBackspace() {
+  grammarTyped = [...grammarTyped].slice(0, -1).join('');
+  document.getElementById('grammarTypedSpan').textContent = grammarTyped;
+}
 
 const FORM_LABELS = { ms: 'masculine singular', fs: 'feminine singular', mpl: 'masculine plural', fpl: 'feminine plural' };
 const FORM_KEYS   = ['ms', 'fs', 'mpl', 'fpl'];
@@ -2312,10 +2360,8 @@ function renderGrammarQ() {
   document.getElementById('grammarTypeArea').querySelector('.quiz-check-btn').disabled = false;
   document.getElementById('grammarFormLabel').textContent = FORM_LABELS[q.formKey] + ' form of:';
   document.getElementById('grammarWordPrompt').textContent = q.word.english;
-  const input = document.getElementById('grammarInput');
-  input.value = '';
-  input.disabled = false;
-  setTimeout(() => input.focus(), 100);
+  grammarTyped = '';
+  document.getElementById('grammarTypedSpan').textContent = '';
 }
 
 function normalizeTranslit(s) {
@@ -2324,12 +2370,9 @@ function normalizeTranslit(s) {
 
 function submitGrammarAnswer() {
   const q = grammarQuestions[grammarIndex];
-  const typed = normalizeTranslit(document.getElementById('grammarInput').value);
-  const correct = normalizeTranslit(q.translit);
-  const isCorrect = typed === correct;
+  const isCorrect = q.heb ? normalizeHebrew(grammarTyped) === normalizeHebrew(q.heb) : normalizeTranslit(grammarTyped) === normalizeTranslit(q.translit);
   grammarLastCorrect = isCorrect;
   if (isCorrect) grammarScore++; else grammarWrong.push(q);
-  document.getElementById('grammarInput').disabled = true;
   document.getElementById('grammarTypeArea').querySelector('.quiz-check-btn').disabled = true;
   const fb = document.getElementById('grammarFeedback');
   fb.style.display = 'flex';
@@ -2337,8 +2380,8 @@ function submitGrammarAnswer() {
   document.getElementById('grammarFbIcon').style.color = isCorrect ? '#4ade80' : '#f87171';
   document.getElementById('grammarFbLabel').textContent = isCorrect ? 'Correct!' : 'Wrong';
   document.getElementById('grammarFbLabel').style.color = isCorrect ? '#4ade80' : '#f87171';
-  document.getElementById('grammarFbAnswer').textContent = isCorrect ? '' : `Correct: ${q.translit}`;
-  document.getElementById('grammarFbHebrew').textContent = q.heb || '';
+  document.getElementById('grammarFbAnswer').textContent = isCorrect ? q.translit : `Correct: ${q.heb || q.translit}`;
+  document.getElementById('grammarFbHebrew').textContent = isCorrect ? (q.heb || '') : q.translit;
   document.getElementById('grammarNextBtn').style.display = 'block';
   document.getElementById('grammarScoreLive').textContent = `${grammarScore} / ${grammarIndex+1}`;
   const overBtn = document.getElementById('grammarOverrideBtn');
