@@ -2488,8 +2488,59 @@ function retryGrammar() {
 function exitGrammar() { showView('home'); }
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
+// ── Session restore ───────────────────────────────────────────────────────────
+const SESSION_VIEW_KEY = 'hebrew_fc_lastview';
+const VIEW_LABELS = {
+  flashcard: 'Flashcards', browser: 'Word Browser', editor: 'Edit Words',
+  quizSetup: 'Quiz', quiz: 'Quiz', grammar: 'Noun Forms', grammarSetup: 'Noun Forms',
+};
+
+function saveCurrentView(view) {
+  if (view !== 'home') localStorage.setItem(SESSION_VIEW_KEY, view);
+  else localStorage.removeItem(SESSION_VIEW_KEY);
+}
+
+function checkSessionRestore() {
+  const saved = localStorage.getItem(SESSION_VIEW_KEY);
+  if (!saved || !VIEW_LABELS[saved]) return false;
+  // Normalise mid-session views to their setup/entry point
+  const restoreView = saved === 'quiz' ? 'quizSetup' : saved === 'grammar' ? 'grammarSetup' : saved;
+  const label = VIEW_LABELS[saved];
+  document.getElementById('resumeLabel').textContent = `Resume ${label}?`;
+  document.getElementById('resumeModal').style.display = 'flex';
+  document.getElementById('resumeBtn').onclick = () => {
+    document.getElementById('resumeModal').style.display = 'none';
+    showView(restoreView);
+    if (restoreView === 'flashcard') initDeck();
+  };
+  document.getElementById('homeBtn').onclick = () => {
+    document.getElementById('resumeModal').style.display = 'none';
+    localStorage.removeItem(SESSION_VIEW_KEY);
+  };
+  return true;
+}
+
+// Patch showView to persist current view
+const _showView = showView;
+showView = function(view) {
+  _showView(view);
+  saveCurrentView(view);
+};
+
 initDeck();
-showView('home');
+if (!checkSessionRestore()) showView('home');
+else showView('home'); // renders home behind the modal
 </script>
+
+<!-- ── Resume modal ───────────────────────────────────────────────────── -->
+<div id="resumeModal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;padding:24px">
+  <div style="background:#1c1c1c;border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:28px 24px;width:100%;max-width:360px;display:flex;flex-direction:column;gap:16px;text-align:center">
+    <div style="font-size:1.5rem">📖</div>
+    <div id="resumeLabel" style="font-size:1.1rem;font-weight:700;color:#f0f0f0"></div>
+    <div style="font-size:0.85rem;color:#aaa">You were in the middle of a session.</div>
+    <button id="resumeBtn" style="width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#0d0d0d;font-size:0.95rem;font-weight:700;cursor:pointer">Resume</button>
+    <button id="homeBtn" style="width:100%;padding:12px;border:1px solid rgba(255,255,255,0.15);border-radius:12px;background:rgba(255,255,255,0.06);color:#f0f0f0;font-size:0.9rem;font-weight:600;cursor:pointer">Go to Home</button>
+  </div>
+</div>
 </body>
 </html>
