@@ -1777,8 +1777,8 @@ function recordResult(gotIt) {
 function markAgain() { recordResult(false); nextCard(); }
 function markGood()  { recordResult(true);  nextCard(); }
 
-function nextCard() { speechSynthesis.cancel(); if (index < deck.length-1) { index++; renderCard(); } else showDone(false); }
-function prevCard() { speechSynthesis.cancel(); if (index > 0) { index--; renderCard(); } }
+function nextCard() { speechSynthesis.cancel(); if (index < deck.length-1) { index++; save(); renderCard(); } else showDone(false); }
+function prevCard() { speechSynthesis.cancel(); if (index > 0) { index--; save(); renderCard(); } }
 
 function shuffleDeck() {
   speechSynthesis.cancel();
