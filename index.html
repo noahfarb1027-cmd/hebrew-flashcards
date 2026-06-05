@@ -2096,6 +2096,7 @@ function startQuiz() {
 }
 
 function renderQuizQuestion() {
+  localStorage.setItem('hebrew_fc_quiz_sess', JSON.stringify({questions:quizQuestions,index:quizIndex,score:quizScore,wrong:quizWrong}));
   const q = quizQuestions[quizIndex];
   quizTyped=''; quizAnswered=false;
   const total = quizQuestions.length;
@@ -2292,6 +2293,7 @@ function nextQuizQuestion() {
 }
 
 function showQuizResults() {
+  localStorage.removeItem('hebrew_fc_quiz_sess');
   showView('quizResults');
   const total = quizQuestions.length;
   const pct = Math.round((quizScore / total) * 100);
@@ -2387,6 +2389,7 @@ function startGrammar() {
 }
 
 function renderGrammarQ() {
+  localStorage.setItem('hebrew_fc_gram_sess', JSON.stringify({questions:grammarQuestions,index:grammarIndex,score:grammarScore,wrong:grammarWrong}));
   const q = grammarQuestions[grammarIndex];
   const total = grammarQuestions.length;
   document.getElementById('grammarCounter').textContent = `Q ${grammarIndex+1} of ${total}`;
@@ -2456,6 +2459,7 @@ function nextGrammarQ() {
 }
 
 function showGrammarResults() {
+  localStorage.removeItem('hebrew_fc_gram_sess');
   showView('grammarResults');
   const total = grammarQuestions.length;
   const pct = Math.round((grammarScore/total)*100);
@@ -2503,15 +2507,30 @@ function saveCurrentView(view) {
 function checkSessionRestore() {
   const saved = localStorage.getItem(SESSION_VIEW_KEY);
   if (!saved || !VIEW_LABELS[saved]) return false;
-  // Normalise mid-session views to their setup/entry point
-  const restoreView = saved === 'quiz' ? 'quizSetup' : saved === 'grammar' ? 'grammarSetup' : saved;
+  const restoreView = saved === 'quizSetup' ? 'quizSetup' : saved === 'grammarSetup' ? 'grammarSetup' : saved;
   const label = VIEW_LABELS[saved];
   document.getElementById('resumeLabel').textContent = `Resume ${label}?`;
   document.getElementById('resumeModal').style.display = 'flex';
   document.getElementById('resumeBtn').onclick = () => {
     document.getElementById('resumeModal').style.display = 'none';
-    showView(restoreView);
-    if (restoreView === 'flashcard') initDeck();
+    if (saved === 'flashcard') {
+      enterFlashcards();
+    } else if (saved === 'quiz') {
+      const sess = JSON.parse(localStorage.getItem('hebrew_fc_quiz_sess') || 'null');
+      if (sess && sess.questions && sess.questions.length) {
+        quizQuestions = sess.questions; quizIndex = sess.index; quizScore = sess.score; quizWrong = sess.wrong;
+        showView('quiz'); renderQuizQuestion();
+      } else { showView('quizSetup'); }
+    } else if (saved === 'grammar') {
+      const sess = JSON.parse(localStorage.getItem('hebrew_fc_gram_sess') || 'null');
+      if (sess && sess.questions && sess.questions.length) {
+        grammarQuestions = sess.questions; grammarIndex = sess.index; grammarScore = sess.score; grammarWrong = sess.wrong;
+        grammarTyped = ''; grammarLastCorrect = false;
+        showView('grammar'); renderGrammarQ();
+      } else { showView('grammarSetup'); }
+    } else {
+      showView(restoreView);
+    }
   };
   document.getElementById('homeBtn').onclick = () => {
     document.getElementById('resumeModal').style.display = 'none';
