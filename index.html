@@ -2527,9 +2527,11 @@ showView = function(view) {
   saveCurrentView(view);
 };
 
-initDeck();
-if (!checkSessionRestore()) showView('home');
-else showView('home'); // renders home behind the modal
+document.addEventListener('DOMContentLoaded', () => {
+  initDeck();
+  if (!checkSessionRestore()) showView('home');
+  else showView('home'); // renders home behind the modal
+});
 </script>
 
 <!-- ── Resume modal ───────────────────────────────────────────────────── -->
