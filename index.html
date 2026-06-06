@@ -6662,10 +6662,11 @@ function hebBackspace() {
 // Handle Enter key on English input
 document.getElementById('quizEnInput').addEventListener('keydown', e => { if (e.key === 'Enter') submitTypeAnswer(); });
 
-// Physical keyboard support for Hebrew virtual keyboard (quiz + grammar)
+// Physical keyboard support for Hebrew virtual keyboard (quiz + grammar + conj)
 document.addEventListener('keydown', e => {
   const quizHebActive = document.getElementById('quizView').style.display !== 'none' && !quizAnswered && document.getElementById('quizHebArea') && document.getElementById('quizHebArea').style.display !== 'none';
   const grammarHebActive = document.getElementById('grammarView').style.display !== 'none' && !document.getElementById('grammarCheckBtn').disabled && document.getElementById('grammarTypeArea').style.display !== 'none';
+  const conjHebActive = document.getElementById('conjView').style.display !== 'none' && !document.getElementById('conjCheckBtn').disabled && document.getElementById('conjTypeArea').style.display !== 'none';
 
   if (quizHebActive) {
     if (e.key === 'Backspace') { e.preventDefault(); hebBackspace(); }
@@ -6676,6 +6677,11 @@ document.addEventListener('keydown', e => {
     if (e.key === 'Backspace') { e.preventDefault(); gramHebBackspace(); }
     else if (e.key === 'Enter') { e.preventDefault(); submitGrammarAnswer(); }
     else if (e.key === ' ') { e.preventDefault(); gramHebKey(' '); }
+  }
+  if (conjHebActive) {
+    if (e.key === 'Backspace') { e.preventDefault(); conjHebBackspace(); }
+    else if (e.key === 'Enter') { e.preventDefault(); submitConjAnswer(); }
+    else if (e.key === ' ') { e.preventDefault(); conjHebKey(' '); }
   }
 });
 
