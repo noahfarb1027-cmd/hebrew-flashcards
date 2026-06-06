@@ -415,7 +415,7 @@
       pointer-events: none;
     }
     .action-bar > * { pointer-events: auto; }
-    #quizView, #grammarView { padding-bottom: 100px; }
+    #quizView, #grammarView, #conjView { padding-bottom: 100px; }
     .quiz-results-card {
       width:100%; max-width:480px; background:var(--surface); border:1px solid var(--border);
       border-radius:8px; padding:28px 24px; text-align:center; margin-bottom:20px;
@@ -473,6 +473,13 @@
       <div>
         <div class="mode-card-name">Noun Forms</div>
         <div class="mode-card-desc">Practice m/f singular &amp; plural declensions</div>
+      </div>
+    </button>
+    <button class="mode-card" onclick="showView('conjSetup')">
+      <div class="mode-card-icon">🔀</div>
+      <div>
+        <div class="mode-card-name">Verb Conjugation</div>
+        <div class="mode-card-desc">Practice present, past &amp; imperative forms</div>
       </div>
     </button>
   </div>
@@ -986,6 +993,131 @@
   <div class="quiz-wrong-list" id="grammarWrongList"></div>
   <div class="quiz-results-btns">
     <button class="btn-quiz-retry" onclick="retryGrammar()">Try Again</button>
+    <button class="btn-quiz-home" onclick="showView('home')">Home</button>
+  </div>
+</div>
+
+<!-- ── Conjugation Setup ──────────────────────────────────────────────────── -->
+<div id="conjSetupView">
+  <div class="view-header">
+    <button class="btn-home" onclick="showView('home')">← Home</button>
+    <h2>Verb Conjugation</h2>
+  </div>
+  <div class="setup-section">
+    <div class="setup-label">Tense</div>
+    <div class="pill-row" id="conjTensePills">
+      <button class="pill active" onclick="setConjOpt('tense','all',this)">All</button>
+      <button class="pill" onclick="setConjOpt('tense','present',this)">Present</button>
+      <button class="pill" onclick="setConjOpt('tense','past',this)">Past</button>
+      <button class="pill" onclick="setConjOpt('tense','imperative',this)">Imperative</button>
+    </div>
+  </div>
+  <div class="setup-section">
+    <div class="setup-label">Lesson</div>
+    <div class="pill-row" id="conjLessonPills">
+      <button class="pill active" onclick="setConjOpt('lesson','all',this)">All</button>
+      <button class="pill" onclick="setConjOpt('lesson',1,this)">1</button>
+      <button class="pill" onclick="setConjOpt('lesson',2,this)">2</button>
+      <button class="pill" onclick="setConjOpt('lesson',3,this)">3</button>
+      <button class="pill" onclick="setConjOpt('lesson',4,this)">4</button>
+      <button class="pill" onclick="setConjOpt('lesson',5,this)">5</button>
+      <button class="pill" onclick="setConjOpt('lesson',6,this)">6</button>
+      <button class="pill" onclick="setConjOpt('lesson',7,this)">7</button>
+      <button class="pill" onclick="setConjOpt('lesson',8,this)">8</button>
+    </div>
+  </div>
+  <div class="quiz-avail-note" id="conjAvailNote"></div>
+  <button class="btn-start-quiz" onclick="startConj()">Start</button>
+</div>
+
+<!-- ── Conjugation View ───────────────────────────────────────────────────── -->
+<div id="conjView">
+  <div class="view-header">
+    <button class="btn-home" onclick="exitConj()">← Home</button>
+    <h2>Verb Conjugation</h2>
+    <div class="quiz-score-live" id="conjScoreLive">0 / 0</div>
+  </div>
+  <div class="quiz-q-header">
+    <div class="quiz-q-counter" id="conjCounter">Q 1 of 10</div>
+  </div>
+  <div class="quiz-prog-wrap"><div class="quiz-prog-bar" id="conjProgBar" style="width:0%"></div></div>
+  <div class="quiz-question-card" style="text-align:center">
+    <div class="quiz-dir-label" id="conjPersonLabel"></div>
+    <div class="quiz-prompt" id="conjWordPrompt"></div>
+    <div class="quiz-prompt-hint" id="conjTenseHint"></div>
+  </div>
+  <div class="quiz-type-area" id="conjTypeArea">
+    <div class="quiz-answer-box" id="conjAnswerBox" dir="rtl">
+      <span id="conjTypedSpan"></span><span class="quiz-cursor"></span>
+    </div>
+    <div class="heb-keyboard">
+      <div class="heb-row">
+        <button class="heb-key" onclick="conjHebKey('א')">א</button>
+        <button class="heb-key" onclick="conjHebKey('ב')">ב</button>
+        <button class="heb-key" onclick="conjHebKey('ג')">ג</button>
+        <button class="heb-key" onclick="conjHebKey('ד')">ד</button>
+        <button class="heb-key" onclick="conjHebKey('ה')">ה</button>
+        <button class="heb-key" onclick="conjHebKey('ו')">ו</button>
+        <button class="heb-key" onclick="conjHebKey('ז')">ז</button>
+        <button class="heb-key" onclick="conjHebKey('ח')">ח</button>
+        <button class="heb-key" onclick="conjHebKey('ט')">ט</button>
+        <button class="heb-key" onclick="conjHebKey('י')">י</button>
+      </div>
+      <div class="heb-row">
+        <button class="heb-key" onclick="conjHebKey('כ')">כ</button>
+        <button class="heb-key" onclick="conjHebKey('ל')">ל</button>
+        <button class="heb-key" onclick="conjHebKey('מ')">מ</button>
+        <button class="heb-key" onclick="conjHebKey('נ')">נ</button>
+        <button class="heb-key" onclick="conjHebKey('ס')">ס</button>
+        <button class="heb-key" onclick="conjHebKey('ע')">ע</button>
+        <button class="heb-key" onclick="conjHebKey('פ')">פ</button>
+        <button class="heb-key" onclick="conjHebKey('צ')">צ</button>
+        <button class="heb-key" onclick="conjHebKey('ק')">ק</button>
+        <button class="heb-key" onclick="conjHebKey('ר')">ר</button>
+      </div>
+      <div class="heb-row">
+        <button class="heb-key" onclick="conjHebKey('ש')">ש</button>
+        <button class="heb-key" onclick="conjHebKey('ת')">ת</button>
+        <button class="heb-key" onclick="conjHebKey('ך')">ך</button>
+        <button class="heb-key" onclick="conjHebKey('ם')">ם</button>
+        <button class="heb-key" onclick="conjHebKey('ן')">ן</button>
+        <button class="heb-key" onclick="conjHebKey('ף')">ף</button>
+        <button class="heb-key" onclick="conjHebKey('ץ')">ץ</button>
+        <button class="heb-key wide" onclick="conjHebKey(' ')">space</button>
+        <button class="heb-key del" onclick="conjHebBackspace()">⌫</button>
+      </div>
+    </div>
+  </div>
+  <div class="quiz-feedback" id="conjFeedback" style="display:none">
+    <div class="quiz-fb-icon" id="conjFbIcon"></div>
+    <div class="quiz-fb-label" id="conjFbLabel"></div>
+    <div class="quiz-fb-answer" id="conjFbAnswer"></div>
+    <div class="quiz-fb-hebrew" id="conjFbHebrew"></div>
+  </div>
+  <div class="action-bar">
+    <button class="quiz-check-btn" id="conjCheckBtn" onclick="submitConjAnswer()">Check Answer</button>
+    <div style="display:flex;gap:10px;width:100%">
+      <button class="btn-next-q" id="conjNextBtn" onclick="nextConjQ()" style="display:none;flex:1">Next →</button>
+      <button id="conjOverrideBtn" onclick="overrideConj()" style="display:none;padding:14px 16px;border-radius:4px;cursor:pointer;background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);font-size:0.82rem;font-weight:600;white-space:nowrap;-webkit-tap-highlight-color:transparent"></button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Conjugation Results ────────────────────────────────────────────────── -->
+<div id="conjResultsView">
+  <div class="view-header">
+    <button class="btn-home" onclick="showView('home')">← Home</button>
+    <h2>Results</h2>
+  </div>
+  <div class="quiz-results-card">
+    <div class="quiz-results-score" id="conjResultsScore"></div>
+    <div class="quiz-results-pct" id="conjResultsPct"></div>
+    <div class="quiz-results-grade" id="conjResultsGrade"></div>
+  </div>
+  <div class="quiz-wrong-section-label" id="conjWrongLabel"></div>
+  <div class="quiz-wrong-list" id="conjWrongList"></div>
+  <div class="quiz-results-btns">
+    <button class="btn-quiz-retry" onclick="retryConj()">Try Again</button>
     <button class="btn-quiz-home" onclick="showView('home')">Home</button>
   </div>
 </div>
@@ -1595,6 +1727,4281 @@ const nounForms = {
   398:{ms:null,fs:"cha'ti'cha",mpl:null,fpl:"cha'ti'chot",ms_heb:null,fs_heb:"חתיכה",mpl_heb:null,fpl_heb:"חתיכות"},
   418:{ms:null,fs:"lai'la",mpl:null,fpl:"lei'lot",ms_heb:null,fs_heb:"לילה",mpl_heb:null,fpl_heb:"לילות"},
 };
+// ── Verb Conjugations ──────────────────────────────────────────────────────
+
+const verbForms = [
+  {
+    "id": 1,
+    "root": "ק.ר.א",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "קורא",
+      "fs": "קוראת",
+      "mpl": "קוראים",
+      "fpl": "קוראות"
+    },
+    "presentNikud": {
+      "ms": "קוֹרֵא",
+      "fs": "קוֹרֵאת",
+      "mpl": "קוֹרְאִים",
+      "fpl": "קוֹרְאוֹת"
+    },
+    "presentTranslit": {
+      "ms": "ko're",
+      "fs": "ko'ret",
+      "mpl": "kor'im",
+      "fpl": "kor'ot"
+    },
+    "past": {
+      "ani": "קראתי",
+      "ata": "קראת",
+      "at": "קראת",
+      "hu": "קרא",
+      "hi": "קראה",
+      "anachnu": "קראנו",
+      "atem": "קראתם",
+      "aten": "קראתן",
+      "hem": "קראו"
+    },
+    "pastNikud": {
+      "ani": "קָרָאתִי",
+      "ata": "קָרָאתָ",
+      "at": "קָרָאת",
+      "hu": "קָרָא",
+      "hi": "קָרְאָה",
+      "anachnu": "קָרָאנוּ",
+      "atem": "קְרָאתֶם",
+      "aten": "קְרָאתֶן",
+      "hem": "קָרְאוּ"
+    },
+    "pastTranslit": {
+      "ani": "ka'ra'ti",
+      "ata": "ka'ra'ta",
+      "at": "ka'rat",
+      "hu": "ka'ra",
+      "hi": "kar'a",
+      "anachnu": "ka'ra'nu",
+      "atem": "kra'tem",
+      "aten": "kra'ten",
+      "hem": "kar'u"
+    },
+    "imperative": {
+      "ms": "קרא",
+      "fs": "קראי",
+      "pl": "קראו"
+    },
+    "imperativeNikud": {
+      "ms": "קְרָא",
+      "fs": "קִרְאִי",
+      "pl": "קִרְאוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "kra",
+      "fs": "kir'i",
+      "pl": "kir'u"
+    }
+  },
+  {
+    "id": 2,
+    "root": "כ.ת.ב",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "כותב",
+      "fs": "כותבת",
+      "mpl": "כותבים",
+      "fpl": "כותבות"
+    },
+    "presentNikud": {
+      "ms": "כּוֹתֵב",
+      "fs": "כּוֹתֶבֶת",
+      "mpl": "כּוֹתְבִים",
+      "fpl": "כּוֹתְבוֹת"
+    },
+    "presentTranslit": {
+      "ms": "ko'tev",
+      "fs": "ko'te'vet",
+      "mpl": "kot'vim",
+      "fpl": "kot'vot"
+    },
+    "past": {
+      "ani": "כתבתי",
+      "ata": "כתבת",
+      "at": "כתבת",
+      "hu": "כתב",
+      "hi": "כתבה",
+      "anachnu": "כתבנו",
+      "atem": "כתבתם",
+      "aten": "כתבתן",
+      "hem": "כתבו"
+    },
+    "pastNikud": {
+      "ani": "כָּתַבְתִּי",
+      "ata": "כָּתַבְתָּ",
+      "at": "כָּתַבְתְּ",
+      "hu": "כָּתַב",
+      "hi": "כָּתְבָה",
+      "anachnu": "כָּתַבְנוּ",
+      "atem": "כְּתַבְתֶּם",
+      "aten": "כְּתַבְתֶּן",
+      "hem": "כָּתְבוּ"
+    },
+    "pastTranslit": {
+      "ani": "ka'tav'ti",
+      "ata": "ka'tav'ta",
+      "at": "ka'tavt",
+      "hu": "ka'tav",
+      "hi": "kat'va",
+      "anachnu": "ka'tav'nu",
+      "atem": "ktav'tem",
+      "aten": "ktav'ten",
+      "hem": "kat'vu"
+    },
+    "imperative": {
+      "ms": "כתוב",
+      "fs": "כתבי",
+      "pl": "כתבו"
+    },
+    "imperativeNikud": {
+      "ms": "כְּתוֹב",
+      "fs": "כִּתְבִי",
+      "pl": "כִּתְבוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "ktov",
+      "fs": "kit'vi",
+      "pl": "kit'vu"
+    }
+  },
+  {
+    "id": 6,
+    "root": "ל.מ.ד",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "לומד",
+      "fs": "לומדת",
+      "mpl": "לומדים",
+      "fpl": "לומדות"
+    },
+    "presentNikud": {
+      "ms": "לוֹמֵד",
+      "fs": "לוֹמֶדֶת",
+      "mpl": "לוֹמְדִים",
+      "fpl": "לוֹמְדוֹת"
+    },
+    "presentTranslit": {
+      "ms": "lo'med",
+      "fs": "lo'me'det",
+      "mpl": "lom'dim",
+      "fpl": "lom'dot"
+    },
+    "past": {
+      "ani": "למדתי",
+      "ata": "למדת",
+      "at": "למדת",
+      "hu": "למד",
+      "hi": "למדה",
+      "anachnu": "למדנו",
+      "atem": "למדתם",
+      "aten": "למדתן",
+      "hem": "למדו"
+    },
+    "pastNikud": {
+      "ani": "לָמַדְתִּי",
+      "ata": "לָמַדְתָּ",
+      "at": "לָמַדְתְּ",
+      "hu": "לָמַד",
+      "hi": "לָמְדָה",
+      "anachnu": "לָמַדְנוּ",
+      "atem": "לְמַדְתֶּם",
+      "aten": "לְמַדְתֶּן",
+      "hem": "לָמְדוּ"
+    },
+    "pastTranslit": {
+      "ani": "la'mad'ti",
+      "ata": "la'mad'ta",
+      "at": "la'madt",
+      "hu": "la'mad",
+      "hi": "lam'da",
+      "anachnu": "la'mad'nu",
+      "atem": "lemad'tem",
+      "aten": "lemad'ten",
+      "hem": "lam'du"
+    },
+    "imperative": {
+      "ms": "למד",
+      "fs": "למדי",
+      "pl": "למדו"
+    },
+    "imperativeNikud": {
+      "ms": "לְמַד",
+      "fs": "לִמְדִי",
+      "pl": "לִמְדוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "lemad",
+      "fs": "lim'di",
+      "pl": "lim'du"
+    }
+  },
+  {
+    "id": 35,
+    "root": "כ.נ.ס",
+    "binyan": "nif'al",
+    "present": {
+      "ms": "נכנס",
+      "fs": "נכנסת",
+      "mpl": "נכנסים",
+      "fpl": "נכנסות"
+    },
+    "presentNikud": {
+      "ms": "נִכְנָס",
+      "fs": "נִכְנֶסֶת",
+      "mpl": "נִכְנָסִים",
+      "fpl": "נִכְנָסוֹת"
+    },
+    "presentTranslit": {
+      "ms": "nich'nas",
+      "fs": "nich'ne'set",
+      "mpl": "nich'na'sim",
+      "fpl": "nich'na'sot"
+    },
+    "past": {
+      "ani": "נכנסתי",
+      "ata": "נכנסת",
+      "at": "נכנסת",
+      "hu": "נכנס",
+      "hi": "נכנסה",
+      "anachnu": "נכנסנו",
+      "atem": "נכנסתם",
+      "aten": "נכנסתן",
+      "hem": "נכנסו"
+    },
+    "pastNikud": {
+      "ani": "נִכְנַסְתִּי",
+      "ata": "נִכְנַסְתָּ",
+      "at": "נִכְנַסְתְּ",
+      "hu": "נִכְנַס",
+      "hi": "נִכְנְסָה",
+      "anachnu": "נִכְנַסְנוּ",
+      "atem": "נִכְנַסְתֶּם",
+      "aten": "נִכְנַסְתֶּן",
+      "hem": "נִכְנְסוּ"
+    },
+    "pastTranslit": {
+      "ani": "nich'nas'ti",
+      "ata": "nich'nas'ta",
+      "at": "nich'nast",
+      "hu": "nich'nas",
+      "hi": "nich'ne'sa",
+      "anachnu": "nich'nas'nu",
+      "atem": "nich'nas'tem",
+      "aten": "nich'nas'ten",
+      "hem": "nich'ne'su"
+    },
+    "imperative": {
+      "ms": "היכנס",
+      "fs": "היכנסי",
+      "pl": "היכנסו"
+    },
+    "imperativeNikud": {
+      "ms": "הִכָּנֵס",
+      "fs": "הִכָּנְסִי",
+      "pl": "הִכָּנְסוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "hi'ka'nes",
+      "fs": "hi'kan'si",
+      "pl": "hi'kan'su"
+    }
+  },
+  {
+    "id": 40,
+    "root": "נ.ד.ב",
+    "binyan": "hitpa'el",
+    "present": {
+      "ms": "מתנדב",
+      "fs": "מתנדבת",
+      "mpl": "מתנדבים",
+      "fpl": "מתנדבות"
+    },
+    "presentNikud": {
+      "ms": "מִתְנַדֵּב",
+      "fs": "מִתְנַדֶּבֶת",
+      "mpl": "מִתְנַדְּבִים",
+      "fpl": "מִתְנַדְּבוֹת"
+    },
+    "presentTranslit": {
+      "ms": "mit'na'dev",
+      "fs": "mit'na'de'vet",
+      "mpl": "mit'nad'vim",
+      "fpl": "mit'nad'vot"
+    },
+    "past": {
+      "ani": "התנדבתי",
+      "ata": "התנדבת",
+      "at": "התנדבת",
+      "hu": "התנדב",
+      "hi": "התנדבה",
+      "anachnu": "התנדבנו",
+      "atem": "התנדבתם",
+      "aten": "התנדבתן",
+      "hem": "התנדבו"
+    },
+    "pastNikud": {
+      "ani": "הִתְנַדַּבְתִּי",
+      "ata": "הִתְנַדַּבְתָּ",
+      "at": "הִתְנַדַּבְתְּ",
+      "hu": "הִתְנַדֵּב",
+      "hi": "הִתְנַדְּבָה",
+      "anachnu": "הִתְנַדַּבְנוּ",
+      "atem": "הִתְנַדַּבְתֶּם",
+      "aten": "הִתְנַדַּבְתֶּן",
+      "hem": "הִתְנַדְּבוּ"
+    },
+    "pastTranslit": {
+      "ani": "hit'na'dav'ti",
+      "ata": "hit'na'dav'ta",
+      "at": "hit'na'davt",
+      "hu": "hit'na'dev",
+      "hi": "hit'nad'va",
+      "anachnu": "hit'na'dav'nu",
+      "atem": "hit'na'dav'tem",
+      "aten": "hit'na'dav'ten",
+      "hem": "hit'nad'vu"
+    },
+    "imperative": {
+      "ms": "התנדב",
+      "fs": "התנדבי",
+      "pl": "התנדבו"
+    },
+    "imperativeNikud": {
+      "ms": "הִתְנַדֵּב",
+      "fs": "הִתְנַדְּבִי",
+      "pl": "הִתְנַדְּבוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "hit'na'dev",
+      "fs": "hit'nad'vi",
+      "pl": "hit'nad'vu"
+    }
+  },
+  {
+    "id": 41,
+    "root": "ת.ח.ל",
+    "binyan": "hif'il",
+    "present": {
+      "ms": "מתחיל",
+      "fs": "מתחילה",
+      "mpl": "מתחילים",
+      "fpl": "מתחילות"
+    },
+    "presentNikud": {
+      "ms": "מַתְחִיל",
+      "fs": "מַתְחִילָה",
+      "mpl": "מַתְחִילִים",
+      "fpl": "מַתְחִילוֹת"
+    },
+    "presentTranslit": {
+      "ms": "mat'chil",
+      "fs": "mat'chi'la",
+      "mpl": "mat'chi'lim",
+      "fpl": "mat'chi'lot"
+    },
+    "past": {
+      "ani": "התחלתי",
+      "ata": "התחלת",
+      "at": "התחלת",
+      "hu": "התחיל",
+      "hi": "התחילה",
+      "anachnu": "התחלנו",
+      "atem": "התחלתם",
+      "aten": "התחלתן",
+      "hem": "התחילו"
+    },
+    "pastNikud": {
+      "ani": "הִתְחַלְתִּי",
+      "ata": "הִתְחַלְתָּ",
+      "at": "הִתְחַלְתְּ",
+      "hu": "הִתְחִיל",
+      "hi": "הִתְחִילָה",
+      "anachnu": "הִתְחַלְנוּ",
+      "atem": "הִתְחַלְתֶּם",
+      "aten": "הִתְחַלְתֶּן",
+      "hem": "הִתְחִילוּ"
+    },
+    "pastTranslit": {
+      "ani": "hit'chal'ti",
+      "ata": "hit'chal'ta",
+      "at": "hit'chalt",
+      "hu": "hit'chil",
+      "hi": "hit'chi'la",
+      "anachnu": "hit'chal'nu",
+      "atem": "hit'chal'tem",
+      "aten": "hit'chal'ten",
+      "hem": "hit'chi'lu"
+    },
+    "imperative": {
+      "ms": "התחל",
+      "fs": "התחילי",
+      "pl": "התחילו"
+    },
+    "imperativeNikud": {
+      "ms": "הַתְחֵל",
+      "fs": "הַתְחִילִי",
+      "pl": "הַתְחִילוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "hat'chel",
+      "fs": "hat'chi'li",
+      "pl": "hat'chi'lu"
+    }
+  },
+  {
+    "id": 45,
+    "root": "ע.ב.ד",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "עובד",
+      "fs": "עובדת",
+      "mpl": "עובדים",
+      "fpl": "עובדות"
+    },
+    "presentNikud": {
+      "ms": "עוֹבֵד",
+      "fs": "עוֹבֶדֶת",
+      "mpl": "עוֹבְדִים",
+      "fpl": "עוֹבְדוֹת"
+    },
+    "presentTranslit": {
+      "ms": "o'ved",
+      "fs": "o've'det",
+      "mpl": "ov'dim",
+      "fpl": "ov'dot"
+    },
+    "past": {
+      "ani": "עבדתי",
+      "ata": "עבדת",
+      "at": "עבדת",
+      "hu": "עבד",
+      "hi": "עבדה",
+      "anachnu": "עבדנו",
+      "atem": "עבדתם",
+      "aten": "עבדתן",
+      "hem": "עבדו"
+    },
+    "pastNikud": {
+      "ani": "עָבַדְתִּי",
+      "ata": "עָבַדְתָּ",
+      "at": "עָבַדְתְּ",
+      "hu": "עָבַד",
+      "hi": "עָבְדָה",
+      "anachnu": "עָבַדְנוּ",
+      "atem": "עֲבַדְתֶּם",
+      "aten": "עֲבַדְתֶּן",
+      "hem": "עָבְדוּ"
+    },
+    "pastTranslit": {
+      "ani": "a'vad'ti",
+      "ata": "a'vad'ta",
+      "at": "a'vadt",
+      "hu": "a'vad",
+      "hi": "av'da",
+      "anachnu": "a'vad'nu",
+      "atem": "a'vad'tem",
+      "aten": "a'vad'ten",
+      "hem": "av'du"
+    },
+    "imperative": {
+      "ms": "עבוד",
+      "fs": "עבדי",
+      "pl": "עבדו"
+    },
+    "imperativeNikud": {
+      "ms": "עֲבוֹד",
+      "fs": "עִבְדִי",
+      "pl": "עִבְדוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "a'vod",
+      "fs": "iv'di",
+      "pl": "iv'du"
+    }
+  },
+  {
+    "id": 46,
+    "root": "ה.ל.ך",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "הולך",
+      "fs": "הולכת",
+      "mpl": "הולכים",
+      "fpl": "הולכות"
+    },
+    "presentNikud": {
+      "ms": "הוֹלֵךְ",
+      "fs": "הוֹלֶכֶת",
+      "mpl": "הוֹלְכִים",
+      "fpl": "הוֹלְכוֹת"
+    },
+    "presentTranslit": {
+      "ms": "ho'lech",
+      "fs": "ho'le'chet",
+      "mpl": "hol'chim",
+      "fpl": "hol'chot"
+    },
+    "past": {
+      "ani": "הלכתי",
+      "ata": "הלכת",
+      "at": "הלכת",
+      "hu": "הלך",
+      "hi": "הלכה",
+      "anachnu": "הלכנו",
+      "atem": "הלכתם",
+      "aten": "הלכתן",
+      "hem": "הלכו"
+    },
+    "pastNikud": {
+      "ani": "הָלַכְתִּי",
+      "ata": "הָלַכְתָּ",
+      "at": "הָלַכְתְּ",
+      "hu": "הָלַךְ",
+      "hi": "הָלְכָה",
+      "anachnu": "הָלַכְנוּ",
+      "atem": "הֲלַכְתֶּם",
+      "aten": "הֲלַכְתֶּן",
+      "hem": "הָלְכוּ"
+    },
+    "pastTranslit": {
+      "ani": "ha'lach'ti",
+      "ata": "ha'lach'ta",
+      "at": "ha'lacht",
+      "hu": "ha'lach",
+      "hi": "hal'cha",
+      "anachnu": "ha'lach'nu",
+      "atem": "ha'lach'tem",
+      "aten": "ha'lach'ten",
+      "hem": "hal'chu"
+    },
+    "imperative": {
+      "ms": "לך",
+      "fs": "לכי",
+      "pl": "לכו"
+    },
+    "imperativeNikud": {
+      "ms": "לֵךְ",
+      "fs": "לְכִי",
+      "pl": "לְכוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "lech",
+      "fs": "le'chi",
+      "pl": "le'chu"
+    }
+  },
+  {
+    "id": 48,
+    "root": "נ.ג.ן",
+    "binyan": "pi'el",
+    "present": {
+      "ms": "מנגן",
+      "fs": "מנגנת",
+      "mpl": "מנגנים",
+      "fpl": "מנגנות"
+    },
+    "presentNikud": {
+      "ms": "מְנַגֵּן",
+      "fs": "מְנַגֶּנֶת",
+      "mpl": "מְנַגְּנִים",
+      "fpl": "מְנַגְּנוֹת"
+    },
+    "presentTranslit": {
+      "ms": "me'na'gen",
+      "fs": "me'na'ge'net",
+      "mpl": "me'nag'nim",
+      "fpl": "me'nag'not"
+    },
+    "past": {
+      "ani": "ניגנתי",
+      "ata": "ניגנת",
+      "at": "ניגנת",
+      "hu": "ניגן",
+      "hi": "ניגנה",
+      "anachnu": "ניגנו",
+      "atem": "ניגנתם",
+      "aten": "ניגנתן",
+      "hem": "ניגנו"
+    },
+    "pastNikud": {
+      "ani": "נִגַּנְתִּי",
+      "ata": "נִגַּנְתָּ",
+      "at": "נִגַּנְתְּ",
+      "hu": "נִגֵּן",
+      "hi": "נִגְּנָה",
+      "anachnu": "נִגַּנּוּ",
+      "atem": "נִגַּנְתֶּם",
+      "aten": "נִגַּנְתֶּן",
+      "hem": "נִגְּנוּ"
+    },
+    "pastTranslit": {
+      "ani": "ni'gan'ti",
+      "ata": "ni'gan'ta",
+      "at": "ni'gant",
+      "hu": "ni'gen",
+      "hi": "nig'na",
+      "anachnu": "ni'gan'nu",
+      "atem": "ni'gan'tem",
+      "aten": "ni'gan'ten",
+      "hem": "nig'nu"
+    },
+    "imperative": {
+      "ms": "נגן",
+      "fs": "נגני",
+      "pl": "נגנו"
+    },
+    "imperativeNikud": {
+      "ms": "נַגֵּן",
+      "fs": "נַגְּנִי",
+      "pl": "נַגְּנוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "na'gen",
+      "fs": "nag'ni",
+      "pl": "nag'nu"
+    }
+  },
+  {
+    "id": 51,
+    "root": "ש.ח.ק",
+    "binyan": "pi'el",
+    "present": {
+      "ms": "משחק",
+      "fs": "משחקת",
+      "mpl": "משחקים",
+      "fpl": "משחקות"
+    },
+    "presentNikud": {
+      "ms": "מְשַׂחֵק",
+      "fs": "מְשַׂחֶקֶת",
+      "mpl": "מְשַׂחֲקִים",
+      "fpl": "מְשַׂחֲקוֹת"
+    },
+    "presentTranslit": {
+      "ms": "me'sa'chek",
+      "fs": "me'sa'che'ket",
+      "mpl": "me'sa'cha'kim",
+      "fpl": "me'sa'cha'kot"
+    },
+    "past": {
+      "ani": "שיחקתי",
+      "ata": "שיחקת",
+      "at": "שיחקת",
+      "hu": "שיחק",
+      "hi": "שיחקה",
+      "anachnu": "שיחקנו",
+      "atem": "שיחקתם",
+      "aten": "שיחקתן",
+      "hem": "שיחקו"
+    },
+    "pastNikud": {
+      "ani": "שִׂיחַקְתִּי",
+      "ata": "שִׂיחַקְתָּ",
+      "at": "שִׂיחַקְתְּ",
+      "hu": "שִׂיחֵק",
+      "hi": "שִׂיחֲקָה",
+      "anachnu": "שִׂיחַקְנוּ",
+      "atem": "שִׂיחַקְתֶּם",
+      "aten": "שִׂיחַקְתֶּן",
+      "hem": "שִׂיחֲקוּ"
+    },
+    "pastTranslit": {
+      "ani": "si'chak'ti",
+      "ata": "si'chak'ta",
+      "at": "si'chakt",
+      "hu": "si'chek",
+      "hi": "sich'ka",
+      "anachnu": "si'chak'nu",
+      "atem": "si'chak'tem",
+      "aten": "si'chak'ten",
+      "hem": "sich'ku"
+    },
+    "imperative": {
+      "ms": "שחק",
+      "fs": "שחקי",
+      "pl": "שחקו"
+    },
+    "imperativeNikud": {
+      "ms": "שַׂחֵק",
+      "fs": "שַׂחֲקִי",
+      "pl": "שַׂחֲקוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "sa'chek",
+      "fs": "sa'cha'ki",
+      "pl": "sa'cha'ku"
+    }
+  },
+  {
+    "id": 56,
+    "root": "ט.י.ל",
+    "binyan": "pi'el",
+    "present": {
+      "ms": "מטייל",
+      "fs": "מטיילת",
+      "mpl": "מטיילים",
+      "fpl": "מטיילות"
+    },
+    "presentNikud": {
+      "ms": "מְטַיֵּל",
+      "fs": "מְטַיֶּלֶת",
+      "mpl": "מְטַיְּלִים",
+      "fpl": "מְטַיְּלוֹת"
+    },
+    "presentTranslit": {
+      "ms": "me'ta'yel",
+      "fs": "me'ta'ye'let",
+      "mpl": "me'tay'lim",
+      "fpl": "me'tay'lot"
+    },
+    "past": {
+      "ani": "טיילתי",
+      "ata": "טיילת",
+      "at": "טיילת",
+      "hu": "טייל",
+      "hi": "טיילה",
+      "anachnu": "טיילנו",
+      "atem": "טיילתם",
+      "aten": "טיילתן",
+      "hem": "טיילו"
+    },
+    "pastNikud": {
+      "ani": "טִיַּילְתִּי",
+      "ata": "טִיַּילְתָּ",
+      "at": "טִיַּילְתְּ",
+      "hu": "טִיֵּיל",
+      "hi": "טִיְּילָה",
+      "anachnu": "טִיַּילְנוּ",
+      "atem": "טִיַּילְתֶּם",
+      "aten": "טִיַּילְתֶּן",
+      "hem": "טִיְּילוּ"
+    },
+    "pastTranslit": {
+      "ani": "ti'yal'ti",
+      "ata": "ti'yal'ta",
+      "at": "ti'yalt",
+      "hu": "ti'yel",
+      "hi": "tiy'la",
+      "anachnu": "ti'yal'nu",
+      "atem": "ti'yal'tem",
+      "aten": "ti'yal'ten",
+      "hem": "tiy'lu"
+    },
+    "imperative": {
+      "ms": "טייל",
+      "fs": "טיילי",
+      "pl": "טיילו"
+    },
+    "imperativeNikud": {
+      "ms": "טַיֵּיל",
+      "fs": "טַיְּילִי",
+      "pl": "טַיְּילוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "ta'yel",
+      "fs": "tay'li",
+      "pl": "tay'lu"
+    }
+  },
+  {
+    "id": 61,
+    "root": "ר.צ.ה",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "רוצה",
+      "fs": "רוצה",
+      "mpl": "רוצים",
+      "fpl": "רוצות"
+    },
+    "presentNikud": {
+      "ms": "רוֹצֶה",
+      "fs": "רוֹצָה",
+      "mpl": "רוֹצִים",
+      "fpl": "רוֹצוֹת"
+    },
+    "presentTranslit": {
+      "ms": "ro'tze",
+      "fs": "ro'tza",
+      "mpl": "ro'tzim",
+      "fpl": "ro'tzot"
+    },
+    "past": {
+      "ani": "רציתי",
+      "ata": "רצית",
+      "at": "רצית",
+      "hu": "רצה",
+      "hi": "רצתה",
+      "anachnu": "רצינו",
+      "atem": "רציתם",
+      "aten": "רציתן",
+      "hem": "רצו"
+    },
+    "pastNikud": {
+      "ani": "רָצִיתִי",
+      "ata": "רָצִיתָ",
+      "at": "רָצִית",
+      "hu": "רָצָה",
+      "hi": "רָצְתָה",
+      "anachnu": "רָצִינוּ",
+      "atem": "רְצִיתֶם",
+      "aten": "רְצִיתֶן",
+      "hem": "רָצוּ"
+    },
+    "pastTranslit": {
+      "ani": "ra'tzi'ti",
+      "ata": "ra'tzi'ta",
+      "at": "ra'tzit",
+      "hu": "ra'tza",
+      "hi": "ra'tzta",
+      "anachnu": "ra'tzi'nu",
+      "atem": "retzi'tem",
+      "aten": "retzi'ten",
+      "hem": "ra'tzu"
+    },
+    "imperative": {
+      "ms": "רצה",
+      "fs": "רצי",
+      "pl": "רצו"
+    },
+    "imperativeNikud": {
+      "ms": "רְצֵה",
+      "fs": "רְצִי",
+      "pl": "רְצוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "re'tze",
+      "fs": "re'tzi",
+      "pl": "re'tzu"
+    },
+    "note": "Pealim-verified."
+  },
+  {
+    "id": 63,
+    "root": "א.ה.ב",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "אוהב",
+      "fs": "אוהבת",
+      "mpl": "אוהבים",
+      "fpl": "אוהבות"
+    },
+    "presentNikud": {
+      "ms": "אוֹהֵב",
+      "fs": "אוֹהֶבֶת",
+      "mpl": "אוֹהֲבִים",
+      "fpl": "אוֹהֲבוֹת"
+    },
+    "presentTranslit": {
+      "ms": "o'hev",
+      "fs": "o'he'vet",
+      "mpl": "o'ha'vim",
+      "fpl": "o'ha'vot"
+    },
+    "past": {
+      "ani": "אהבתי",
+      "ata": "אהבת",
+      "at": "אהבת",
+      "hu": "אהב",
+      "hi": "אהבה",
+      "anachnu": "אהבנו",
+      "atem": "אהבתם",
+      "aten": "אהבתן",
+      "hem": "אהבו"
+    },
+    "pastNikud": {
+      "ani": "אָהַבְתִּי",
+      "ata": "אָהַבְתָּ",
+      "at": "אָהַבְתְּ",
+      "hu": "אָהַב",
+      "hi": "אָהֲבָה",
+      "anachnu": "אָהַבְנוּ",
+      "atem": "אֲהַבְתֶּם",
+      "aten": "אֲהַבְתֶּן",
+      "hem": "אָהֲבוּ"
+    },
+    "pastTranslit": {
+      "ani": "a'hav'ti",
+      "ata": "a'hav'ta",
+      "at": "a'havt",
+      "hu": "a'hav",
+      "hi": "a'ha'va",
+      "anachnu": "a'hav'nu",
+      "atem": "a'hav'tem",
+      "aten": "a'hav'ten",
+      "hem": "a'ha'vu"
+    },
+    "imperative": {
+      "ms": "אהב",
+      "fs": "אהבי",
+      "pl": "אהבו"
+    },
+    "imperativeNikud": {
+      "ms": "אֱהַב",
+      "fs": "אֶהֱבִי",
+      "pl": "אֶהֱבוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "e'hav",
+      "fs": "e'he'vi",
+      "pl": "e'he'vu"
+    }
+  },
+  {
+    "id": 64,
+    "root": "י.ד.ע",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "יודע",
+      "fs": "יודעת",
+      "mpl": "יודעים",
+      "fpl": "יודעות"
+    },
+    "presentNikud": {
+      "ms": "יוֹדֵעַ",
+      "fs": "יוֹדַעַת",
+      "mpl": "יוֹדְעִים",
+      "fpl": "יוֹדְעוֹת"
+    },
+    "presentTranslit": {
+      "ms": "yo'de'a",
+      "fs": "yo'da'at",
+      "mpl": "yod'im",
+      "fpl": "yod'ot"
+    },
+    "past": {
+      "ani": "ידעתי",
+      "ata": "ידעת",
+      "at": "ידעת",
+      "hu": "ידע",
+      "hi": "ידעה",
+      "anachnu": "ידענו",
+      "atem": "ידעתם",
+      "aten": "ידעתן",
+      "hem": "ידעו"
+    },
+    "pastNikud": {
+      "ani": "יָדַעְתִּי",
+      "ata": "יָדַעְתָּ",
+      "at": "יָדַעְתְּ",
+      "hu": "יָדַע",
+      "hi": "יָדְעָה",
+      "anachnu": "יָדַעְנוּ",
+      "atem": "יְדַעְתֶּם",
+      "aten": "יְדַעְתֶּן",
+      "hem": "יָדְעוּ"
+    },
+    "pastTranslit": {
+      "ani": "ya'da'ti",
+      "ata": "ya'da'ta",
+      "at": "ya'dat",
+      "hu": "ya'da",
+      "hi": "yad'a",
+      "anachnu": "ya'da'nu",
+      "atem": "yeda'tem",
+      "aten": "yeda'ten",
+      "hem": "yad'u"
+    },
+    "imperative": {
+      "ms": "דע",
+      "fs": "דעי",
+      "pl": "דעו"
+    },
+    "imperativeNikud": {
+      "ms": "דַּע",
+      "fs": "דְּעִי",
+      "pl": "דְּעוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "da",
+      "fs": "de'i",
+      "pl": "de'u"
+    }
+  },
+  {
+    "id": 65,
+    "root": "ר.ג.ש",
+    "binyan": "hif'il",
+    "present": {
+      "ms": "מרגיש",
+      "fs": "מרגישה",
+      "mpl": "מרגישים",
+      "fpl": "מרגישות"
+    },
+    "presentNikud": {
+      "ms": "מַרְגִּישׁ",
+      "fs": "מַרְגִּישָׁה",
+      "mpl": "מַרְגִּישִׁים",
+      "fpl": "מַרְגִּישׁוֹת"
+    },
+    "presentTranslit": {
+      "ms": "mar'gish",
+      "fs": "mar'gi'sha",
+      "mpl": "mar'gi'shim",
+      "fpl": "mar'gi'shot"
+    },
+    "past": {
+      "ani": "הרגשתי",
+      "ata": "הרגשת",
+      "at": "הרגשת",
+      "hu": "הרגיש",
+      "hi": "הרגישה",
+      "anachnu": "הרגשנו",
+      "atem": "הרגשתם",
+      "aten": "הרגשתן",
+      "hem": "הרגישו"
+    },
+    "pastNikud": {
+      "ani": "הִרְגַּשְׁתִּי",
+      "ata": "הִרְגַּשְׁתָּ",
+      "at": "הִרְגַּשְׁתְּ",
+      "hu": "הִרְגִּישׁ",
+      "hi": "הִרְגִּישָׁה",
+      "anachnu": "הִרְגַּשְׁנוּ",
+      "atem": "הִרְגַּשְׁתֶּם",
+      "aten": "הִרְגַּשְׁתֶּן",
+      "hem": "הִרְגִּישׁוּ"
+    },
+    "pastTranslit": {
+      "ani": "hir'gash'ti",
+      "ata": "hir'gash'ta",
+      "at": "hir'gasht",
+      "hu": "hir'gish",
+      "hi": "hir'gi'sha",
+      "anachnu": "hir'gash'nu",
+      "atem": "hir'gash'tem",
+      "aten": "hir'gash'ten",
+      "hem": "hir'gi'shu"
+    },
+    "imperative": {
+      "ms": "הרגש",
+      "fs": "הרגישי",
+      "pl": "הרגישו"
+    },
+    "imperativeNikud": {
+      "ms": "הַרְגֵּשׁ",
+      "fs": "הַרְגִּישִׁי",
+      "pl": "הַרְגִּישׁוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "har'gesh",
+      "fs": "har'gi'shi",
+      "pl": "har'gi'shu"
+    }
+  },
+  {
+    "id": 74,
+    "root": "ע.ש.ה",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "עושה",
+      "fs": "עושה",
+      "mpl": "עושים",
+      "fpl": "עושות"
+    },
+    "presentNikud": {
+      "ms": "עוֹשֶׂה",
+      "fs": "עוֹשָׂה",
+      "mpl": "עוֹשִׂים",
+      "fpl": "עוֹשׂוֹת"
+    },
+    "presentTranslit": {
+      "ms": "o'se",
+      "fs": "o'sa",
+      "mpl": "o'sim",
+      "fpl": "o'sot"
+    },
+    "past": {
+      "ani": "עשיתי",
+      "ata": "עשית",
+      "at": "עשית",
+      "hu": "עשה",
+      "hi": "עשתה",
+      "anachnu": "עשינו",
+      "atem": "עשיתם",
+      "aten": "עשיתן",
+      "hem": "עשו"
+    },
+    "pastNikud": {
+      "ani": "עָשִׂיתִי",
+      "ata": "עָשִׂיתָ",
+      "at": "עָשִׂית",
+      "hu": "עָשָׂה",
+      "hi": "עָשְׂתָה",
+      "anachnu": "עָשִׂינוּ",
+      "atem": "עֲשִׂיתֶם",
+      "aten": "עֲשִׂיתֶן",
+      "hem": "עָשׂוּ"
+    },
+    "pastTranslit": {
+      "ani": "a'si'ti",
+      "ata": "a'si'ta",
+      "at": "a'sit",
+      "hu": "a'sa",
+      "hi": "as'ta",
+      "anachnu": "a'si'nu",
+      "atem": "asi'tem",
+      "aten": "asi'ten",
+      "hem": "a'su"
+    },
+    "imperative": {
+      "ms": "עשה",
+      "fs": "עשי",
+      "pl": "עשו"
+    },
+    "imperativeNikud": {
+      "ms": "עֲשֵׂה",
+      "fs": "עֲשִׂי",
+      "pl": "עֲשׂוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "a'se",
+      "fs": "a'si",
+      "pl": "a'su"
+    }
+  },
+  {
+    "id": 75,
+    "root": "י.ש.ב",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "יושב",
+      "fs": "יושבת",
+      "mpl": "יושבים",
+      "fpl": "יושבות"
+    },
+    "presentNikud": {
+      "ms": "יוֹשֵׁב",
+      "fs": "יוֹשֶׁבֶת",
+      "mpl": "יוֹשְׁבִים",
+      "fpl": "יוֹשְׁבוֹת"
+    },
+    "presentTranslit": {
+      "ms": "yo'shev",
+      "fs": "yo'she'vet",
+      "mpl": "yosh'vim",
+      "fpl": "yosh'vot"
+    },
+    "past": {
+      "ani": "ישבתי",
+      "ata": "ישבת",
+      "at": "ישבת",
+      "hu": "ישב",
+      "hi": "ישבה",
+      "anachnu": "ישבנו",
+      "atem": "ישבתם",
+      "aten": "ישבתן",
+      "hem": "ישבו"
+    },
+    "pastNikud": {
+      "ani": "יָשַׁבְתִּי",
+      "ata": "יָשַׁבְתָּ",
+      "at": "יָשַׁבְתְּ",
+      "hu": "יָשַׁב",
+      "hi": "יָשְׁבָה",
+      "anachnu": "יָשַׁבְנוּ",
+      "atem": "יְשַׁבְתֶּם",
+      "aten": "יְשַׁבְתֶּן",
+      "hem": "יָשְׁבוּ"
+    },
+    "pastTranslit": {
+      "ani": "ya'shav'ti",
+      "ata": "ya'shav'ta",
+      "at": "ya'shavt",
+      "hu": "ya'shav",
+      "hi": "yash'va",
+      "anachnu": "ya'shav'nu",
+      "atem": "yeshav'tem",
+      "aten": "yeshav'ten",
+      "hem": "yash'vu"
+    },
+    "imperative": {
+      "ms": "שב",
+      "fs": "שבי",
+      "pl": "שבו"
+    },
+    "imperativeNikud": {
+      "ms": "שֵׁב",
+      "fs": "שְׁבִי",
+      "pl": "שְׁבוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "shev",
+      "fs": "shvi",
+      "pl": "shvu"
+    }
+  },
+  {
+    "id": 76,
+    "root": "ח.פ.ש",
+    "binyan": "pi'el",
+    "present": {
+      "ms": "מחפש",
+      "fs": "מחפשת",
+      "mpl": "מחפשים",
+      "fpl": "מחפשות"
+    },
+    "presentNikud": {
+      "ms": "מְחַפֵּשׂ",
+      "fs": "מְחַפֶּשֶׂת",
+      "mpl": "מְחַפְּשִׂים",
+      "fpl": "מְחַפְּשׂוֹת"
+    },
+    "presentTranslit": {
+      "ms": "me'cha'pes",
+      "fs": "me'cha'pe'set",
+      "mpl": "me'chap'sim",
+      "fpl": "me'chap'sot"
+    },
+    "past": {
+      "ani": "חיפשתי",
+      "ata": "חיפשת",
+      "at": "חיפשת",
+      "hu": "חיפש",
+      "hi": "חיפשה",
+      "anachnu": "חיפשנו",
+      "atem": "חיפשתם",
+      "aten": "חיפשתן",
+      "hem": "חיפשו"
+    },
+    "pastNikud": {
+      "ani": "חִיפַּשְׂתִּי",
+      "ata": "חִיפַּשְׂתָּ",
+      "at": "חִיפַּשְׂתְּ",
+      "hu": "חִיפֵּשׂ",
+      "hi": "חִיפְּשָׂה",
+      "anachnu": "חִיפַּשְׂנוּ",
+      "atem": "חִיפַּשְׂתֶּם",
+      "aten": "חִיפַּשְׂתֶּן",
+      "hem": "חִיפְּשׂוּ"
+    },
+    "pastTranslit": {
+      "ani": "chi'pas'ti",
+      "ata": "chi'pas'ta",
+      "at": "chi'past",
+      "hu": "chi'pes",
+      "hi": "chip'sa",
+      "anachnu": "chi'pas'nu",
+      "atem": "chi'pas'tem",
+      "aten": "chi'pas'ten",
+      "hem": "chip'su"
+    },
+    "imperative": {
+      "ms": "חפש",
+      "fs": "חפשי",
+      "pl": "חפשו"
+    },
+    "imperativeNikud": {
+      "ms": "חַפֵּשׂ",
+      "fs": "חַפְּשִׂי",
+      "pl": "חַפְּשׂוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "cha'pes",
+      "fs": "chap'si",
+      "pl": "chap'su"
+    }
+  },
+  {
+    "id": 97,
+    "root": "פ.ל.ל",
+    "binyan": "hitpa'el",
+    "present": {
+      "ms": "מתפלל",
+      "fs": "מתפללת",
+      "mpl": "מתפללים",
+      "fpl": "מתפללות"
+    },
+    "presentNikud": {
+      "ms": "מִתְפַּלֵּל",
+      "fs": "מִתְפַּלֶּלֶת",
+      "mpl": "מִתְפַּלְלִים",
+      "fpl": "מִתְפַּלְלוֹת"
+    },
+    "presentTranslit": {
+      "ms": "mit'pa'lel",
+      "fs": "mit'pa'le'let",
+      "mpl": "mit'pal'lim",
+      "fpl": "mit'pal'lot"
+    },
+    "past": {
+      "ani": "התפללתי",
+      "ata": "התפללת",
+      "at": "התפללת",
+      "hu": "התפלל",
+      "hi": "התפללה",
+      "anachnu": "התפללנו",
+      "atem": "התפללתם",
+      "aten": "התפללתן",
+      "hem": "התפללו"
+    },
+    "pastNikud": {
+      "ani": "הִתְפַּלַּלְתִּי",
+      "ata": "הִתְפַּלַּלְתָּ",
+      "at": "הִתְפַּלַּלְתְּ",
+      "hu": "הִתְפַּלֵּל",
+      "hi": "הִתְפַּלְלָה",
+      "anachnu": "הִתְפַּלַּלְנוּ",
+      "atem": "הִתְפַּלַּלְתֶּם",
+      "aten": "הִתְפַּלַּלְתֶּן",
+      "hem": "הִתְפַּלְלוּ"
+    },
+    "pastTranslit": {
+      "ani": "hit'pa'lal'ti",
+      "ata": "hit'pa'lal'ta",
+      "at": "hit'pa'lalt",
+      "hu": "hit'pa'lel",
+      "hi": "hit'pal'la",
+      "anachnu": "hit'pa'lal'nu",
+      "atem": "hit'pa'lal'tem",
+      "aten": "hit'pa'lal'ten",
+      "hem": "hit'pal'lu"
+    },
+    "imperative": {
+      "ms": "התפלל",
+      "fs": "התפללי",
+      "pl": "התפללו"
+    },
+    "imperativeNikud": {
+      "ms": "הִתְפַּלֵּל",
+      "fs": "הִתְפַּלְלִי",
+      "pl": "הִתְפַּלְלוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "hit'pa'lel",
+      "fs": "hit'pal'li",
+      "pl": "hit'pal'lu"
+    }
+  },
+  {
+    "id": 105,
+    "root": "ג.ו.ר",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "גר",
+      "fs": "גרה",
+      "mpl": "גרים",
+      "fpl": "גרות"
+    },
+    "presentNikud": {
+      "ms": "גָּר",
+      "fs": "גָּרָה",
+      "mpl": "גָּרִים",
+      "fpl": "גָּרוֹת"
+    },
+    "presentTranslit": {
+      "ms": "gar",
+      "fs": "ga'ra",
+      "mpl": "ga'rim",
+      "fpl": "ga'rot"
+    },
+    "past": {
+      "ani": "גרתי",
+      "ata": "גרת",
+      "at": "גרת",
+      "hu": "גר",
+      "hi": "גרה",
+      "anachnu": "גרנו",
+      "atem": "גרתם",
+      "aten": "גרתן",
+      "hem": "גרו"
+    },
+    "pastNikud": {
+      "ani": "גַּרְתִּי",
+      "ata": "גַּרְתָּ",
+      "at": "גַּרְתְּ",
+      "hu": "גָּר",
+      "hi": "גָּרָה",
+      "anachnu": "גַּרְנוּ",
+      "atem": "גַּרְתֶּם",
+      "aten": "גַּרְתֶּן",
+      "hem": "גָּרוּ"
+    },
+    "pastTranslit": {
+      "ani": "gar'ti",
+      "ata": "gar'ta",
+      "at": "gart",
+      "hu": "gar",
+      "hi": "ga'ra",
+      "anachnu": "gar'nu",
+      "atem": "gar'tem",
+      "aten": "gar'ten",
+      "hem": "ga'ru"
+    },
+    "imperative": {
+      "ms": "גור",
+      "fs": "גורי",
+      "pl": "גורו"
+    },
+    "imperativeNikud": {
+      "ms": "גּוּר",
+      "fs": "גּוּרִי",
+      "pl": "גּוּרוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "gur",
+      "fs": "gu'ri",
+      "pl": "gu'ru"
+    }
+  },
+  {
+    "id": 113,
+    "root": "ש.ת.ה",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "שותה",
+      "fs": "שותה",
+      "mpl": "שותים",
+      "fpl": "שותות"
+    },
+    "presentNikud": {
+      "ms": "שׁוֹתֶה",
+      "fs": "שׁוֹתָה",
+      "mpl": "שׁוֹתִים",
+      "fpl": "שׁוֹתוֹת"
+    },
+    "presentTranslit": {
+      "ms": "sho'te",
+      "fs": "sho'ta",
+      "mpl": "sho'tim",
+      "fpl": "sho'tot"
+    },
+    "past": {
+      "ani": "שתיתי",
+      "ata": "שתית",
+      "at": "שתית",
+      "hu": "שתה",
+      "hi": "שתתה",
+      "anachnu": "שתינו",
+      "atem": "שתיתם",
+      "aten": "שתיתן",
+      "hem": "שתו"
+    },
+    "pastNikud": {
+      "ani": "שָׁתִיתִי",
+      "ata": "שָׁתִיתָ",
+      "at": "שָׁתִית",
+      "hu": "שָׁתָה",
+      "hi": "שָׁתְתָה",
+      "anachnu": "שָׁתִינוּ",
+      "atem": "שְׁתִיתֶם",
+      "aten": "שְׁתִיתֶן",
+      "hem": "שָׁתוּ"
+    },
+    "pastTranslit": {
+      "ani": "sha'ti'ti",
+      "ata": "sha'ti'ta",
+      "at": "sha'tit",
+      "hu": "sha'ta",
+      "hi": "shat'ta",
+      "anachnu": "sha'ti'nu",
+      "atem": "shti'tem",
+      "aten": "shti'ten",
+      "hem": "sha'tu"
+    },
+    "imperative": {
+      "ms": "שתה",
+      "fs": "שתי",
+      "pl": "שתו"
+    },
+    "imperativeNikud": {
+      "ms": "שְׁתֵה",
+      "fs": "שְׁתִי",
+      "pl": "שְׁתוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "shte",
+      "fs": "shti",
+      "pl": "shtu"
+    }
+  },
+  {
+    "id": 116,
+    "root": "ק.ו.ם",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "קם",
+      "fs": "קמה",
+      "mpl": "קמים",
+      "fpl": "קמות"
+    },
+    "presentNikud": {
+      "ms": "קָם",
+      "fs": "קָמָה",
+      "mpl": "קָמִים",
+      "fpl": "קָמוֹת"
+    },
+    "presentTranslit": {
+      "ms": "kam",
+      "fs": "ka'ma",
+      "mpl": "ka'mim",
+      "fpl": "ka'mot"
+    },
+    "past": {
+      "ani": "קמתי",
+      "ata": "קמת",
+      "at": "קמת",
+      "hu": "קם",
+      "hi": "קמה",
+      "anachnu": "קמנו",
+      "atem": "קמתם",
+      "aten": "קמתן",
+      "hem": "קמו"
+    },
+    "pastNikud": {
+      "ani": "קַמְתִּי",
+      "ata": "קַמְתָּ",
+      "at": "קַמְתְּ",
+      "hu": "קָם",
+      "hi": "קָמָה",
+      "anachnu": "קַמְנוּ",
+      "atem": "קַמְתֶּם",
+      "aten": "קַמְתֶּן",
+      "hem": "קָמוּ"
+    },
+    "pastTranslit": {
+      "ani": "kam'ti",
+      "ata": "kam'ta",
+      "at": "kamt",
+      "hu": "kam",
+      "hi": "ka'ma",
+      "anachnu": "kam'nu",
+      "atem": "kam'tem",
+      "aten": "kam'ten",
+      "hem": "ka'mu"
+    },
+    "imperative": {
+      "ms": "קום",
+      "fs": "קומי",
+      "pl": "קומו"
+    },
+    "imperativeNikud": {
+      "ms": "קוּם",
+      "fs": "קוּמִי",
+      "pl": "קוּמוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "kum",
+      "fs": "ku'mi",
+      "pl": "ku'mu"
+    }
+  },
+  {
+    "id": 117,
+    "root": "נ.ס.ע",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "נוסע",
+      "fs": "נוסעת",
+      "mpl": "נוסעים",
+      "fpl": "נוסעות"
+    },
+    "presentNikud": {
+      "ms": "נוֹסֵעַ",
+      "fs": "נוֹסַעַת",
+      "mpl": "נוֹסְעִים",
+      "fpl": "נוֹסְעוֹת"
+    },
+    "presentTranslit": {
+      "ms": "no'se'a",
+      "fs": "no'sa'at",
+      "mpl": "nos'im",
+      "fpl": "nos'ot"
+    },
+    "past": {
+      "ani": "נסעתי",
+      "ata": "נסעת",
+      "at": "נסעת",
+      "hu": "נסע",
+      "hi": "נסעה",
+      "anachnu": "נסענו",
+      "atem": "נסעתם",
+      "aten": "נסעתן",
+      "hem": "נסעו"
+    },
+    "pastNikud": {
+      "ani": "נָסַעְתִּי",
+      "ata": "נָסַעְתָּ",
+      "at": "נָסַעְתְּ",
+      "hu": "נָסַע",
+      "hi": "נָסְעָה",
+      "anachnu": "נָסַעְנוּ",
+      "atem": "נְסַעְתֶּם",
+      "aten": "נְסַעְתֶּן",
+      "hem": "נָסְעוּ"
+    },
+    "pastTranslit": {
+      "ani": "na'sa'ti",
+      "ata": "na'sa'ta",
+      "at": "na'sat",
+      "hu": "na'sa",
+      "hi": "nas'a",
+      "anachnu": "na'sa'nu",
+      "atem": "nesa'tem",
+      "aten": "nesa'ten",
+      "hem": "nas'u"
+    },
+    "imperative": {
+      "ms": "סע",
+      "fs": "סעי",
+      "pl": "סעו"
+    },
+    "imperativeNikud": {
+      "ms": "סַע",
+      "fs": "סְעִי",
+      "pl": "סְעוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "sa",
+      "fs": "se'i",
+      "pl": "se'u"
+    }
+  },
+  {
+    "id": 126,
+    "root": "ה.י.ה",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "הווה",
+      "fs": "הווה",
+      "mpl": "הווים",
+      "fpl": "הוות"
+    },
+    "presentNikud": {
+      "ms": "הוֹוֶה",
+      "fs": "הוֹוָה",
+      "mpl": "הוֹוִים",
+      "fpl": "הוֹווֹת"
+    },
+    "presentTranslit": {
+      "ms": "ho've",
+      "fs": "ho'va",
+      "mpl": "ho'vim",
+      "fpl": "ho'vot"
+    },
+    "past": {
+      "ani": "הייתי",
+      "ata": "היית",
+      "at": "היית",
+      "hu": "היה",
+      "hi": "הייתה",
+      "anachnu": "היינו",
+      "atem": "הייתם",
+      "aten": "הייתן",
+      "hem": "היו"
+    },
+    "pastNikud": {
+      "ani": "הָיִיתִי",
+      "ata": "הָיִיתָ",
+      "at": "הָיִית",
+      "hu": "הָיָה",
+      "hi": "הָיְתָה",
+      "anachnu": "הָיִינוּ",
+      "atem": "הֱיִיתֶם",
+      "aten": "הֱיִיתֶן",
+      "hem": "הָיוּ"
+    },
+    "pastTranslit": {
+      "ani": "ha'yi'ti",
+      "ata": "ha'yi'ta",
+      "at": "ha'yit",
+      "hu": "ha'ya",
+      "hi": "hay'ta",
+      "anachnu": "ha'yi'nu",
+      "atem": "heyi'tem",
+      "aten": "heyi'ten",
+      "hem": "ha'yu"
+    },
+    "imperative": {
+      "ms": "היה",
+      "fs": "היי",
+      "pl": "היו"
+    },
+    "imperativeNikud": {
+      "ms": "הֱיֵה",
+      "fs": "הֱיִי",
+      "pl": "הֱיוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "he'ye",
+      "fs": "he'yi",
+      "pl": "he'yu"
+    },
+    "note": "Pealim-verified. No everyday present tense for 'to be'; the הווה participle forms are literary/rare."
+  },
+  {
+    "id": 134,
+    "root": "ב.ו.א",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "בא",
+      "fs": "באה",
+      "mpl": "באים",
+      "fpl": "באות"
+    },
+    "presentNikud": {
+      "ms": "בָּא",
+      "fs": "בָּאָה",
+      "mpl": "בָּאִים",
+      "fpl": "בָּאוֹת"
+    },
+    "presentTranslit": {
+      "ms": "ba",
+      "fs": "ba'a",
+      "mpl": "ba'im",
+      "fpl": "ba'ot"
+    },
+    "past": {
+      "ani": "באתי",
+      "ata": "באת",
+      "at": "באת",
+      "hu": "בא",
+      "hi": "באה",
+      "anachnu": "באנו",
+      "atem": "באתם",
+      "aten": "באתן",
+      "hem": "באו"
+    },
+    "pastNikud": {
+      "ani": "בָּאתִי",
+      "ata": "בָּאתָ",
+      "at": "בָּאת",
+      "hu": "בָּא",
+      "hi": "בָּאָה",
+      "anachnu": "בָּאנוּ",
+      "atem": "בָּאתֶם",
+      "aten": "בָּאתֶן",
+      "hem": "בָּאוּ"
+    },
+    "pastTranslit": {
+      "ani": "ba'ti",
+      "ata": "ba'ta",
+      "at": "bat",
+      "hu": "ba",
+      "hi": "ba'a",
+      "anachnu": "ba'nu",
+      "atem": "ba'tem",
+      "aten": "ba'ten",
+      "hem": "ba'u"
+    },
+    "imperative": {
+      "ms": "בוא",
+      "fs": "בואי",
+      "pl": "בואו"
+    },
+    "imperativeNikud": {
+      "ms": "בּוֹא",
+      "fs": "בּוֹאִי",
+      "pl": "בּוֹאוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "bo",
+      "fs": "bo'i",
+      "pl": "bo'u"
+    }
+  },
+  {
+    "id": 139,
+    "root": "א.מ.ר",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "אומר",
+      "fs": "אומרת",
+      "mpl": "אומרים",
+      "fpl": "אומרות"
+    },
+    "presentNikud": {
+      "ms": "אוֹמֵר",
+      "fs": "אוֹמֶרֶת",
+      "mpl": "אוֹמְרִים",
+      "fpl": "אוֹמְרוֹת"
+    },
+    "presentTranslit": {
+      "ms": "o'mer",
+      "fs": "o'me'ret",
+      "mpl": "om'rim",
+      "fpl": "om'rot"
+    },
+    "past": {
+      "ani": "אמרתי",
+      "ata": "אמרת",
+      "at": "אמרת",
+      "hu": "אמר",
+      "hi": "אמרה",
+      "anachnu": "אמרנו",
+      "atem": "אמרתם",
+      "aten": "אמרתן",
+      "hem": "אמרו"
+    },
+    "pastNikud": {
+      "ani": "אָמַרְתִּי",
+      "ata": "אָמַרְתָּ",
+      "at": "אָמַרְתְּ",
+      "hu": "אָמַר",
+      "hi": "אָמְרָה",
+      "anachnu": "אָמַרְנוּ",
+      "atem": "אֲמַרְתֶּם",
+      "aten": "אֲמַרְתֶּן",
+      "hem": "אָמְרוּ"
+    },
+    "pastTranslit": {
+      "ani": "a'mar'ti",
+      "ata": "a'mar'ta",
+      "at": "a'mart",
+      "hu": "a'mar",
+      "hi": "am'ra",
+      "anachnu": "a'mar'nu",
+      "atem": "a'mar'tem",
+      "aten": "a'mar'ten",
+      "hem": "am'ru"
+    },
+    "imperative": {
+      "ms": "אמור",
+      "fs": "אמרי",
+      "pl": "אמרו"
+    },
+    "imperativeNikud": {
+      "ms": "אֱמוֹר",
+      "fs": "אִמְרִי",
+      "pl": "אִמְרוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "e'mor",
+      "fs": "im'ri",
+      "pl": "im'ru"
+    }
+  },
+  {
+    "id": 142,
+    "root": "ד.ב.ר",
+    "binyan": "pi'el",
+    "present": {
+      "ms": "מדבר",
+      "fs": "מדברת",
+      "mpl": "מדברים",
+      "fpl": "מדברות"
+    },
+    "presentNikud": {
+      "ms": "מְדַבֵּר",
+      "fs": "מְדַבֶּרֶת",
+      "mpl": "מְדַבְּרִים",
+      "fpl": "מְדַבְּרוֹת"
+    },
+    "presentTranslit": {
+      "ms": "me'da'ber",
+      "fs": "me'da'be'ret",
+      "mpl": "me'dab'rim",
+      "fpl": "me'dab'rot"
+    },
+    "past": {
+      "ani": "דיברתי",
+      "ata": "דיברת",
+      "at": "דיברת",
+      "hu": "דיבר",
+      "hi": "דיברה",
+      "anachnu": "דיברנו",
+      "atem": "דיברתם",
+      "aten": "דיברתן",
+      "hem": "דיברו"
+    },
+    "pastNikud": {
+      "ani": "דִּיבַּרְתִּי",
+      "ata": "דִּיבַּרְתָּ",
+      "at": "דִּיבַּרְתְּ",
+      "hu": "דִּיבֵּר",
+      "hi": "דִּיבְּרָה",
+      "anachnu": "דִּיבַּרְנוּ",
+      "atem": "דִּיבַּרְתֶּם",
+      "aten": "דִּיבַּרְתֶּן",
+      "hem": "דִּיבְּרוּ"
+    },
+    "pastTranslit": {
+      "ani": "di'bar'ti",
+      "ata": "di'bar'ta",
+      "at": "di'bart",
+      "hu": "di'ber",
+      "hi": "dib'ra",
+      "anachnu": "di'bar'nu",
+      "atem": "di'bar'tem",
+      "aten": "di'bar'ten",
+      "hem": "dib'ru"
+    },
+    "imperative": {
+      "ms": "דבר",
+      "fs": "דברי",
+      "pl": "דברו"
+    },
+    "imperativeNikud": {
+      "ms": "דַּבֵּר",
+      "fs": "דַּבְּרִי",
+      "pl": "דַּבְּרוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "da'ber",
+      "fs": "dab'ri",
+      "pl": "dab'ru"
+    }
+  },
+  {
+    "id": 147,
+    "root": "ק.נ.ה",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "קונה",
+      "fs": "קונה",
+      "mpl": "קונים",
+      "fpl": "קונות"
+    },
+    "presentNikud": {
+      "ms": "קוֹנֶה",
+      "fs": "קוֹנָה",
+      "mpl": "קוֹנִים",
+      "fpl": "קוֹנוֹת"
+    },
+    "presentTranslit": {
+      "ms": "ko'ne",
+      "fs": "ko'na",
+      "mpl": "ko'nim",
+      "fpl": "ko'not"
+    },
+    "past": {
+      "ani": "קניתי",
+      "ata": "קנית",
+      "at": "קנית",
+      "hu": "קנה",
+      "hi": "קנתה",
+      "anachnu": "קנינו",
+      "atem": "קניתם",
+      "aten": "קניתן",
+      "hem": "קנו"
+    },
+    "pastNikud": {
+      "ani": "קָנִיתִי",
+      "ata": "קָנִיתָ",
+      "at": "קָנִית",
+      "hu": "קָנָה",
+      "hi": "קָנְתָה",
+      "anachnu": "קָנִינוּ",
+      "atem": "קְנִיתֶם",
+      "aten": "קְנִיתֶן",
+      "hem": "קָנוּ"
+    },
+    "pastTranslit": {
+      "ani": "ka'ni'ti",
+      "ata": "ka'ni'ta",
+      "at": "ka'nit",
+      "hu": "ka'na",
+      "hi": "kan'ta",
+      "anachnu": "ka'ni'nu",
+      "atem": "kni'tem",
+      "aten": "kni'ten",
+      "hem": "ka'nu"
+    },
+    "imperative": {
+      "ms": "קנה",
+      "fs": "קני",
+      "pl": "קנו"
+    },
+    "imperativeNikud": {
+      "ms": "קְנֵה",
+      "fs": "קְנִי",
+      "pl": "קְנוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "kne",
+      "fs": "kni",
+      "pl": "knu"
+    }
+  },
+  {
+    "id": 168,
+    "root": "ש.א.ל",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "שואל",
+      "fs": "שואלת",
+      "mpl": "שואלים",
+      "fpl": "שואלות"
+    },
+    "presentNikud": {
+      "ms": "שׁוֹאֵל",
+      "fs": "שׁוֹאֶלֶת",
+      "mpl": "שׁוֹאֲלִים",
+      "fpl": "שׁוֹאֲלוֹת"
+    },
+    "presentTranslit": {
+      "ms": "sho'el",
+      "fs": "sho'e'let",
+      "mpl": "sho'a'lim",
+      "fpl": "sho'a'lot"
+    },
+    "past": {
+      "ani": "שאלתי",
+      "ata": "שאלת",
+      "at": "שאלת",
+      "hu": "שאל",
+      "hi": "שאלה",
+      "anachnu": "שאלנו",
+      "atem": "שאלתם",
+      "aten": "שאלתן",
+      "hem": "שאלו"
+    },
+    "pastNikud": {
+      "ani": "שָׁאַלְתִּי",
+      "ata": "שָׁאַלְתָּ",
+      "at": "שָׁאַלְתְּ",
+      "hu": "שָׁאַל",
+      "hi": "שָׁאֲלָה",
+      "anachnu": "שָׁאַלְנוּ",
+      "atem": "שְׁאַלְתֶּם",
+      "aten": "שְׁאַלְתֶּן",
+      "hem": "שָׁאֲלוּ"
+    },
+    "pastTranslit": {
+      "ani": "sha'al'ti",
+      "ata": "sha'al'ta",
+      "at": "sha'alt",
+      "hu": "sha'al",
+      "hi": "sha'a'la",
+      "anachnu": "sha'al'nu",
+      "atem": "she'al'tem",
+      "aten": "she'al'ten",
+      "hem": "sha'a'lu"
+    },
+    "imperative": {
+      "ms": "שאל",
+      "fs": "שאלי",
+      "pl": "שאלו"
+    },
+    "imperativeNikud": {
+      "ms": "שְׁאַל",
+      "fs": "שַׁאֲלִי",
+      "pl": "שַׁאֲלוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "she'al",
+      "fs": "sha'a'li",
+      "pl": "sha'a'lu"
+    }
+  },
+  {
+    "id": 171,
+    "root": "ש.מ.ע",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "שומע",
+      "fs": "שומעת",
+      "mpl": "שומעים",
+      "fpl": "שומעות"
+    },
+    "presentNikud": {
+      "ms": "שׁוֹמֵעַ",
+      "fs": "שׁוֹמַעַת",
+      "mpl": "שׁוֹמְעִים",
+      "fpl": "שׁוֹמְעוֹת"
+    },
+    "presentTranslit": {
+      "ms": "sho'me'a",
+      "fs": "sho'ma'at",
+      "mpl": "shom'im",
+      "fpl": "shom'ot"
+    },
+    "past": {
+      "ani": "שמעתי",
+      "ata": "שמעת",
+      "at": "שמעת",
+      "hu": "שמע",
+      "hi": "שמעה",
+      "anachnu": "שמענו",
+      "atem": "שמעתם",
+      "aten": "שמעתן",
+      "hem": "שמעו"
+    },
+    "pastNikud": {
+      "ani": "שָׁמַעְתִּי",
+      "ata": "שָׁמַעְתָּ",
+      "at": "שָׁמַעְתְּ",
+      "hu": "שָׁמַע",
+      "hi": "שָׁמְעָה",
+      "anachnu": "שָׁמַעְנוּ",
+      "atem": "שְׁמַעְתֶּם",
+      "aten": "שְׁמַעְתֶּן",
+      "hem": "שָׁמְעוּ"
+    },
+    "pastTranslit": {
+      "ani": "sha'ma'ti",
+      "ata": "sha'ma'ta",
+      "at": "sha'mat",
+      "hu": "sha'ma",
+      "hi": "sham'a",
+      "anachnu": "sha'ma'nu",
+      "atem": "shma'tem",
+      "aten": "shma'ten",
+      "hem": "sham'u"
+    },
+    "imperative": {
+      "ms": "שמע",
+      "fs": "שמעי",
+      "pl": "שמעו"
+    },
+    "imperativeNikud": {
+      "ms": "שְׁמַע",
+      "fs": "שִׁמְעִי",
+      "pl": "שִׁמְעוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "shma",
+      "fs": "shim'i",
+      "pl": "shim'u"
+    }
+  },
+  {
+    "id": 173,
+    "root": "ע.מ.ל",
+    "binyan": "hitpa'el",
+    "present": {
+      "ms": "מתעמל",
+      "fs": "מתעמלת",
+      "mpl": "מתעמלים",
+      "fpl": "מתעמלות"
+    },
+    "presentNikud": {
+      "ms": "מִתְעַמֵּל",
+      "fs": "מִתְעַמֶּלֶת",
+      "mpl": "מִתְעַמְּלִים",
+      "fpl": "מִתְעַמְּלוֹת"
+    },
+    "presentTranslit": {
+      "ms": "mit'a'mel",
+      "fs": "mit'a'me'let",
+      "mpl": "mit'am'lim",
+      "fpl": "mit'am'lot"
+    },
+    "past": {
+      "ani": "התעמלתי",
+      "ata": "התעמלת",
+      "at": "התעמלת",
+      "hu": "התעמל",
+      "hi": "התעמלה",
+      "anachnu": "התעמלנו",
+      "atem": "התעמלתם",
+      "aten": "התעמלתן",
+      "hem": "התעמלו"
+    },
+    "pastNikud": {
+      "ani": "הִתְעַמַּלְתִּי",
+      "ata": "הִתְעַמַּלְתָּ",
+      "at": "הִתְעַמַּלְתְּ",
+      "hu": "הִתְעַמֵּל",
+      "hi": "הִתְעַמְּלָה",
+      "anachnu": "הִתְעַמַּלְנוּ",
+      "atem": "הִתְעַמַּלְתֶּם",
+      "aten": "הִתְעַמַּלְתֶּן",
+      "hem": "הִתְעַמְּלוּ"
+    },
+    "pastTranslit": {
+      "ani": "hit'a'mal'ti",
+      "ata": "hit'a'mal'ta",
+      "at": "hit'a'malt",
+      "hu": "hit'a'mel",
+      "hi": "hit'am'la",
+      "anachnu": "hit'a'mal'nu",
+      "atem": "hit'a'mal'tem",
+      "aten": "hit'a'mal'ten",
+      "hem": "hit'am'lu"
+    },
+    "imperative": {
+      "ms": "התעמל",
+      "fs": "התעמלי",
+      "pl": "התעמלו"
+    },
+    "imperativeNikud": {
+      "ms": "הִתְעַמֵּל",
+      "fs": "הִתְעַמְּלִי",
+      "pl": "הִתְעַמְּלוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "hit'a'mel",
+      "fs": "hit'am'li",
+      "pl": "hit'am'lu"
+    }
+  },
+  {
+    "id": 177,
+    "root": "נ.כ.ר",
+    "binyan": "hif'il",
+    "present": {
+      "ms": "מכיר",
+      "fs": "מכירה",
+      "mpl": "מכירים",
+      "fpl": "מכירות"
+    },
+    "presentNikud": {
+      "ms": "מַכִּיר",
+      "fs": "מַכִּירָה",
+      "mpl": "מַכִּירִים",
+      "fpl": "מַכִּירוֹת"
+    },
+    "presentTranslit": {
+      "ms": "ma'kir",
+      "fs": "ma'ki'ra",
+      "mpl": "ma'ki'rim",
+      "fpl": "ma'ki'rot"
+    },
+    "past": {
+      "ani": "הכרתי",
+      "ata": "הכרת",
+      "at": "הכרת",
+      "hu": "הכיר",
+      "hi": "הכירה",
+      "anachnu": "הכרנו",
+      "atem": "הכרתם",
+      "aten": "הכרתן",
+      "hem": "הכירו"
+    },
+    "pastNikud": {
+      "ani": "הִכַּרְתִּי",
+      "ata": "הִכַּרְתָּ",
+      "at": "הִכַּרְתְּ",
+      "hu": "הִכִּיר",
+      "hi": "הִכִּירָה",
+      "anachnu": "הִכַּרְנוּ",
+      "atem": "הִכַּרְתֶּם",
+      "aten": "הִכַּרְתֶּן",
+      "hem": "הִכִּירוּ"
+    },
+    "pastTranslit": {
+      "ani": "hi'kar'ti",
+      "ata": "hi'kar'ta",
+      "at": "hi'kart",
+      "hu": "hi'kir",
+      "hi": "hi'ki'ra",
+      "anachnu": "hi'kar'nu",
+      "atem": "hi'kar'tem",
+      "aten": "hi'kar'ten",
+      "hem": "hi'ki'ru"
+    },
+    "imperative": {
+      "ms": "הכר",
+      "fs": "הכירי",
+      "pl": "הכירו"
+    },
+    "imperativeNikud": {
+      "ms": "הַכֵּר",
+      "fs": "הַכִּירִי",
+      "pl": "הַכִּירוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "ha'ker",
+      "fs": "ha'ki'ri",
+      "pl": "ha'ki'ru"
+    }
+  },
+  {
+    "id": 178,
+    "root": "פ.ג.ש",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "פוגש",
+      "fs": "פוגשת",
+      "mpl": "פוגשים",
+      "fpl": "פוגשות"
+    },
+    "presentNikud": {
+      "ms": "פּוֹגֵשׁ",
+      "fs": "פּוֹגֶשֶׁת",
+      "mpl": "פּוֹגְשִׁים",
+      "fpl": "פּוֹגְשׁוֹת"
+    },
+    "presentTranslit": {
+      "ms": "po'gesh",
+      "fs": "po'ge'shet",
+      "mpl": "pog'shim",
+      "fpl": "pog'shot"
+    },
+    "past": {
+      "ani": "פגשתי",
+      "ata": "פגשת",
+      "at": "פגשת",
+      "hu": "פגש",
+      "hi": "פגשה",
+      "anachnu": "פגשנו",
+      "atem": "פגשתם",
+      "aten": "פגשתן",
+      "hem": "פגשו"
+    },
+    "pastNikud": {
+      "ani": "פָּגַשְׁתִּי",
+      "ata": "פָּגַשְׁתָּ",
+      "at": "פָּגַשְׁתְּ",
+      "hu": "פָּגַשׁ",
+      "hi": "פָּגְשָׁה",
+      "anachnu": "פָּגַשְׁנוּ",
+      "atem": "פְּגַשְׁתֶּם",
+      "aten": "פְּגַשְׁתֶּן",
+      "hem": "פָּגְשׁוּ"
+    },
+    "pastTranslit": {
+      "ani": "pa'gash'ti",
+      "ata": "pa'gash'ta",
+      "at": "pa'gasht",
+      "hu": "pa'gash",
+      "hi": "pag'sha",
+      "anachnu": "pa'gash'nu",
+      "atem": "pegash'tem",
+      "aten": "pegash'ten",
+      "hem": "pag'shu"
+    },
+    "imperative": {
+      "ms": "פגוש",
+      "fs": "פגשי",
+      "pl": "פגשו"
+    },
+    "imperativeNikud": {
+      "ms": "פְּגוֹשׁ",
+      "fs": "פִּגְשִׁי",
+      "pl": "פִּגְשׁוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "pgosh",
+      "fs": "pig'shi",
+      "pl": "pig'shu"
+    }
+  },
+  {
+    "id": 185,
+    "root": "ר.א.ה",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "רואה",
+      "fs": "רואה",
+      "mpl": "רואים",
+      "fpl": "רואות"
+    },
+    "presentNikud": {
+      "ms": "רוֹאֶה",
+      "fs": "רוֹאָה",
+      "mpl": "רוֹאִים",
+      "fpl": "רוֹאוֹת"
+    },
+    "presentTranslit": {
+      "ms": "ro'e",
+      "fs": "ro'a",
+      "mpl": "ro'im",
+      "fpl": "ro'ot"
+    },
+    "past": {
+      "ani": "ראיתי",
+      "ata": "ראית",
+      "at": "ראית",
+      "hu": "ראה",
+      "hi": "ראתה",
+      "anachnu": "ראינו",
+      "atem": "ראיתם",
+      "aten": "ראיתן",
+      "hem": "ראו"
+    },
+    "pastNikud": {
+      "ani": "רָאִיתִי",
+      "ata": "רָאִיתָ",
+      "at": "רָאִית",
+      "hu": "רָאָה",
+      "hi": "רָאֲתָה",
+      "anachnu": "רָאִינוּ",
+      "atem": "רְאִיתֶם",
+      "aten": "רְאִיתֶן",
+      "hem": "רָאוּ"
+    },
+    "pastTranslit": {
+      "ani": "ra'i'ti",
+      "ata": "ra'i'ta",
+      "at": "ra'it",
+      "hu": "ra'a",
+      "hi": "ra'a'ta",
+      "anachnu": "ra'i'nu",
+      "atem": "re'i'tem",
+      "aten": "re'i'ten",
+      "hem": "ra'u"
+    },
+    "imperative": {
+      "ms": "ראה",
+      "fs": "ראי",
+      "pl": "ראו"
+    },
+    "imperativeNikud": {
+      "ms": "רְאֵה",
+      "fs": "רְאִי",
+      "pl": "רְאוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "re'e",
+      "fs": "re'i",
+      "pl": "re'u"
+    },
+    "note": "Pealim-verified."
+  },
+  {
+    "id": 206,
+    "root": "ש.י.ם",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "שם",
+      "fs": "שמה",
+      "mpl": "שמים",
+      "fpl": "שמות"
+    },
+    "presentNikud": {
+      "ms": "שָׂם",
+      "fs": "שָׂמָה",
+      "mpl": "שָׂמִים",
+      "fpl": "שָׂמוֹת"
+    },
+    "presentTranslit": {
+      "ms": "sam",
+      "fs": "sa'ma",
+      "mpl": "sa'mim",
+      "fpl": "sa'mot"
+    },
+    "past": {
+      "ani": "שמתי",
+      "ata": "שמת",
+      "at": "שמת",
+      "hu": "שם",
+      "hi": "שמה",
+      "anachnu": "שמנו",
+      "atem": "שמתם",
+      "aten": "שמתן",
+      "hem": "שמו"
+    },
+    "pastNikud": {
+      "ani": "שַׂמְתִּי",
+      "ata": "שַׂמְתָּ",
+      "at": "שַׂמְתְּ",
+      "hu": "שָׂם",
+      "hi": "שָׂמָה",
+      "anachnu": "שַׂמְנוּ",
+      "atem": "שַׂמְתֶּם",
+      "aten": "שַׂמְתֶּן",
+      "hem": "שָׂמוּ"
+    },
+    "pastTranslit": {
+      "ani": "sam'ti",
+      "ata": "sam'ta",
+      "at": "samt",
+      "hu": "sam",
+      "hi": "sa'ma",
+      "anachnu": "sam'nu",
+      "atem": "sam'tem",
+      "aten": "sam'ten",
+      "hem": "sa'mu"
+    },
+    "imperative": {
+      "ms": "שים",
+      "fs": "שימי",
+      "pl": "שימו"
+    },
+    "imperativeNikud": {
+      "ms": "שִׂים",
+      "fs": "שִׂימִי",
+      "pl": "שִׂימוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "sim",
+      "fs": "si'mi",
+      "pl": "si'mu"
+    }
+  },
+  {
+    "id": 207,
+    "root": "ס.ד.ר",
+    "binyan": "pi'el",
+    "present": {
+      "ms": "מסדר",
+      "fs": "מסדרת",
+      "mpl": "מסדרים",
+      "fpl": "מסדרות"
+    },
+    "presentNikud": {
+      "ms": "מְסַדֵּר",
+      "fs": "מְסַדֶּרֶת",
+      "mpl": "מְסַדְּרִים",
+      "fpl": "מְסַדְּרוֹת"
+    },
+    "presentTranslit": {
+      "ms": "me'sa'der",
+      "fs": "me'sa'de'ret",
+      "mpl": "me'sad'rim",
+      "fpl": "me'sad'rot"
+    },
+    "past": {
+      "ani": "סידרתי",
+      "ata": "סידרת",
+      "at": "סידרת",
+      "hu": "סידר",
+      "hi": "סידרה",
+      "anachnu": "סידרנו",
+      "atem": "סידרתם",
+      "aten": "סידרתן",
+      "hem": "סידרו"
+    },
+    "pastNikud": {
+      "ani": "סִידַּרְתִּי",
+      "ata": "סִידַּרְתָּ",
+      "at": "סִידַּרְתְּ",
+      "hu": "סִידֵּר",
+      "hi": "סִידְּרָה",
+      "anachnu": "סִידַּרְנוּ",
+      "atem": "סִידַּרְתֶּם",
+      "aten": "סִידַּרְתֶּן",
+      "hem": "סִידְּרוּ"
+    },
+    "pastTranslit": {
+      "ani": "si'dar'ti",
+      "ata": "si'dar'ta",
+      "at": "si'dart",
+      "hu": "si'der",
+      "hi": "sid'ra",
+      "anachnu": "si'dar'nu",
+      "atem": "si'dar'tem",
+      "aten": "si'dar'ten",
+      "hem": "sid'ru"
+    },
+    "imperative": {
+      "ms": "סדר",
+      "fs": "סדרי",
+      "pl": "סדרו"
+    },
+    "imperativeNikud": {
+      "ms": "סַדֵּר",
+      "fs": "סַדְּרִי",
+      "pl": "סַדְּרוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "sa'der",
+      "fs": "sad'ri",
+      "pl": "sad'ru"
+    }
+  },
+  {
+    "id": 212,
+    "root": "מ.צ.א",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "מוצא",
+      "fs": "מוצאת",
+      "mpl": "מוצאים",
+      "fpl": "מוצאות"
+    },
+    "presentNikud": {
+      "ms": "מוֹצֵא",
+      "fs": "מוֹצֵאת",
+      "mpl": "מוֹצְאִים",
+      "fpl": "מוֹצְאוֹת"
+    },
+    "presentTranslit": {
+      "ms": "mo'tze",
+      "fs": "mo'tzet",
+      "mpl": "motz'im",
+      "fpl": "motz'ot"
+    },
+    "past": {
+      "ani": "מצאתי",
+      "ata": "מצאת",
+      "at": "מצאת",
+      "hu": "מצא",
+      "hi": "מצאה",
+      "anachnu": "מצאנו",
+      "atem": "מצאתם",
+      "aten": "מצאתן",
+      "hem": "מצאו"
+    },
+    "pastNikud": {
+      "ani": "מָצָאתִי",
+      "ata": "מָצָאתָ",
+      "at": "מָצָאת",
+      "hu": "מָצָא",
+      "hi": "מָצְאָה",
+      "anachnu": "מָצָאנוּ",
+      "atem": "מְצָאתֶם",
+      "aten": "מְצָאתֶן",
+      "hem": "מָצְאוּ"
+    },
+    "pastTranslit": {
+      "ani": "ma'tza'ti",
+      "ata": "ma'tza'ta",
+      "at": "ma'tzat",
+      "hu": "ma'tza",
+      "hi": "matz'a",
+      "anachnu": "ma'tza'nu",
+      "atem": "metza'tem",
+      "aten": "metza'ten",
+      "hem": "matz'u"
+    },
+    "imperative": {
+      "ms": "מצא",
+      "fs": "מצאי",
+      "pl": "מצאו"
+    },
+    "imperativeNikud": {
+      "ms": "מְצָא",
+      "fs": "מִצְאִי",
+      "pl": "מִצְאוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "metza",
+      "fs": "mitz'i",
+      "pl": "mitz'u"
+    }
+  },
+  {
+    "id": 214,
+    "root": "ז.מ.ן",
+    "binyan": "hif'il",
+    "present": {
+      "ms": "מזמין",
+      "fs": "מזמינה",
+      "mpl": "מזמינים",
+      "fpl": "מזמינות"
+    },
+    "presentNikud": {
+      "ms": "מַזְמִין",
+      "fs": "מַזְמִינָה",
+      "mpl": "מַזְמִינִים",
+      "fpl": "מַזְמִינוֹת"
+    },
+    "presentTranslit": {
+      "ms": "maz'min",
+      "fs": "maz'mi'na",
+      "mpl": "maz'mi'nim",
+      "fpl": "maz'mi'not"
+    },
+    "past": {
+      "ani": "הזמנתי",
+      "ata": "הזמנת",
+      "at": "הזמנת",
+      "hu": "הזמין",
+      "hi": "הזמינה",
+      "anachnu": "הזמנו",
+      "atem": "הזמנתם",
+      "aten": "הזמנתן",
+      "hem": "הזמינו"
+    },
+    "pastNikud": {
+      "ani": "הִזְמַנְתִּי",
+      "ata": "הִזְמַנְתָּ",
+      "at": "הִזְמַנְתְּ",
+      "hu": "הִזְמִין",
+      "hi": "הִזְמִינָה",
+      "anachnu": "הִזְמַנּוּ",
+      "atem": "הִזְמַנְתֶּם",
+      "aten": "הִזְמַנְתֶּן",
+      "hem": "הִזְמִינוּ"
+    },
+    "pastTranslit": {
+      "ani": "hiz'man'ti",
+      "ata": "hiz'man'ta",
+      "at": "hiz'mant",
+      "hu": "hiz'min",
+      "hi": "hiz'mi'na",
+      "anachnu": "hiz'ma'nu",
+      "atem": "hiz'man'tem",
+      "aten": "hiz'man'ten",
+      "hem": "hiz'mi'nu"
+    },
+    "imperative": {
+      "ms": "הזמן",
+      "fs": "הזמיני",
+      "pl": "הזמינו"
+    },
+    "imperativeNikud": {
+      "ms": "הַזְמֵן",
+      "fs": "הַזְמִינִי",
+      "pl": "הַזְמִינוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "haz'men",
+      "fs": "haz'mi'ni",
+      "pl": "haz'mi'nu"
+    }
+  },
+  {
+    "id": 217,
+    "root": "ב.ק.ש",
+    "binyan": "pi'el",
+    "present": {
+      "ms": "מבקש",
+      "fs": "מבקשת",
+      "mpl": "מבקשים",
+      "fpl": "מבקשות"
+    },
+    "presentNikud": {
+      "ms": "מְבַקֵּשׁ",
+      "fs": "מְבַקֶּשֶׁת",
+      "mpl": "מְבַקְּשִׁים",
+      "fpl": "מְבַקְּשׁוֹת"
+    },
+    "presentTranslit": {
+      "ms": "me'va'kesh",
+      "fs": "me'va'ke'shet",
+      "mpl": "me'vak'shim",
+      "fpl": "me'vak'shot"
+    },
+    "past": {
+      "ani": "ביקשתי",
+      "ata": "ביקשת",
+      "at": "ביקשת",
+      "hu": "ביקש",
+      "hi": "ביקשה",
+      "anachnu": "ביקשנו",
+      "atem": "ביקשתם",
+      "aten": "ביקשתן",
+      "hem": "ביקשו"
+    },
+    "pastNikud": {
+      "ani": "בִּיקַּשְׁתִּי",
+      "ata": "בִּיקַּשְׁתָּ",
+      "at": "בִּיקַּשְׁתְּ",
+      "hu": "בִּיקֵּשׁ",
+      "hi": "בִּיקְּשָׁה",
+      "anachnu": "בִּיקַּשְׁנוּ",
+      "atem": "בִּיקַּשְׁתֶּם",
+      "aten": "בִּיקַּשְׁתֶּן",
+      "hem": "בִּיקְּשׁוּ"
+    },
+    "pastTranslit": {
+      "ani": "bi'kash'ti",
+      "ata": "bi'kash'ta",
+      "at": "bi'kasht",
+      "hu": "bi'kesh",
+      "hi": "bik'sha",
+      "anachnu": "bi'kash'nu",
+      "atem": "bi'kash'tem",
+      "aten": "bi'kash'ten",
+      "hem": "bik'shu"
+    },
+    "imperative": {
+      "ms": "בקש",
+      "fs": "בקשי",
+      "pl": "בקשו"
+    },
+    "imperativeNikud": {
+      "ms": "בַּקֵּשׁ",
+      "fs": "בַּקְּשִׁי",
+      "pl": "בַּקְּשׁוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "ba'kesh",
+      "fs": "bak'shi",
+      "pl": "bak'shu"
+    }
+  },
+  {
+    "id": 233,
+    "root": "ז.כ.ר",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "זוכר",
+      "fs": "זוכרת",
+      "mpl": "זוכרים",
+      "fpl": "זוכרות"
+    },
+    "presentNikud": {
+      "ms": "זוֹכֵר",
+      "fs": "זוֹכֶרֶת",
+      "mpl": "זוֹכְרִים",
+      "fpl": "זוֹכְרוֹת"
+    },
+    "presentTranslit": {
+      "ms": "zo'cher",
+      "fs": "zo'che'ret",
+      "mpl": "zoch'rim",
+      "fpl": "zoch'rot"
+    },
+    "past": {
+      "ani": "זכרתי",
+      "ata": "זכרת",
+      "at": "זכרת",
+      "hu": "זכר",
+      "hi": "זכרה",
+      "anachnu": "זכרנו",
+      "atem": "זכרתם",
+      "aten": "זכרתן",
+      "hem": "זכרו"
+    },
+    "pastNikud": {
+      "ani": "זָכַרְתִּי",
+      "ata": "זָכַרְתָּ",
+      "at": "זָכַרְתְּ",
+      "hu": "זָכַר",
+      "hi": "זָכְרָה",
+      "anachnu": "זָכַרְנוּ",
+      "atem": "זְכַרְתֶּם",
+      "aten": "זְכַרְתֶּן",
+      "hem": "זָכְרוּ"
+    },
+    "pastTranslit": {
+      "ani": "za'char'ti",
+      "ata": "za'char'ta",
+      "at": "za'chart",
+      "hu": "za'char",
+      "hi": "zach'ra",
+      "anachnu": "za'char'nu",
+      "atem": "zechar'tem",
+      "aten": "zechar'ten",
+      "hem": "zach'ru"
+    },
+    "imperative": {
+      "ms": "זכור",
+      "fs": "זכרי",
+      "pl": "זכרו"
+    },
+    "imperativeNikud": {
+      "ms": "זְכוֹר",
+      "fs": "זִכְרִי",
+      "pl": "זִכְרוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "zchor",
+      "fs": "zich'ri",
+      "pl": "zich'ru"
+    }
+  },
+  {
+    "id": 234,
+    "root": "ס.פ.ר",
+    "binyan": "pi'el",
+    "present": {
+      "ms": "מספר",
+      "fs": "מספרת",
+      "mpl": "מספרים",
+      "fpl": "מספרות"
+    },
+    "presentNikud": {
+      "ms": "מְסַפֵּר",
+      "fs": "מְסַפֶּרֶת",
+      "mpl": "מְסַפְּרִים",
+      "fpl": "מְסַפְּרוֹת"
+    },
+    "presentTranslit": {
+      "ms": "me'sa'per",
+      "fs": "me'sa'pe'ret",
+      "mpl": "me'sap'rim",
+      "fpl": "me'sap'rot"
+    },
+    "past": {
+      "ani": "סיפרתי",
+      "ata": "סיפרת",
+      "at": "סיפרת",
+      "hu": "סיפר",
+      "hi": "סיפרה",
+      "anachnu": "סיפרנו",
+      "atem": "סיפרתם",
+      "aten": "סיפרתן",
+      "hem": "סיפרו"
+    },
+    "pastNikud": {
+      "ani": "סִיפַּרְתִּי",
+      "ata": "סִיפַּרְתָּ",
+      "at": "סִיפַּרְתְּ",
+      "hu": "סִיפֵּר",
+      "hi": "סִיפְּרָה",
+      "anachnu": "סִיפַּרְנוּ",
+      "atem": "סִיפַּרְתֶּם",
+      "aten": "סִיפַּרְתֶּן",
+      "hem": "סִיפְּרוּ"
+    },
+    "pastTranslit": {
+      "ani": "si'par'ti",
+      "ata": "si'par'ta",
+      "at": "si'part",
+      "hu": "si'per",
+      "hi": "sip'ra",
+      "anachnu": "si'par'nu",
+      "atem": "si'par'tem",
+      "aten": "si'par'ten",
+      "hem": "sip'ru"
+    },
+    "imperative": {
+      "ms": "ספר",
+      "fs": "ספרי",
+      "pl": "ספרו"
+    },
+    "imperativeNikud": {
+      "ms": "סַפֵּר",
+      "fs": "סַפְּרִי",
+      "pl": "סַפְּרוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "sa'per",
+      "fs": "sap'ri",
+      "pl": "sap'ru"
+    }
+  },
+  {
+    "id": 237,
+    "root": "נ.ג.ע",
+    "binyan": "hif'il",
+    "present": {
+      "ms": "מגיע",
+      "fs": "מגיעה",
+      "mpl": "מגיעים",
+      "fpl": "מגיעות"
+    },
+    "presentNikud": {
+      "ms": "מַגִּיעַ",
+      "fs": "מַגִּיעָה",
+      "mpl": "מַגִּיעִים",
+      "fpl": "מַגִּיעוֹת"
+    },
+    "presentTranslit": {
+      "ms": "ma'gi'a",
+      "fs": "ma'gi'a",
+      "mpl": "ma'gi'im",
+      "fpl": "ma'gi'ot"
+    },
+    "past": {
+      "ani": "הגעתי",
+      "ata": "הגעת",
+      "at": "הגעת",
+      "hu": "הגיע",
+      "hi": "הגיעה",
+      "anachnu": "הגענו",
+      "atem": "הגעתם",
+      "aten": "הגעתן",
+      "hem": "הגיעו"
+    },
+    "pastNikud": {
+      "ani": "הִגַּעְתִּי",
+      "ata": "הִגַּעְתָּ",
+      "at": "הִגַּעְתְּ",
+      "hu": "הִגִּיעַ",
+      "hi": "הִגִּיעָה",
+      "anachnu": "הִגַּעְנוּ",
+      "atem": "הִגַּעְתֶּם",
+      "aten": "הִגַּעְתֶּן",
+      "hem": "הִגִּיעוּ"
+    },
+    "pastTranslit": {
+      "ani": "hi'ga'ti",
+      "ata": "hi'ga'ta",
+      "at": "hi'gat",
+      "hu": "hi'gi'a",
+      "hi": "hi'gi'a",
+      "anachnu": "hi'ga'nu",
+      "atem": "hi'ga'tem",
+      "aten": "hi'ga'ten",
+      "hem": "hi'gi'u"
+    },
+    "imperative": {
+      "ms": "הגע",
+      "fs": "הגיעי",
+      "pl": "הגיעו"
+    },
+    "imperativeNikud": {
+      "ms": "הַגַּע",
+      "fs": "הַגִּיעִי",
+      "pl": "הַגִּיעוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "ha'ga",
+      "fs": "ha'gi'i",
+      "pl": "ha'gi'u"
+    }
+  },
+  {
+    "id": 244,
+    "root": "ס.ב.ר",
+    "binyan": "hif'il",
+    "present": {
+      "ms": "מסביר",
+      "fs": "מסבירה",
+      "mpl": "מסבירים",
+      "fpl": "מסבירות"
+    },
+    "presentNikud": {
+      "ms": "מַסְבִּיר",
+      "fs": "מַסְבִּירָה",
+      "mpl": "מַסְבִּירִים",
+      "fpl": "מַסְבִּירוֹת"
+    },
+    "presentTranslit": {
+      "ms": "mas'bir",
+      "fs": "mas'bi'ra",
+      "mpl": "mas'bi'rim",
+      "fpl": "mas'bi'rot"
+    },
+    "past": {
+      "ani": "הסברתי",
+      "ata": "הסברת",
+      "at": "הסברת",
+      "hu": "הסביר",
+      "hi": "הסבירה",
+      "anachnu": "הסברנו",
+      "atem": "הסברתם",
+      "aten": "הסברתן",
+      "hem": "הסבירו"
+    },
+    "pastNikud": {
+      "ani": "הִסְבַּרְתִּי",
+      "ata": "הִסְבַּרְתָּ",
+      "at": "הִסְבַּרְתְּ",
+      "hu": "הִסְבִּיר",
+      "hi": "הִסְבִּירָה",
+      "anachnu": "הִסְבַּרְנוּ",
+      "atem": "הִסְבַּרְתֶּם",
+      "aten": "הִסְבַּרְתֶּן",
+      "hem": "הִסְבִּירוּ"
+    },
+    "pastTranslit": {
+      "ani": "his'bar'ti",
+      "ata": "his'bar'ta",
+      "at": "his'bart",
+      "hu": "his'bir",
+      "hi": "his'bi'ra",
+      "anachnu": "his'bar'nu",
+      "atem": "his'bar'tem",
+      "aten": "his'bar'ten",
+      "hem": "his'bi'ru"
+    },
+    "imperative": {
+      "ms": "הסבר",
+      "fs": "הסבירי",
+      "pl": "הסבירו"
+    },
+    "imperativeNikud": {
+      "ms": "הַסְבֵּר",
+      "fs": "הַסְבִּירִי",
+      "pl": "הַסְבִּירוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "has'ber",
+      "fs": "has'bi'ri",
+      "pl": "has'bi'ru"
+    }
+  },
+  {
+    "id": 257,
+    "root": "כ.ו.ן",
+    "binyan": "hif'il",
+    "present": {
+      "ms": "מכין",
+      "fs": "מכינה",
+      "mpl": "מכינים",
+      "fpl": "מכינות"
+    },
+    "presentNikud": {
+      "ms": "מֵכִין",
+      "fs": "מְכִינָה",
+      "mpl": "מְכִינִים",
+      "fpl": "מְכִינוֹת"
+    },
+    "presentTranslit": {
+      "ms": "me'chin",
+      "fs": "me'chi'na",
+      "mpl": "me'chi'nim",
+      "fpl": "me'chi'not"
+    },
+    "past": {
+      "ani": "הכנתי",
+      "ata": "הכנת",
+      "at": "הכנת",
+      "hu": "הכין",
+      "hi": "הכינה",
+      "anachnu": "הכנו",
+      "atem": "הכנתם",
+      "aten": "הכנתן",
+      "hem": "הכינו"
+    },
+    "pastNikud": {
+      "ani": "הֵכַנְתִּי",
+      "ata": "הֵכַנְתָּ",
+      "at": "הֵכַנְתְּ",
+      "hu": "הֵכִין",
+      "hi": "הֵכִינָה",
+      "anachnu": "הֵכַנּוּ",
+      "atem": "הֲכַנְתֶּם",
+      "aten": "הֲכַנְתֶּן",
+      "hem": "הֵכִינוּ"
+    },
+    "pastTranslit": {
+      "ani": "he'chan'ti",
+      "ata": "he'chan'ta",
+      "at": "he'chant",
+      "hu": "he'chin",
+      "hi": "he'chi'na",
+      "anachnu": "he'cha'nu",
+      "atem": "he'chan'tem",
+      "aten": "he'chan'ten",
+      "hem": "he'chi'nu"
+    },
+    "imperative": {
+      "ms": "הכן",
+      "fs": "הכיני",
+      "pl": "הכינו"
+    },
+    "imperativeNikud": {
+      "ms": "הָכֵן",
+      "fs": "הָכִינִי",
+      "pl": "הָכִינוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "ha'chen",
+      "fs": "ha'chi'ni",
+      "pl": "ha'chi'nu"
+    }
+  },
+  {
+    "id": 265,
+    "root": "ב.ש.ל",
+    "binyan": "pi'el",
+    "present": {
+      "ms": "מבשל",
+      "fs": "מבשלת",
+      "mpl": "מבשלים",
+      "fpl": "מבשלות"
+    },
+    "presentNikud": {
+      "ms": "מְבַשֵּׁל",
+      "fs": "מְבַשֶּׁלֶת",
+      "mpl": "מְבַשְּׁלִים",
+      "fpl": "מְבַשְּׁלוֹת"
+    },
+    "presentTranslit": {
+      "ms": "me'va'shel",
+      "fs": "me'va'she'let",
+      "mpl": "me'vash'lim",
+      "fpl": "me'vash'lot"
+    },
+    "past": {
+      "ani": "בישלתי",
+      "ata": "בישלת",
+      "at": "בישלת",
+      "hu": "בישל",
+      "hi": "בישלה",
+      "anachnu": "בישלנו",
+      "atem": "בישלתם",
+      "aten": "בישלתן",
+      "hem": "בישלו"
+    },
+    "pastNikud": {
+      "ani": "בִּישַּׁלְתִּי",
+      "ata": "בִּישַּׁלְתָּ",
+      "at": "בִּישַּׁלְתְּ",
+      "hu": "בִּישֵּׁל",
+      "hi": "בִּישְּׁלָה",
+      "anachnu": "בִּישַּׁלְנוּ",
+      "atem": "בִּישַּׁלְתֶּם",
+      "aten": "בִּישַּׁלְתֶּן",
+      "hem": "בִּישְּׁלוּ"
+    },
+    "pastTranslit": {
+      "ani": "bi'shal'ti",
+      "ata": "bi'shal'ta",
+      "at": "bi'shalt",
+      "hu": "bi'shel",
+      "hi": "bish'la",
+      "anachnu": "bi'shal'nu",
+      "atem": "bi'shal'tem",
+      "aten": "bi'shal'ten",
+      "hem": "bish'lu"
+    },
+    "imperative": {
+      "ms": "בשל",
+      "fs": "בשלי",
+      "pl": "בשלו"
+    },
+    "imperativeNikud": {
+      "ms": "בַּשֵּׁל",
+      "fs": "בַּשְּׁלִי",
+      "pl": "בַּשְּׁלוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "ba'shel",
+      "fs": "bash'li",
+      "pl": "bash'lu"
+    }
+  },
+  {
+    "id": 279,
+    "root": "ב.י.ן",
+    "binyan": "hif'il",
+    "present": {
+      "ms": "מבין",
+      "fs": "מבינה",
+      "mpl": "מבינים",
+      "fpl": "מבינות"
+    },
+    "presentNikud": {
+      "ms": "מֵבִין",
+      "fs": "מְבִינָה",
+      "mpl": "מְבִינִים",
+      "fpl": "מְבִינוֹת"
+    },
+    "presentTranslit": {
+      "ms": "me'vin",
+      "fs": "me'vi'na",
+      "mpl": "me'vi'nim",
+      "fpl": "me'vi'not"
+    },
+    "past": {
+      "ani": "הבנתי",
+      "ata": "הבנת",
+      "at": "הבנת",
+      "hu": "הבין",
+      "hi": "הבינה",
+      "anachnu": "הבנו",
+      "atem": "הבנתם",
+      "aten": "הבנתן",
+      "hem": "הבינו"
+    },
+    "pastNikud": {
+      "ani": "הֵבַנְתִּי",
+      "ata": "הֵבַנְתָּ",
+      "at": "הֵבַנְתְּ",
+      "hu": "הֵבִין",
+      "hi": "הֵבִינָה",
+      "anachnu": "הֵבַנּוּ",
+      "atem": "הֲבַנְתֶּם",
+      "aten": "הֲבַנְתֶּן",
+      "hem": "הֵבִינוּ"
+    },
+    "pastTranslit": {
+      "ani": "he'van'ti",
+      "ata": "he'van'ta",
+      "at": "he'vant",
+      "hu": "he'vin",
+      "hi": "he'vi'na",
+      "anachnu": "he'va'nu",
+      "atem": "he'van'tem",
+      "aten": "he'van'ten",
+      "hem": "he'vi'nu"
+    },
+    "imperative": {
+      "ms": "הבן",
+      "fs": "הביני",
+      "pl": "הבינו"
+    },
+    "imperativeNikud": {
+      "ms": "הָבֵן",
+      "fs": "הָבִינִי",
+      "pl": "הָבִינוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "ha'ven",
+      "fs": "ha'vi'ni",
+      "pl": "ha'vi'nu"
+    }
+  },
+  {
+    "id": 295,
+    "root": "י.ל.ד",
+    "binyan": "nif'al",
+    "present": {
+      "ms": "נולד",
+      "fs": "נולדת",
+      "mpl": "נולדים",
+      "fpl": "נולדות"
+    },
+    "presentNikud": {
+      "ms": "נוֹלָד",
+      "fs": "נוֹלֶדֶת",
+      "mpl": "נוֹלָדִים",
+      "fpl": "נוֹלָדוֹת"
+    },
+    "presentTranslit": {
+      "ms": "no'lad",
+      "fs": "no'le'det",
+      "mpl": "no'la'dim",
+      "fpl": "no'la'dot"
+    },
+    "past": {
+      "ani": "נולדתי",
+      "ata": "נולדת",
+      "at": "נולדת",
+      "hu": "נולד",
+      "hi": "נולדה",
+      "anachnu": "נולדנו",
+      "atem": "נולדתם",
+      "aten": "נולדתן",
+      "hem": "נולדו"
+    },
+    "pastNikud": {
+      "ani": "נוֹלַדְתִּי",
+      "ata": "נוֹלַדְתָּ",
+      "at": "נוֹלַדְתְּ",
+      "hu": "נוֹלַד",
+      "hi": "נוֹלְדָה",
+      "anachnu": "נוֹלַדְנוּ",
+      "atem": "נוֹלַדְתֶּם",
+      "aten": "נוֹלַדְתֶּן",
+      "hem": "נוֹלְדוּ"
+    },
+    "pastTranslit": {
+      "ani": "no'lad'ti",
+      "ata": "no'lad'ta",
+      "at": "no'ladt",
+      "hu": "no'lad",
+      "hi": "nol'da",
+      "anachnu": "no'lad'nu",
+      "atem": "no'lad'tem",
+      "aten": "no'lad'ten",
+      "hem": "nol'du"
+    },
+    "imperative": {
+      "ms": "היוולד",
+      "fs": "היוולדי",
+      "pl": "היוולדו"
+    },
+    "imperativeNikud": {
+      "ms": "הִוָּלֵד",
+      "fs": "הִוָּלְדִי",
+      "pl": "הִוָּלְדוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "hi'va'led",
+      "fs": "hi'val'di",
+      "pl": "hi'val'du"
+    },
+    "note": "Imperative of 'be born' is rare in everyday use."
+  },
+  {
+    "id": 301,
+    "root": "ע.ר.ב.ב",
+    "binyan": "pi'el",
+    "present": {
+      "ms": "מערבב",
+      "fs": "מערבבת",
+      "mpl": "מערבבים",
+      "fpl": "מערבבות"
+    },
+    "presentNikud": {
+      "ms": "מְעַרְבֵּב",
+      "fs": "מְעַרְבֶּבֶת",
+      "mpl": "מְעַרְבְּבִים",
+      "fpl": "מְעַרְבְּבוֹת"
+    },
+    "presentTranslit": {
+      "ms": "me'ar'bev",
+      "fs": "me'ar'be'vet",
+      "mpl": "me'ar'be'vim",
+      "fpl": "me'ar'be'vot"
+    },
+    "past": {
+      "ani": "עירבבתי",
+      "ata": "עירבבת",
+      "at": "עירבבת",
+      "hu": "עירבב",
+      "hi": "עירבבה",
+      "anachnu": "עירבבנו",
+      "atem": "עירבבתם",
+      "aten": "עירבבתן",
+      "hem": "עירבבו"
+    },
+    "pastNikud": {
+      "ani": "עִירְבַּבְתִּי",
+      "ata": "עִירְבַּבְתָּ",
+      "at": "עִירְבַּבְתְּ",
+      "hu": "עִירְבֵּב",
+      "hi": "עִירְבְּבָה",
+      "anachnu": "עִירְבַּבְנוּ",
+      "atem": "עִירְבַּבְתֶּם",
+      "aten": "עִירְבַּבְתֶּן",
+      "hem": "עִירְבְּבוּ"
+    },
+    "pastTranslit": {
+      "ani": "ir'bav'ti",
+      "ata": "ir'bav'ta",
+      "at": "ir'bavt",
+      "hu": "ir'bev",
+      "hi": "ir'be'va",
+      "anachnu": "ir'bav'nu",
+      "atem": "ir'bav'tem",
+      "aten": "ir'bav'ten",
+      "hem": "ir'be'vu"
+    },
+    "imperative": {
+      "ms": "ערבב",
+      "fs": "ערבבי",
+      "pl": "ערבבו"
+    },
+    "imperativeNikud": {
+      "ms": "עַרְבֵּב",
+      "fs": "עַרְבְּבִי",
+      "pl": "עַרְבְּבוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "ar'bev",
+      "fs": "ar'be'vi",
+      "pl": "ar'be'vu"
+    }
+  },
+  {
+    "id": 346,
+    "root": "כ.ו.ן",
+    "binyan": "hif'il",
+    "present": {
+      "ms": "מכין",
+      "fs": "מכינה",
+      "mpl": "מכינים",
+      "fpl": "מכינות"
+    },
+    "presentNikud": {
+      "ms": "מֵכִין",
+      "fs": "מְכִינָה",
+      "mpl": "מְכִינִים",
+      "fpl": "מְכִינוֹת"
+    },
+    "presentTranslit": {
+      "ms": "me'chin",
+      "fs": "me'chi'na",
+      "mpl": "me'chi'nim",
+      "fpl": "me'chi'not"
+    },
+    "past": {
+      "ani": "הכנתי",
+      "ata": "הכנת",
+      "at": "הכנת",
+      "hu": "הכין",
+      "hi": "הכינה",
+      "anachnu": "הכנו",
+      "atem": "הכנתם",
+      "aten": "הכנתן",
+      "hem": "הכינו"
+    },
+    "pastNikud": {
+      "ani": "הֵכַנְתִּי",
+      "ata": "הֵכַנְתָּ",
+      "at": "הֵכַנְתְּ",
+      "hu": "הֵכִין",
+      "hi": "הֵכִינָה",
+      "anachnu": "הֵכַנּוּ",
+      "atem": "הֲכַנְתֶּם",
+      "aten": "הֲכַנְתֶּן",
+      "hem": "הֵכִינוּ"
+    },
+    "pastTranslit": {
+      "ani": "he'chan'ti",
+      "ata": "he'chan'ta",
+      "at": "he'chant",
+      "hu": "he'chin",
+      "hi": "he'chi'na",
+      "anachnu": "he'cha'nu",
+      "atem": "he'chan'tem",
+      "aten": "he'chan'ten",
+      "hem": "he'chi'nu"
+    },
+    "imperative": {
+      "ms": "הכן",
+      "fs": "הכיני",
+      "pl": "הכינו"
+    },
+    "imperativeNikud": {
+      "ms": "הָכֵן",
+      "fs": "הָכִינִי",
+      "pl": "הָכִינוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "ha'chen",
+      "fs": "ha'chi'ni",
+      "pl": "ha'chi'nu"
+    },
+    "note": "Duplicate of id 257 (prepare)."
+  },
+  {
+    "id": 347,
+    "root": "ע.ל.ה",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "עולה",
+      "fs": "עולה",
+      "mpl": "עולים",
+      "fpl": "עולות"
+    },
+    "presentNikud": {
+      "ms": "עוֹלֶה",
+      "fs": "עוֹלָה",
+      "mpl": "עוֹלִים",
+      "fpl": "עוֹלוֹת"
+    },
+    "presentTranslit": {
+      "ms": "o'le",
+      "fs": "o'la",
+      "mpl": "o'lim",
+      "fpl": "o'lot"
+    },
+    "past": {
+      "ani": "עליתי",
+      "ata": "עלית",
+      "at": "עלית",
+      "hu": "עלה",
+      "hi": "עלתה",
+      "anachnu": "עלינו",
+      "atem": "עליתם",
+      "aten": "עליתן",
+      "hem": "עלו"
+    },
+    "pastNikud": {
+      "ani": "עָלִיתִי",
+      "ata": "עָלִיתָ",
+      "at": "עָלִית",
+      "hu": "עָלָה",
+      "hi": "עָלְתָה",
+      "anachnu": "עָלִינוּ",
+      "atem": "עֲלִיתֶם",
+      "aten": "עֲלִיתֶן",
+      "hem": "עָלוּ"
+    },
+    "pastTranslit": {
+      "ani": "a'li'ti",
+      "ata": "a'li'ta",
+      "at": "a'lit",
+      "hu": "a'la",
+      "hi": "al'ta",
+      "anachnu": "a'li'nu",
+      "atem": "ali'tem",
+      "aten": "ali'ten",
+      "hem": "a'lu"
+    },
+    "imperative": {
+      "ms": "עלה",
+      "fs": "עלי",
+      "pl": "עלו"
+    },
+    "imperativeNikud": {
+      "ms": "עֲלֵה",
+      "fs": "עֲלִי",
+      "pl": "עֲלוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "a'le",
+      "fs": "a'li",
+      "pl": "a'lu"
+    }
+  },
+  {
+    "id": 348,
+    "root": "ב.נ.ה",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "בונה",
+      "fs": "בונה",
+      "mpl": "בונים",
+      "fpl": "בונות"
+    },
+    "presentNikud": {
+      "ms": "בּוֹנֶה",
+      "fs": "בּוֹנָה",
+      "mpl": "בּוֹנִים",
+      "fpl": "בּוֹנוֹת"
+    },
+    "presentTranslit": {
+      "ms": "bo'ne",
+      "fs": "bo'na",
+      "mpl": "bo'nim",
+      "fpl": "bo'not"
+    },
+    "past": {
+      "ani": "בניתי",
+      "ata": "בנית",
+      "at": "בנית",
+      "hu": "בנה",
+      "hi": "בנתה",
+      "anachnu": "בנינו",
+      "atem": "בניתם",
+      "aten": "בניתן",
+      "hem": "בנו"
+    },
+    "pastNikud": {
+      "ani": "בָּנִיתִי",
+      "ata": "בָּנִיתָ",
+      "at": "בָּנִית",
+      "hu": "בָּנָה",
+      "hi": "בָּנְתָה",
+      "anachnu": "בָּנִינוּ",
+      "atem": "בְּנִיתֶם",
+      "aten": "בְּנִיתֶן",
+      "hem": "בָּנוּ"
+    },
+    "pastTranslit": {
+      "ani": "ba'ni'ti",
+      "ata": "ba'ni'ta",
+      "at": "ba'nit",
+      "hu": "ba'na",
+      "hi": "ban'ta",
+      "anachnu": "ba'ni'nu",
+      "atem": "bni'tem",
+      "aten": "bni'ten",
+      "hem": "ba'nu"
+    },
+    "imperative": {
+      "ms": "בנה",
+      "fs": "בני",
+      "pl": "בנו"
+    },
+    "imperativeNikud": {
+      "ms": "בְּנֵה",
+      "fs": "בְּנִי",
+      "pl": "בְּנוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "bne",
+      "fs": "bni",
+      "pl": "bnu"
+    }
+  },
+  {
+    "id": 349,
+    "root": "י.כ.ל",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "יכול",
+      "fs": "יכולה",
+      "mpl": "יכולים",
+      "fpl": "יכולות"
+    },
+    "presentNikud": {
+      "ms": "יָכוֹל",
+      "fs": "יְכוֹלָה",
+      "mpl": "יְכוֹלִים",
+      "fpl": "יְכוֹלוֹת"
+    },
+    "presentTranslit": {
+      "ms": "ya'chol",
+      "fs": "ye'cho'la",
+      "mpl": "ye'cho'lim",
+      "fpl": "ye'cho'lot"
+    },
+    "past": {
+      "ani": "יכולתי",
+      "ata": "יכולת",
+      "at": "יכולת",
+      "hu": "יכול",
+      "hi": "יכלה",
+      "anachnu": "יכולנו",
+      "atem": "יכולתם",
+      "aten": "יכולתן",
+      "hem": "יכלו"
+    },
+    "pastNikud": {
+      "ani": "יָכוֹלְתִּי",
+      "ata": "יָכוֹלְתָּ",
+      "at": "יָכוֹלְתְּ",
+      "hu": "יָכוֹל",
+      "hi": "יָכְלָה",
+      "anachnu": "יָכוֹלְנוּ",
+      "atem": "יְכָלְתֶּם",
+      "aten": "יְכָלְתֶּן",
+      "hem": "יָכְלוּ"
+    },
+    "pastTranslit": {
+      "ani": "ya'chol'ti",
+      "ata": "ya'chol'ta",
+      "at": "ya'cholt",
+      "hu": "ya'chol",
+      "hi": "yach'la",
+      "anachnu": "ya'chol'nu",
+      "atem": "yechol'tem",
+      "aten": "yechol'ten",
+      "hem": "yach'lu"
+    },
+    "imperative": {
+      "ms": "—",
+      "fs": "—",
+      "pl": "—"
+    },
+    "imperativeNikud": {
+      "ms": "—",
+      "fs": "—",
+      "pl": "—"
+    },
+    "imperativeTranslit": {
+      "ms": "—",
+      "fs": "—",
+      "pl": "—"
+    },
+    "note": "Defective verb ('can'); has no imperative."
+  },
+  {
+    "id": 359,
+    "root": "ס.י.ם",
+    "binyan": "pi'el",
+    "present": {
+      "ms": "מסיים",
+      "fs": "מסיימת",
+      "mpl": "מסיימים",
+      "fpl": "מסיימות"
+    },
+    "presentNikud": {
+      "ms": "מְסַיֵּם",
+      "fs": "מְסַיֶּמֶת",
+      "mpl": "מְסַיְּמִים",
+      "fpl": "מְסַיְּמוֹת"
+    },
+    "presentTranslit": {
+      "ms": "me'sa'yem",
+      "fs": "me'sa'ye'met",
+      "mpl": "me'say'mim",
+      "fpl": "me'say'mot"
+    },
+    "past": {
+      "ani": "סיימתי",
+      "ata": "סיימת",
+      "at": "סיימת",
+      "hu": "סיים",
+      "hi": "סיימה",
+      "anachnu": "סיימנו",
+      "atem": "סיימתם",
+      "aten": "סיימתן",
+      "hem": "סיימו"
+    },
+    "pastNikud": {
+      "ani": "סִייַּמְתִּי",
+      "ata": "סִייַּמְתָּ",
+      "at": "סִייַּמְתְּ",
+      "hu": "סִייֵּם",
+      "hi": "סִייְּמָה",
+      "anachnu": "סִייַּמְנוּ",
+      "atem": "סִייַּמְתֶּם",
+      "aten": "סִייַּמְתֶּן",
+      "hem": "סִייְּמוּ"
+    },
+    "pastTranslit": {
+      "ani": "si'yam'ti",
+      "ata": "si'yam'ta",
+      "at": "si'yamt",
+      "hu": "si'yem",
+      "hi": "siy'ma",
+      "anachnu": "si'yam'nu",
+      "atem": "si'yam'tem",
+      "aten": "si'yam'ten",
+      "hem": "siy'mu"
+    },
+    "imperative": {
+      "ms": "סיים",
+      "fs": "סיימי",
+      "pl": "סיימו"
+    },
+    "imperativeNikud": {
+      "ms": "סַייֵּם",
+      "fs": "סַייְּמִי",
+      "pl": "סַייְּמוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "sa'yem",
+      "fs": "say'mi",
+      "pl": "say'mu"
+    }
+  },
+  {
+    "id": 399,
+    "root": "ר.ו.ץ",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "רץ",
+      "fs": "רצה",
+      "mpl": "רצים",
+      "fpl": "רצות"
+    },
+    "presentNikud": {
+      "ms": "רָץ",
+      "fs": "רָצָה",
+      "mpl": "רָצִים",
+      "fpl": "רָצוֹת"
+    },
+    "presentTranslit": {
+      "ms": "ratz",
+      "fs": "ra'tza",
+      "mpl": "ra'tzim",
+      "fpl": "ra'tzot"
+    },
+    "past": {
+      "ani": "רצתי",
+      "ata": "רצת",
+      "at": "רצת",
+      "hu": "רץ",
+      "hi": "רצה",
+      "anachnu": "רצנו",
+      "atem": "רצתם",
+      "aten": "רצתן",
+      "hem": "רצו"
+    },
+    "pastNikud": {
+      "ani": "רַצְתִּי",
+      "ata": "רַצְתָּ",
+      "at": "רַצְתְּ",
+      "hu": "רָץ",
+      "hi": "רָצָה",
+      "anachnu": "רַצְנוּ",
+      "atem": "רַצְתֶּם",
+      "aten": "רַצְתֶּן",
+      "hem": "רָצוּ"
+    },
+    "pastTranslit": {
+      "ani": "rats'ti",
+      "ata": "rats'ta",
+      "at": "ratzt",
+      "hu": "ratz",
+      "hi": "ra'tza",
+      "anachnu": "rats'nu",
+      "atem": "rats'tem",
+      "aten": "rats'ten",
+      "hem": "ra'tzu"
+    },
+    "imperative": {
+      "ms": "רוץ",
+      "fs": "רוצי",
+      "pl": "רוצו"
+    },
+    "imperativeNikud": {
+      "ms": "רוּץ",
+      "fs": "רוּצִי",
+      "pl": "רוּצוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "rutz",
+      "fs": "ru'tzi",
+      "pl": "ru'tzu"
+    }
+  },
+  {
+    "id": 400,
+    "root": "ק.ו.ם",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "קם",
+      "fs": "קמה",
+      "mpl": "קמים",
+      "fpl": "קמות"
+    },
+    "presentNikud": {
+      "ms": "קָם",
+      "fs": "קָמָה",
+      "mpl": "קָמִים",
+      "fpl": "קָמוֹת"
+    },
+    "presentTranslit": {
+      "ms": "kam",
+      "fs": "ka'ma",
+      "mpl": "ka'mim",
+      "fpl": "ka'mot"
+    },
+    "past": {
+      "ani": "קמתי",
+      "ata": "קמת",
+      "at": "קמת",
+      "hu": "קם",
+      "hi": "קמה",
+      "anachnu": "קמנו",
+      "atem": "קמתם",
+      "aten": "קמתן",
+      "hem": "קמו"
+    },
+    "pastNikud": {
+      "ani": "קַמְתִּי",
+      "ata": "קַמְתָּ",
+      "at": "קַמְתְּ",
+      "hu": "קָם",
+      "hi": "קָמָה",
+      "anachnu": "קַמְנוּ",
+      "atem": "קַמְתֶּם",
+      "aten": "קַמְתֶּן",
+      "hem": "קָמוּ"
+    },
+    "pastTranslit": {
+      "ani": "kam'ti",
+      "ata": "kam'ta",
+      "at": "kamt",
+      "hu": "kam",
+      "hi": "ka'ma",
+      "anachnu": "kam'nu",
+      "atem": "kam'tem",
+      "aten": "kam'ten",
+      "hem": "ka'mu"
+    },
+    "imperative": {
+      "ms": "קום",
+      "fs": "קומי",
+      "pl": "קומו"
+    },
+    "imperativeNikud": {
+      "ms": "קוּם",
+      "fs": "קוּמִי",
+      "pl": "קוּמוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "kum",
+      "fs": "ku'mi",
+      "pl": "ku'mu"
+    },
+    "note": "Duplicate of id 116 (wake-up/get-up)."
+  },
+  {
+    "id": 401,
+    "root": "ש.י.ר",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "שר",
+      "fs": "שרה",
+      "mpl": "שרים",
+      "fpl": "שרות"
+    },
+    "presentNikud": {
+      "ms": "שָׁר",
+      "fs": "שָׁרָה",
+      "mpl": "שָׁרִים",
+      "fpl": "שָׁרוֹת"
+    },
+    "presentTranslit": {
+      "ms": "shar",
+      "fs": "sha'ra",
+      "mpl": "sha'rim",
+      "fpl": "sha'rot"
+    },
+    "past": {
+      "ani": "שרתי",
+      "ata": "שרת",
+      "at": "שרת",
+      "hu": "שר",
+      "hi": "שרה",
+      "anachnu": "שרנו",
+      "atem": "שרתם",
+      "aten": "שרתן",
+      "hem": "שרו"
+    },
+    "pastNikud": {
+      "ani": "שַׁרְתִּי",
+      "ata": "שַׁרְתָּ",
+      "at": "שַׁרְתְּ",
+      "hu": "שָׁר",
+      "hi": "שָׁרָה",
+      "anachnu": "שַׁרְנוּ",
+      "atem": "שַׁרְתֶּם",
+      "aten": "שַׁרְתֶּן",
+      "hem": "שָׁרוּ"
+    },
+    "pastTranslit": {
+      "ani": "shar'ti",
+      "ata": "shar'ta",
+      "at": "shart",
+      "hu": "shar",
+      "hi": "sha'ra",
+      "anachnu": "shar'nu",
+      "atem": "shar'tem",
+      "aten": "shar'ten",
+      "hem": "sha'ru"
+    },
+    "imperative": {
+      "ms": "שיר",
+      "fs": "שירי",
+      "pl": "שירו"
+    },
+    "imperativeNikud": {
+      "ms": "שִׁיר",
+      "fs": "שִׁירִי",
+      "pl": "שִׁירוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "shir",
+      "fs": "shi'ri",
+      "pl": "shi'ru"
+    }
+  },
+  {
+    "id": 402,
+    "root": "ט.ו.ס",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "טס",
+      "fs": "טסה",
+      "mpl": "טסים",
+      "fpl": "טסות"
+    },
+    "presentNikud": {
+      "ms": "טָס",
+      "fs": "טָסָה",
+      "mpl": "טָסִים",
+      "fpl": "טָסוֹת"
+    },
+    "presentTranslit": {
+      "ms": "tas",
+      "fs": "ta'sa",
+      "mpl": "ta'sim",
+      "fpl": "ta'sot"
+    },
+    "past": {
+      "ani": "טסתי",
+      "ata": "טסת",
+      "at": "טסת",
+      "hu": "טס",
+      "hi": "טסה",
+      "anachnu": "טסנו",
+      "atem": "טסתם",
+      "aten": "טסתן",
+      "hem": "טסו"
+    },
+    "pastNikud": {
+      "ani": "טַסְתִּי",
+      "ata": "טַסְתָּ",
+      "at": "טַסְתְּ",
+      "hu": "טָס",
+      "hi": "טָסָה",
+      "anachnu": "טַסְנוּ",
+      "atem": "טַסְתֶּם",
+      "aten": "טַסְתֶּן",
+      "hem": "טָסוּ"
+    },
+    "pastTranslit": {
+      "ani": "tas'ti",
+      "ata": "tas'ta",
+      "at": "tast",
+      "hu": "tas",
+      "hi": "ta'sa",
+      "anachnu": "tas'nu",
+      "atem": "tas'tem",
+      "aten": "tas'ten",
+      "hem": "ta'su"
+    },
+    "imperative": {
+      "ms": "טוס",
+      "fs": "טוסי",
+      "pl": "טוסו"
+    },
+    "imperativeNikud": {
+      "ms": "טוּס",
+      "fs": "טוּסִי",
+      "pl": "טוּסוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "tus",
+      "fs": "tu'si",
+      "pl": "tu'su"
+    }
+  },
+  {
+    "id": 408,
+    "root": "צ.ר.ך",
+    "binyan": "pa'al (modal adjective)",
+    "present": {
+      "ms": "צריך",
+      "fs": "צריכה",
+      "mpl": "צריכים",
+      "fpl": "צריכות"
+    },
+    "presentNikud": {
+      "ms": "צָרִיךְ",
+      "fs": "צְרִיכָה",
+      "mpl": "צְרִיכִים",
+      "fpl": "צְרִיכוֹת"
+    },
+    "presentTranslit": {
+      "ms": "tza'rich",
+      "fs": "tzri'cha",
+      "mpl": "tzri'chim",
+      "fpl": "tzri'chot"
+    },
+    "past": {
+      "ani": "הייתי צריך",
+      "ata": "היית צריך",
+      "at": "היית צריכה",
+      "hu": "היה צריך",
+      "hi": "הייתה צריכה",
+      "anachnu": "היינו צריכים",
+      "atem": "הייתם צריכים",
+      "aten": "הייתן צריכות",
+      "hem": "היו צריכים"
+    },
+    "pastNikud": {
+      "ani": "הָיִיתִי צָרִיךְ",
+      "ata": "הָיִיתָ צָרִיךְ",
+      "at": "הָיִית צְרִיכָה",
+      "hu": "הָיָה צָרִיךְ",
+      "hi": "הָיְתָה צְרִיכָה",
+      "anachnu": "הָיִינוּ צְרִיכִים",
+      "atem": "הֱיִיתֶם צְרִיכִים",
+      "aten": "הֱיִיתֶן צְרִיכוֹת",
+      "hem": "הָיוּ צְרִיכִים"
+    },
+    "pastTranslit": {
+      "ani": "ha'yi'ti tza'rich",
+      "ata": "ha'yi'ta tza'rich",
+      "at": "ha'yit tzri'cha",
+      "hu": "ha'ya tza'rich",
+      "hi": "hay'ta tzri'cha",
+      "anachnu": "ha'yi'nu tzri'chim",
+      "atem": "heyi'tem tzri'chim",
+      "aten": "heyi'ten tzri'chot",
+      "hem": "ha'yu tzri'chim"
+    },
+    "imperative": {
+      "ms": "—",
+      "fs": "—",
+      "pl": "—"
+    },
+    "imperativeNikud": {
+      "ms": "—",
+      "fs": "—",
+      "pl": "—"
+    },
+    "imperativeTranslit": {
+      "ms": "—",
+      "fs": "—",
+      "pl": "—"
+    },
+    "note": "'Need/must' is an adjective; its past is periphrastic with היה ('was needing'), and it has no imperative."
+  },
+  {
+    "id": 409,
+    "root": "ש.ח.ה",
+    "binyan": "pa'al",
+    "present": {
+      "ms": "שוחה",
+      "fs": "שוחה",
+      "mpl": "שוחים",
+      "fpl": "שוחות"
+    },
+    "presentNikud": {
+      "ms": "שׂוֹחֶה",
+      "fs": "שׂוֹחָה",
+      "mpl": "שׂוֹחִים",
+      "fpl": "שׂוֹחוֹת"
+    },
+    "presentTranslit": {
+      "ms": "so'che",
+      "fs": "so'cha",
+      "mpl": "so'chim",
+      "fpl": "so'chot"
+    },
+    "past": {
+      "ani": "שחיתי",
+      "ata": "שחית",
+      "at": "שחית",
+      "hu": "שחה",
+      "hi": "שחתה",
+      "anachnu": "שחינו",
+      "atem": "שחיתם",
+      "aten": "שחיתן",
+      "hem": "שחו"
+    },
+    "pastNikud": {
+      "ani": "שָׂחִיתִי",
+      "ata": "שָׂחִיתָ",
+      "at": "שָׂחִית",
+      "hu": "שָׂחָה",
+      "hi": "שָׂחְתָה",
+      "anachnu": "שָׂחִינוּ",
+      "atem": "שְׂחִיתֶם",
+      "aten": "שְׂחִיתֶן",
+      "hem": "שָׂחוּ"
+    },
+    "pastTranslit": {
+      "ani": "sa'chi'ti",
+      "ata": "sa'chi'ta",
+      "at": "sa'chit",
+      "hu": "sa'cha",
+      "hi": "sach'ta",
+      "anachnu": "sa'chi'nu",
+      "atem": "schi'tem",
+      "aten": "schi'ten",
+      "hem": "sa'chu"
+    },
+    "imperative": {
+      "ms": "שחה",
+      "fs": "שחי",
+      "pl": "שחו"
+    },
+    "imperativeNikud": {
+      "ms": "שְׂחֵה",
+      "fs": "שְׂחִי",
+      "pl": "שְׂחוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "sche",
+      "fs": "schi",
+      "pl": "schu"
+    },
+    "note": "Root has sin (שׂ): pronounced 'so-che', not 'sho-che'."
+  },
+  {
+    "id": 438,
+    "root": "ש.ל.ם",
+    "binyan": "pi'el",
+    "present": {
+      "ms": "משלם",
+      "fs": "משלמת",
+      "mpl": "משלמים",
+      "fpl": "משלמות"
+    },
+    "presentNikud": {
+      "ms": "מְשַׁלֵּם",
+      "fs": "מְשַׁלֶּמֶת",
+      "mpl": "מְשַׁלְּמִים",
+      "fpl": "מְשַׁלְּמוֹת"
+    },
+    "presentTranslit": {
+      "ms": "me'sha'lem",
+      "fs": "me'sha'le'met",
+      "mpl": "me'shal'mim",
+      "fpl": "me'shal'mot"
+    },
+    "past": {
+      "ani": "שילמתי",
+      "ata": "שילמת",
+      "at": "שילמת",
+      "hu": "שילם",
+      "hi": "שילמה",
+      "anachnu": "שילמנו",
+      "atem": "שילמתם",
+      "aten": "שילמתן",
+      "hem": "שילמו"
+    },
+    "pastNikud": {
+      "ani": "שִׁילַּמְתִּי",
+      "ata": "שִׁילַּמְתָּ",
+      "at": "שִׁילַּמְתְּ",
+      "hu": "שִׁילֵּם",
+      "hi": "שִׁילְּמָה",
+      "anachnu": "שִׁילַּמְנוּ",
+      "atem": "שִׁילַּמְתֶּם",
+      "aten": "שִׁילַּמְתֶּן",
+      "hem": "שִׁילְּמוּ"
+    },
+    "pastTranslit": {
+      "ani": "shi'lam'ti",
+      "ata": "shi'lam'ta",
+      "at": "shi'lamt",
+      "hu": "shi'lem",
+      "hi": "shil'ma",
+      "anachnu": "shi'lam'nu",
+      "atem": "shi'lam'tem",
+      "aten": "shi'lam'ten",
+      "hem": "shil'mu"
+    },
+    "imperative": {
+      "ms": "שלם",
+      "fs": "שלמי",
+      "pl": "שלמו"
+    },
+    "imperativeNikud": {
+      "ms": "שַׁלֵּם",
+      "fs": "שַׁלְּמִי",
+      "pl": "שַׁלְּמוּ"
+    },
+    "imperativeTranslit": {
+      "ms": "sha'lem",
+      "fs": "shal'mi",
+      "pl": "shal'mu"
+    }
+  }
+];
+
+
 
 // ── Storage ───────────────────────────────────────────────────────────────────
 const STORAGE_KEY = 'hebrew_fc_v1';
@@ -1935,6 +6342,9 @@ function showView(view) {
   document.getElementById('grammarSetupView').style.display   = view === 'grammarSetup'   ? 'flex'  : 'none';
   document.getElementById('grammarView').style.display        = view === 'grammar'        ? 'flex'  : 'none';
   document.getElementById('grammarResultsView').style.display = view === 'grammarResults' ? 'flex'  : 'none';
+  document.getElementById('conjSetupView').style.display      = view === 'conjSetup'      ? 'flex'  : 'none';
+  document.getElementById('conjView').style.display           = view === 'conj'           ? 'flex'  : 'none';
+  document.getElementById('conjResultsView').style.display    = view === 'conjResults'    ? 'flex'  : 'none';
   if (view === 'home') {
     const ev = getEffectiveVocab();
     document.getElementById('homeSubtitle').textContent = `${ev.length} word${ev.length===1?'':'s'} · 8 lessons`;
@@ -1943,6 +6353,7 @@ function showView(view) {
   if (view === 'editor' && editorEditingId === null) clearEditorForm();
   if (view === 'quizSetup') updateQuizAvailNote();
   if (view === 'grammarSetup') updateGrammarAvailNote();
+  if (view === 'conjSetup') updateConjAvailNote();
 }
 
 function enterFlashcards() {
@@ -2537,12 +6948,190 @@ function retryGrammar() {
 
 function exitGrammar() { showView('home'); }
 
+// ── Verb Conjugation Mode ─────────────────────────────────────────────────────
+const CONJ_PRESENT_LABELS = { ms:'he / m.s.', fs:'she / f.s.', mpl:'they m / m.pl.', fpl:'they f / f.pl.' };
+const CONJ_PAST_LABELS    = { ani:'I (אני)', ata:'you m (אתה)', at:'you f (את)', hu:'he (הוא)', hi:'she (היא)', anachnu:'we (אנחנו)', atem:'you all m (אתם)', aten:'you all f (אתן)', hem:'they (הם/הן)' };
+const CONJ_IMP_LABELS     = { ms:'you m (command)', fs:'you f (command)', pl:'you all (command)' };
+const CONJ_TENSE_LABELS   = { present:'Present', past:'Past', imperative:'Imperative' };
+
+let conjConfig = { tense:'all', lesson:'all' };
+let conjQuestions = [], conjIndex = 0, conjScore = 0, conjWrong = [];
+let conjTyped = '', conjLastCorrect = false;
+
+function buildConjPool() {
+  const idToWord = {};
+  vocab.forEach(w => { idToWord[w.id] = w; });
+  const pool = [];
+  const tenses = conjConfig.tense === 'all' ? ['present','past','imperative'] : [conjConfig.tense];
+  for (const vb of verbForms) {
+    const word = idToWord[vb.id];
+    if (!word) continue;
+    if (conjConfig.lesson !== 'all' && word.lesson !== conjConfig.lesson) continue;
+    for (const tense of tenses) {
+      const forms   = vb[tense];
+      const nikuds  = vb[tense + 'Nikud'];
+      const transls = vb[tense + 'Translit'];
+      const labels  = tense === 'present' ? CONJ_PRESENT_LABELS : tense === 'past' ? CONJ_PAST_LABELS : CONJ_IMP_LABELS;
+      if (!forms) continue;
+      for (const person of Object.keys(labels)) {
+        if (!forms[person]) continue;
+        pool.push({
+          verbId: vb.id,
+          english: word.english,
+          tense,
+          person,
+          personLabel: labels[person],
+          answer: forms[person],
+          answerNikud: nikuds ? nikuds[person] : forms[person],
+          answerTranslit: transls ? transls[person] : ''
+        });
+      }
+    }
+  }
+  return pool;
+}
+
+function setConjOpt(key, val, btn) {
+  conjConfig[key] = val;
+  const pillsId = key === 'tense' ? 'conjTensePills' : 'conjLessonPills';
+  document.querySelectorAll(`#${pillsId} .pill`).forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateConjAvailNote();
+}
+
+function updateConjAvailNote() {
+  const pool = buildConjPool();
+  const n = Math.min(pool.length, 30);
+  document.getElementById('conjAvailNote').textContent = `${pool.length} forms available · ${n} questions per round`;
+  document.querySelector('#conjSetupView .btn-start-quiz').disabled = pool.length === 0;
+}
+
+function startConj() {
+  const pool = buildConjPool();
+  if (!pool.length) return;
+  conjQuestions = shuffle([...pool]).slice(0, 30);
+  conjIndex = 0; conjScore = 0; conjWrong = [];
+  showView('conj');
+  renderConjQ();
+}
+
+function renderConjQ() {
+  localStorage.setItem('hebrew_fc_conj_sess', JSON.stringify({questions:conjQuestions,index:conjIndex,score:conjScore,wrong:conjWrong}));
+  const q = conjQuestions[conjIndex];
+  const total = conjQuestions.length;
+  document.getElementById('conjCounter').textContent = `Q ${conjIndex+1} of ${total}`;
+  document.getElementById('conjScoreLive').textContent = `${conjScore} / ${conjIndex}`;
+  document.getElementById('conjProgBar').style.width = `${(conjIndex/total)*100}%`;
+  document.getElementById('conjFeedback').style.display = 'none';
+  document.getElementById('conjNextBtn').style.display = 'none';
+  document.getElementById('conjOverrideBtn').style.display = 'none';
+  document.getElementById('conjTypeArea').style.display = 'block';
+  document.getElementById('conjCheckBtn').disabled = false;
+  document.getElementById('conjPersonLabel').textContent = q.personLabel;
+  document.getElementById('conjWordPrompt').textContent = q.english;
+  document.getElementById('conjTenseHint').textContent = CONJ_TENSE_LABELS[q.tense];
+  conjTyped = '';
+  document.getElementById('conjTypedSpan').textContent = '';
+}
+
+function conjHebKey(ch) {
+  conjTyped += ch;
+  document.getElementById('conjTypedSpan').textContent = conjTyped;
+}
+
+function conjHebBackspace() {
+  conjTyped = conjTyped.slice(0, -1);
+  document.getElementById('conjTypedSpan').textContent = conjTyped;
+}
+
+function submitConjAnswer() {
+  const q = conjQuestions[conjIndex];
+  const isCorrect = normalizeHebrew(conjTyped) === normalizeHebrew(q.answer);
+  conjLastCorrect = isCorrect;
+  if (isCorrect) conjScore++; else conjWrong.push(q);
+  document.getElementById('conjCheckBtn').disabled = true;
+  const fb = document.getElementById('conjFeedback');
+  fb.style.display = 'flex';
+  setTimeout(() => fb.scrollIntoView({behavior:'smooth', block:'nearest'}), 50);
+  document.getElementById('conjFbIcon').textContent = isCorrect ? '✓' : '✗';
+  document.getElementById('conjFbIcon').style.color = isCorrect ? '#4ade80' : '#f87171';
+  document.getElementById('conjFbLabel').textContent = isCorrect ? 'Correct!' : 'Wrong';
+  document.getElementById('conjFbLabel').style.color = isCorrect ? '#4ade80' : '#f87171';
+  document.getElementById('conjFbAnswer').textContent = isCorrect ? q.answerTranslit : `Correct: ${q.answerNikud}`;
+  document.getElementById('conjFbHebrew').textContent = isCorrect ? q.answerNikud : q.answerTranslit;
+  document.getElementById('conjNextBtn').style.display = 'block';
+  document.getElementById('conjScoreLive').textContent = `${conjScore} / ${conjIndex+1}`;
+  const overBtn = document.getElementById('conjOverrideBtn');
+  overBtn.textContent = isCorrect ? 'Mark Wrong' : 'Mark Correct';
+  overBtn.style.display = 'block';
+}
+
+function overrideConj() {
+  const q = conjQuestions[conjIndex];
+  if (conjLastCorrect) {
+    conjScore--;
+    conjWrong.push(q);
+    conjLastCorrect = false;
+  } else {
+    conjScore++;
+    conjWrong = conjWrong.filter(w => w !== q);
+    conjLastCorrect = true;
+  }
+  document.getElementById('conjScoreLive').textContent = `${conjScore} / ${conjIndex+1}`;
+  const lbl = document.getElementById('conjFbLabel');
+  lbl.textContent = conjLastCorrect ? 'Correct!' : 'Wrong';
+  lbl.style.color = conjLastCorrect ? '#4ade80' : '#f87171';
+  document.getElementById('conjFbIcon').textContent = conjLastCorrect ? '✓' : '✗';
+  document.getElementById('conjFbIcon').style.color = conjLastCorrect ? '#4ade80' : '#f87171';
+  document.getElementById('conjOverrideBtn').style.display = 'none';
+}
+
+function nextConjQ() {
+  conjIndex++;
+  if (conjIndex >= conjQuestions.length) showConjResults();
+  else renderConjQ();
+}
+
+function showConjResults() {
+  localStorage.removeItem('hebrew_fc_conj_sess');
+  showView('conjResults');
+  const total = conjQuestions.length;
+  const pct = Math.round((conjScore/total)*100);
+  document.getElementById('conjResultsScore').textContent = `${conjScore} / ${total}`;
+  document.getElementById('conjResultsPct').textContent = `${pct}% correct`;
+  document.getElementById('conjResultsGrade').textContent = pct>=90?'Excellent!':pct>=70?'Good work':pct>=50?'Keep practicing':'Keep at it!';
+  const wl = document.getElementById('conjWrongList');
+  wl.innerHTML = '';
+  if (conjWrong.length) {
+    document.getElementById('conjWrongLabel').textContent = `Review (${conjWrong.length}):`;
+    conjWrong.forEach(q => {
+      const div = document.createElement('div');
+      div.className = 'quiz-wrong-item';
+      div.innerHTML = `<div class="quiz-wrong-en">${q.english} <em style="color:var(--text-dim)">${q.personLabel} · ${CONJ_TENSE_LABELS[q.tense]}</em></div><div class="quiz-wrong-he" dir="rtl">${q.answerNikud}</div><div class="quiz-wrong-tr">${q.answerTranslit}</div>`;
+      wl.appendChild(div);
+    });
+  } else {
+    document.getElementById('conjWrongLabel').textContent = '';
+    wl.innerHTML = '<div style="text-align:center;color:var(--accent);padding:10px 0;font-size:0.95rem">No mistakes — perfect score!</div>';
+  }
+}
+
+function retryConj() {
+  conjQuestions = shuffle([...conjQuestions]);
+  conjIndex = 0; conjScore = 0; conjWrong = [];
+  showView('conj');
+  renderConjQ();
+}
+
+function exitConj() { showView('home'); }
+
 // ── Boot ──────────────────────────────────────────────────────────────────────
 // ── Session restore ───────────────────────────────────────────────────────────
 const SESSION_VIEW_KEY = 'hebrew_fc_lastview';
 const VIEW_LABELS = {
   flashcard: 'Flashcards', browser: 'Word Browser', editor: 'Edit Words',
   quizSetup: 'Quiz', quiz: 'Quiz', grammar: 'Noun Forms', grammarSetup: 'Noun Forms',
+  conjSetup: 'Verb Conjugation', conj: 'Verb Conjugation',
 };
 
 function saveCurrentView(view) {
@@ -2574,6 +7163,13 @@ function checkSessionRestore() {
         grammarTyped = ''; grammarLastCorrect = false;
         showView('grammar'); renderGrammarQ();
       } else { showView('grammarSetup'); }
+    } else if (saved === 'conj') {
+      const sess = JSON.parse(localStorage.getItem('hebrew_fc_conj_sess') || 'null');
+      if (sess && sess.questions && sess.questions.length) {
+        conjQuestions = sess.questions; conjIndex = sess.index; conjScore = sess.score; conjWrong = sess.wrong;
+        conjTyped = ''; conjLastCorrect = false;
+        showView('conj'); renderConjQ();
+      } else { showView('conjSetup'); }
     } else {
       showView(restoreView);
     }
